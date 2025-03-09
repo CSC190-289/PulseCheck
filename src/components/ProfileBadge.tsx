@@ -1,6 +1,10 @@
+import { auth } from "@/core/api/firebase"
 import { Avatar, Badge, styled } from "@mui/material"
+import { useAuthState } from "react-firebase-hooks/auth"
 
 export default function ProfileBadge() {
+  const [user] = useAuthState(auth)
+
   return (
     <StyledBadge
       overlap='circular'
@@ -9,7 +13,7 @@ export default function ProfileBadge() {
         horizontal: "right",
       }}
       variant='dot'>
-      <Avatar />
+      <Avatar src={user?.photoURL ?? undefined} />
     </StyledBadge>
   )
 }
