@@ -11,6 +11,9 @@ const opts = (mode: PaletteMode): ThemeOptions => ({
       main: pink[500],
     },
   },
+  typography: {
+    fontFamily: "monospace",
+  },
 })
 
 export function createCustomTheme(mode: PaletteMode) {
