@@ -1,10 +1,18 @@
-import { Button, Container, Stack, TextField, Typography } from "@mui/material"
+import {
+  Button,
+  Card,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { FormEvent, useState } from "react"
 import { createUser, findLobbyWithCode, joinLobby } from "@/core/api"
 import { signInAnonymously } from "firebase/auth"
 import { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
+import { RA } from "@/styles"
 //import { HelpOutline } from "@mui/icons-material"
 
 export default function GuestJoin() {
@@ -13,7 +21,8 @@ export default function GuestJoin() {
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
 
-  const handleJoinClick = () => {
+  const handleJoinClick = (e: MouseEvent | FormEvent) => {
+    e.preventDefault()
     // void AddingUserToRoom(displayName, roomCode, () => {
     //   void navigate("/poll-lobby")
     // })
@@ -65,58 +74,57 @@ export default function GuestJoin() {
     <Container
       maxWidth='xs' //This allow the container to fit a certain size
     >
-      <Typography
-        variant='h5'
-        textAlign='center'
-        marginTop={5}
-        marginBottom={5}>
-        Join Poll
-      </Typography>
+      <RA.Bounce>
+        <Card raised sx={{ paddingInline: 2, mt: 12, pb: 2 }}>
+          <Typography
+            variant='h5'
+            textAlign='center'
+            marginTop={5}
+            marginBottom={5}>
+            Join Poll
+          </Typography>
 
-      <Stack
-        component='form'
-        sx={{ m: 1 }} // margin for everything in the box
-        spacing={3}
-        noValidate
-        autoComplete='off'>
-        {/*FullWidth allows the button to extend to the xs maxwidth (styles it to match other button that have longer text or shorter)*/}
-        {/* We need to add the Join Function*/}
-        <TextField
-          id='room-code'
-          label='Room Code'
-          variant='outlined'
-          fullWidth
-          onChange={(e) => setRoomCode(e.target.value)}
-        />
-        <TextField
-          id='guest-name'
-          label='Display Name'
-          variant='outlined'
-          fullWidth
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={handleJoinClick}
-          fullWidth>
-          POLL UP
-        </Button>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={handleCreateAccount}
-          fullWidth>
-          CREATE AN ACCOUNT
-        </Button>
-        {/* <Button
-          variant='contained'
-          color='primary'
-          onClick={handleClickTest}
-          fullWidth>
-          Testing
-        </Button> */}
-      </Stack>
+          <Stack
+            component='form'
+            onSubmit={handleJoinClick}
+            sx={{ m: 1 }} // margin for everything in the box
+            spacing={3}
+            noValidate
+            autoComplete='off'>
+            {/*FullWidth allows the button to extend to the xs maxwidth (styles it to match other button that have longer text or shorter)*/}
+            {/* We need to add the Join Function*/}
+            <TextField
+              id='room-code'
+              label='Room Code'
+              variant='outlined'
+              fullWidth
+              onChange={(e) => setRoomCode(e.target.value)}
+            />
+            <TextField
+              id='guest-name'
+              label='Display Name'
+              variant='outlined'
+              fullWidth
+              onChange={(e) => setDisplayName(e.target.value)}
+            />
+            <Button
+              type='submit'
+              variant='contained'
+              color='primary'
+              onClick={handleJoinClick}
+              fullWidth>
+              POLL UP
+            </Button>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={handleCreateAccount}
+              fullWidth>
+              CREATE AN ACCOUNT
+            </Button>
+          </Stack>
+        </Card>
+      </RA.Bounce>
     </Container>
   )
 }
