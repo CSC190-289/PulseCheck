@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, Typography } from "@mui/material"
+import { Card, CardContent, Typography } from "@mui/material"
 import { RA } from "@/styles"
 
 interface RecentPollCardProps {
@@ -12,13 +12,15 @@ export default function RecentPollCard({
   result,
 }: RecentPollCardProps) {
   return (
-    <Card variant='outlined'>
-      <CardContent>
-        <RA.Bounce triggerOnce>
-          <CardHeader title={pollTitle} />
+    <RA.Bounce triggerOnce>
+      <Card raised>
+        <CardContent>
+          <Typography mt={1} variant='h5' gutterBottom>
+            {pollTitle}
+          </Typography>
           <Typography>{result}</Typography>
-        </RA.Bounce>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </RA.Bounce>
   )
 }

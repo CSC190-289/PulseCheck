@@ -5,6 +5,7 @@ import { createUser, findLobbyWithCode, joinLobby } from "@/core/api"
 import { signInAnonymously } from "firebase/auth"
 import { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
+import { FormEvent } from "react"
 //import { HelpOutline } from "@mui/icons-material"
 
 export default function GuestJoin() {
@@ -13,10 +14,8 @@ export default function GuestJoin() {
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
 
-  const handleJoinClick = () => {
-    // void AddingUserToRoom(displayName, roomCode, () => {
-    //   void navigate("/poll-lobby")
-    // })
+  const handleJoinClick = (e: MouseEvent | FormEvent) => {
+    e.preventDefault()
     const aux = async () => {
       try {
         if (!roomCode.trim()) {
@@ -75,6 +74,7 @@ export default function GuestJoin() {
 
       <Stack
         component='form'
+        onSubmit={handleJoinClick}
         sx={{ m: 1 }} // margin for everything in the box
         spacing={3}
         noValidate
@@ -98,6 +98,7 @@ export default function GuestJoin() {
         <Button
           variant='contained'
           color='primary'
+          type='submit'
           onClick={handleJoinClick}
           fullWidth>
           POLL UP
