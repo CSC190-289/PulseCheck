@@ -8,7 +8,8 @@ import {
   Stack
 } from "@mui/material"
 import { DragHandle } from "@mui/icons-material"
-import MenuItem from '@mui/material/MenuItem';
+import MenuItem from '@mui/material/MenuItem'
+import { useEffect, useState } from "react"
 
 interface Props {
   //pollID: string
@@ -19,20 +20,28 @@ interface Props {
   options: Record<string,boolean>
   weight: number
   anonymous: boolean
-  time: number
   prompt_type: "multiple-choice" | "multi-select"
+  time: number
 }
 
 export default function Question(
   props: Props
 ) {
+
+  const defaultPrompt:string = "Insert question prompt here"
+  const [questionPrompt, setquestionPrompt] = useState<string>(defaultPrompt)
+  
+  useEffect(() => {
+    if(!questionPrompt) {setquestionPrompt(defaultPrompt)  
+    }}, [questionPrompt])  
+
   return (
     <Accordion>
       <AccordionSummary>
         <Box display={"flex"}>
           <DragHandle/>
           <Typography sx={{ wordBreak: "break-word" }} marginLeft={1}>
-            Q.{props.questionNumber}: {props.prompt}
+            Q.{props.questionNumber}: {questionPrompt}
           </Typography>
         </Box>
       </AccordionSummary>
@@ -41,6 +50,7 @@ export default function Question(
         <TextField
           label= 'Prompt'
           variant='outlined'
+          onChange = {(e) => setquestionPrompt(e.target.value)}
           //fullWidth
         />
         <TextField

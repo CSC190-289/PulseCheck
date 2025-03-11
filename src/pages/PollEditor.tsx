@@ -4,7 +4,7 @@ import Question from "../components/poll/edit/Question"
 export default function PollEditor() {
   return (
     <Container>
-      <Typography variant='h4' mt={6}>
+      <Typography variant='h4' mt={6} mb={6}>
         Poll Maker!
       </Typography>
       <Stack spacing={3}>
