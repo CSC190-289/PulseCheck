@@ -6,8 +6,10 @@ export default function Register() {
     <React.Fragment>
       <Container maxWidth='sm'>
         <Typography> Sorry Brando he made me do it</Typography>
+        
         <SignInWGoogleButton />
       </Container>
     </React.Fragment>
+    
   )
 }
