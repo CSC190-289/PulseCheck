@@ -2,10 +2,14 @@ import { Box, Stack, Typography } from "@mui/material"
 import Accordion from "@mui/material/Accordion"
 import AccordionSummary from "@mui/material/AccordionSummary"
 import AccordionDetails from "@mui/material/AccordionDetails"
-import React from "react"
+import React, { useState } from "react"
 import { RA } from "@/styles"
 
 function FAQs(props: { ref?: React.Ref<unknown> }) {
+  const [open1, setOpen1] = useState(false)
+  const [open2, setOpen2] = useState(false)
+  const [open3, setOpen3] = useState(false)
+  const [open4, setOpen4] = useState(false)
   return (
     <Box ref={props.ref}>
       <RA.Bounce triggerOnce>
@@ -15,7 +19,10 @@ function FAQs(props: { ref?: React.Ref<unknown> }) {
       </RA.Bounce>
       <Stack spacing={4}>
         <RA.Bounce triggerOnce>
-          <Accordion expanded>
+          <Accordion
+            expanded={open1}
+            onMouseEnter={() => setOpen1(true)}
+            onMouseLeave={() => setOpen1(false)}>
             <AccordionSummary>
               <b>Q: How do I participate in a quiz or poll?</b>
             </AccordionSummary>
@@ -27,7 +34,10 @@ function FAQs(props: { ref?: React.Ref<unknown> }) {
           </Accordion>
         </RA.Bounce>
         <RA.Bounce triggerOnce>
-          <Accordion expanded>
+          <Accordion
+            expanded={open2}
+            onMouseEnter={() => setOpen2(true)}
+            onMouseLeave={() => setOpen2(false)}>
             <AccordionSummary>
               <b>Q: Can I access my quiz results?</b>
             </AccordionSummary>
@@ -38,7 +48,10 @@ function FAQs(props: { ref?: React.Ref<unknown> }) {
           </Accordion>
         </RA.Bounce>
         <RA.Bounce triggerOnce>
-          <Accordion expanded>
+          <Accordion
+            expanded={open3}
+            onMouseEnter={() => setOpen3(true)}
+            onMouseLeave={() => setOpen3(false)}>
             <AccordionSummary>
               <b>Q: How does PulseCheck track attendance?</b>
             </AccordionSummary>
@@ -49,7 +62,10 @@ function FAQs(props: { ref?: React.Ref<unknown> }) {
           </Accordion>
         </RA.Bounce>
         <RA.Bounce triggerOnce>
-          <Accordion expanded>
+          <Accordion
+            expanded={open4}
+            onMouseEnter={() => setOpen4(true)}
+            onMouseLeave={() => setOpen4(false)}>
             <AccordionSummary>
               <b>Q: Can I use PulseCheck on my phone?</b>
             </AccordionSummary>
