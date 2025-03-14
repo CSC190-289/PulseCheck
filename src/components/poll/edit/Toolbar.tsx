@@ -16,9 +16,9 @@ interface Props {
  */
 export default function Toolbar(props: Props) {
   const { pollId, title, lastUpdated } = props
-  console.debug(`PollEditor.Toolbar.props.pollId`, pollId)
-  console.debug(`PollEditor.Toolbar.props.title`, title)
-  console.debug(`PollEditor.Toolbar.props.lastUpdated`, lastUpdated)
+  console.debug(`poll.editor.toolbar.props.pollId`, pollId)
+  console.debug(`poll.editor.toolbar.props.title`, title)
+  console.debug(`poll.editor.toolbar.props.lastUpdated`, lastUpdated)
   /**
    * @VerySirias
    * You're going to have to learn what a useState hook is. You're going to need it in order to
