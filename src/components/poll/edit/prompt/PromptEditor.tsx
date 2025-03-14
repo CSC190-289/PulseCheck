@@ -14,8 +14,7 @@ import { useEffect, useState } from "react"
 import UploadImageBox from "./UploadImageBox"
 
 interface Props {
-  //pollID: string
-  //questionID: string
+  pollId: string
   questionNumber: number
   prompt: string
   prompt_img?: string
@@ -57,7 +56,7 @@ export default function PromptEditor(props: Props) {
       <AccordionDetails>
         <Grid2 container spacing={2}>
           <Grid2 size={GRID_SIZES}>
-            <UploadImageBox />
+            <UploadImageBox pollId={props.pollId} />
             <Stack spacing={3}>
               <TextField
                 label='Prompt'

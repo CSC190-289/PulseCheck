@@ -8,18 +8,18 @@ import { doc } from "firebase/firestore"
 import { db } from "@/core/api/firebase"
 
 export default function PollEditor() {
-  const { id } = useParams()
+  const params = useParams()
   /* debug params.id (poll id) */
-  console.debug("params.id", id)
+  const pollId = params.id ?? ""
+  console.debug("params.id", pollId)
   const navigate = useNavigate()
   useEffect(() => {
-    if (!id) {
+    if (!pollId) {
       console.debug("what the figma?")
       void navigate(-1)
     }
-  }, [id, navigate])
-
-  const [snapshot, loading, error] = useDocumentData(doc(db, "poll", id!), {
+  }, [pollId, navigate])
+  const [snapshot, loading, error] = useDocumentData(doc(db, "poll", pollId), {
     snapshotListenOptions: { includeMetadataChanges: true },
   })
 
@@ -30,37 +30,18 @@ export default function PollEditor() {
   return (
     <React.Fragment>
       <Toolbar
-        pollId={id!}
+        pollId={pollId}
         title={snapshot?.title as string}
         lastUpdated={new Date(Date.UTC(2024, 11, 6))}
       />
       <Container sx={{ pt: 2 }}>
         <Stack textAlign={"initial"} spacing={3}>
           <PromptEditor
+            pollId={pollId}
             questionNumber={1}
             prompt='Will Daniel spell the language of English?'
             prompt_img=''
             options={{ Yes: false, No: true }}
-            weight={1}
-            anonymous={false}
-            time={NaN}
-            prompt_type='multiple-choice'
-          />
-          <PromptEditor
-            questionNumber={2}
-            prompt='Will Michael die from laughing?'
-            prompt_img=''
-            options={{ Yes: false }}
-            weight={1}
-            anonymous={false}
-            time={NaN}
-            prompt_type='multiple-choice'
-          />
-          <PromptEditor
-            questionNumber={3}
-            prompt='Fish?'
-            prompt_img=''
-            options={{ Yes: false }}
             weight={1}
             anonymous={false}
             time={NaN}
