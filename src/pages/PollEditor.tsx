@@ -1,5 +1,5 @@
 import { Container, Stack } from "@mui/material"
-import Question from "../components/poll/edit/Question"
+import PromptEditor from "../components/poll/edit/prompt/PromptEditor"
 import React from "react"
 import Toolbar from "@/components/poll/edit/Toolbar"
 import { useParams } from "react-router-dom"
@@ -18,8 +18,8 @@ export default function PollEditor() {
         lastUpdated={new Date(Date.UTC(2024, 11, 6))}
       />
       <Container sx={{ pt: 2 }}>
-        <Stack spacing={3}>
-          <Question
+        <Stack textAlign={"initial"} spacing={3}>
+          <PromptEditor
             questionNumber={1}
             prompt='Will Daniel spell the language of English?'
             prompt_img=''
@@ -29,7 +29,7 @@ export default function PollEditor() {
             time={NaN}
             prompt_type='multiple-choice'
           />
-          <Question
+          <PromptEditor
             questionNumber={2}
             prompt='Will Michael die from laughing?'
             prompt_img=''
@@ -39,7 +39,7 @@ export default function PollEditor() {
             time={NaN}
             prompt_type='multiple-choice'
           />
-          <Question
+          <PromptEditor
             questionNumber={3}
             prompt='Fish?'
             prompt_img=''
