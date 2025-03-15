@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material"
 
 interface Props {
-  pollId: string
+  pid: string
 }
 
 /**
@@ -12,7 +12,7 @@ interface Props {
  * @returns {JSX.Element}
  */
 export default function UploadImageBox(props: Props) {
-  console.debug("poll.editor.upload.image.box.props", props)
+  console.debug("pe.uib.props", props)
   /**
    * @Bran7astic
    * You're going to have to use a mix of the useState and useRef hook.

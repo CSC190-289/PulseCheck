@@ -1,10 +1,11 @@
 import { Toolbar as MUIToolbar, Typography } from "@mui/material"
+import { Timestamp } from "firebase/firestore"
 
 interface Props {
   /* TODO - declare props here */
   pollId: string
   title: string /* poll title from firestore */
-  lastUpdated: Date
+  lastUpdated: Timestamp
 }
 
 /**
@@ -15,7 +16,7 @@ interface Props {
  * @returns {JSX.Element}
  */
 export default function Toolbar(props: Props) {
-  console.debug("poll.editor.toolbar.props", props)
+  console.debug("pe.toolbar.props", props)
   /**
    * @VerySirias
    * You're going to have to learn what a useState hook is. You're going to need it in order to
