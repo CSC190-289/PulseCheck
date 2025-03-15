@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore"
+
 export interface User {
   displayName: string
   createdAt: Date
@@ -9,20 +11,19 @@ export interface Poll {
   async: boolean
   anonymous: boolean | null
   time: number | null
-  created_at: string
-  updated_at: string
+  created_at: Timestamp
+  updated_at: Timestamp
 }
 
 export interface Question {
   prompt_type: PromptType
   prompt: string
   prompt_img: string
-  options: [PromptOption]
   points: number
   anonymous: boolean
   time: number | undefined
-  created_at: Date
-  updated_at: Date
+  created_at: Timestamp
+  updated_at: Timestamp
 }
 
 export type PromptType = "multiple-choice" | "multi-select" | "ranking-poll"
