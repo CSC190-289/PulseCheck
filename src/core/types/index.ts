@@ -1,12 +1,13 @@
-import { Timestamp } from "firebase/firestore"
+import { DocumentReference, Timestamp } from "firebase/firestore"
 
 export interface User {
-  displayName: string
-  createdAt: Date
+  display_name: string
+  email: string
+  created_at: Date
 }
 
 export interface Poll {
-  owner: string
+  owner: DocumentReference<User>
   title: string
   async: boolean
   anonymous: boolean | null
@@ -18,10 +19,10 @@ export interface Poll {
 export interface Question {
   prompt_type: PromptType
   prompt: string
-  prompt_img: string
+  prompt_img: string | null
   points: number
   anonymous: boolean
-  time: number | undefined
+  time: number | null
   created_at: Timestamp
   updated_at: Timestamp
 }

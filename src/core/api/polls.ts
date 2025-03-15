@@ -1,0 +1,43 @@
+import { Poll, User } from "../types"
+import BaseStore from "./store"
+import QuestionStore from "./questions"
+import {
+  addDoc,
+  collection,
+  CollectionReference,
+  doc,
+  DocumentReference,
+  Firestore,
+  serverTimestamp,
+} from "firebase/firestore"
+import { clx } from "."
+
+export default class PollStore extends BaseStore {
+  private readonly _questions: QuestionStore
+
+  constructor(db: Firestore) {
+    super(db)
+    this._questions = new QuestionStore(super.db)
+  }
+
+  public doc(pid: string) {
+    return doc(this.db, clx.polls, pid) as DocumentReference<Poll>
+  }
+
+  public async add(host: DocumentReference<User>) {
+    const pcref = collection(this.db, clx.polls) as CollectionReference<Poll>
+    return addDoc(pcref, {
+      owner: host,
+      title: "Untitled Poll",
+      async: true,
+      anonymous: false,
+      time: null,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    })
+  }
+
+  public get questions(): QuestionStore {
+    return this._questions
+  }
+}

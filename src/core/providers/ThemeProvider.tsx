@@ -4,7 +4,7 @@ import {
   ThemeProvider as MuiThemeProvider,
   PaletteMode,
 } from "@mui/material/styles"
-import { CssBaseline } from "@mui/material"
+import { CssBaseline, useMediaQuery } from "@mui/material"
 import { createCustomTheme } from "@/styles/theme"
 import { ThemeContext } from "@/core/contexts/ThemeContext"
 
@@ -27,7 +27,7 @@ import { ThemeContext } from "@/core/contexts/ThemeContext"
  */
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   /* detect system preference */
-  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
   const prefersDarkMode = false
 
   /* state for theme mode, defaulting to system preference */
