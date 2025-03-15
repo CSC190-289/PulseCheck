@@ -1,9 +1,8 @@
-import { auth } from "@/core/api/firebase"
+import { useAuthContext } from "@/core/hooks"
 import { Avatar, Badge, styled } from "@mui/material"
-import { useAuthState } from "react-firebase-hooks/auth"
 
-export default function ProfileBadge() {
-  const [user] = useAuthState(auth)
+export default function ProfileIcon() {
+  const auth = useAuthContext()
 
   return (
     <StyledBadge
@@ -13,7 +12,7 @@ export default function ProfileBadge() {
         horizontal: "right",
       }}
       variant='dot'>
-      <Avatar src={user?.photoURL ?? undefined} />
+      <Avatar src={auth.user?.photoURL ?? undefined} />
     </StyledBadge>
   )
 }

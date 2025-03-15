@@ -1,11 +1,10 @@
 import SignOutButton from "@/components/auth/SignOutButton"
 import { useNavigate } from "react-router-dom"
 import { Button, Container, Typography, Stack, Box } from "@mui/material"
-import { collection, addDoc, doc } from "firebase/firestore"
-import { db } from "@/core/api/firebase"
 import RecentPollCard from "../components/dashboard/RecentPollCard"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "@/core/api/firebase"
+import { auth } from "@/core/api"
+import api from "@/core/api"
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -16,19 +15,10 @@ export default function Dashboard() {
       console.debug("Adding doc...")
       const addPollToDB = async () => {
         // Nested async function to await addDoc
-        const host = doc(db, "users", user.uid)
-        const pollsCollection = collection(db, "polls")
-        const pollDocRef = await addDoc(pollsCollection, {
-          owner: host,
-          title: "Untitled Poll",
-          async: true,
-          anonymous: false,
-          time: null,
-          created_at: new Date(),
-          updated_at: new Date(),
-        })
-        void navigate(`/poll/${pollDocRef.id}/edit`)
-        return pollDocRef
+        const host = api.users.ref(user.uid)
+        const ref = await api.polls.add(host)
+        void navigate(`/poll/${ref.id}/edit`)
+        return ref
       }
       void addPollToDB()
     }

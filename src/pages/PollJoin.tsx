@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { createUser, findLobbyWithCode, joinLobby } from "@/core/api"
-import { auth } from "@/core/api/firebase"
+import { auth } from "@/core/api"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { useAuthState } from "react-firebase-hooks/auth"
 import { FormEvent } from "react"

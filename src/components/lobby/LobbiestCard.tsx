@@ -1,4 +1,4 @@
-import { db } from "@/core/api/firebase"
+import { fs } from "@/core/api"
 import { User } from "@/core/types"
 import { stoc } from "@/utils"
 import { Avatar, Box, Card, Skeleton, Typography } from "@mui/material"
@@ -11,20 +11,20 @@ interface Props {
 
 export default function LobbiestCard(props: Props) {
   const { userId } = props
-  const ref = doc(db, "users", userId) as DocumentReference<User>
+  const ref = doc(fs, "users", userId) as DocumentReference<User>
   const [user, loading, error] = useDocumentData<User>(ref)
 
   return (
     <Card>
       <Box m={1} display={"flex"} alignItems={"center"}>
-        <Avatar sx={{ mr: 1, bgcolor: stoc(user?.displayName ?? "") }} />
+        <Avatar sx={{ mr: 1, bgcolor: stoc(user?.display_name ?? "") }} />
         <Typography>
           {loading ? (
             <Skeleton variant='text' sx={{ fontSize: "1rem" }} />
           ) : error ? (
             `User(${userId})`
           ) : (
-            user?.displayName
+            user?.display_name
           )}
         </Typography>
       </Box>

@@ -1,4 +1,4 @@
-import { auth, db } from "@/core/api/firebase"
+import { auth, fs } from "@/core/api"
 import {
   Typography,
   Container,
@@ -29,7 +29,7 @@ import { RA } from "@/styles"
 export default function PollLobby() {
   const params = useParams()
   const lobbyId = params.id ?? "null"
-  const ref = doc(db, "lobby", lobbyId) as DocumentReference<Lobby>
+  const ref = doc(fs, "lobby", lobbyId) as DocumentReference<Lobby>
   const [lobby, loading, error] = useDocumentData<Lobby>(ref)
   const [user] = useAuthState(auth)
   const snackbar = useSnackbar()

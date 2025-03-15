@@ -13,8 +13,8 @@ import {
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "@/core/api/firebase"
-import ProfileBadge from "./ProfileBadge"
+import { auth } from "@/core/api"
+import ProfileIcon from "./ProfileIcon"
 
 export default function NavBar() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>()
@@ -61,7 +61,7 @@ export default function NavBar() {
             PulseCheck
           </Typography>
           <Box flexGrow={1} />
-          {user && !user.isAnonymous && <ProfileBadge />}
+          {user && !user.isAnonymous && <ProfileIcon />}
         </Toolbar>
       </AppBar>
     </HideOnScroll>
