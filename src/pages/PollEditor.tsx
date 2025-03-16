@@ -1,4 +1,4 @@
-import { Container, Fab, Skeleton, Stack, Tooltip } from "@mui/material"
+import { Container, Fab, Stack, Tooltip } from "@mui/material"
 import React, { useEffect } from "react"
 import Toolbar from "@/components/poll/edit/Toolbar"
 import { useNavigate, useParams } from "react-router-dom"

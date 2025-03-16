@@ -17,7 +17,7 @@ import PromptTypeField from "./PromptTypeField"
 import Settings from "./Settings"
 import { useSnackbar } from "@/core/hooks"
 import api from "@/core/api"
-import PromptOptionList from "./PromptOptionList"
+import PromptOptionList from "./option/PromptOptionList"
 
 interface Props {
   pid: string
@@ -49,8 +49,10 @@ export default function QuestionEditor(props: Props) {
 
   const handleAddOption = () => {
     const aux = async () => {
-      const ref = api.polls.questions.options.collect(pid, qid)
-      await api.polls.questions.options.add(ref)
+      const ocref = api.polls.questions.options.collect({ pid, qid })
+      const oref = await api.polls.questions.options.add(ocref)
+      const qref = api.polls.questions.doc(pid, qid)
+      await api.polls.questions.appendOption(qref, oref)
     }
     void aux()
   }
@@ -79,8 +81,7 @@ export default function QuestionEditor(props: Props) {
                 promptType={data.prompt_type}
               />
               <PromptOptionList
-                pid={pid}
-                qid={qid}
+                options={data.options}
                 promptType={data.prompt_type}
               />
               <Box flex={1} display={"flex"} justifyContent={"center"}>
