@@ -20,6 +20,7 @@ export interface Question {
   prompt_type: PromptType
   prompt: string
   prompt_img: string | null
+  options: DocumentReference<PromptOption>[]
   points: number
   anonymous: boolean
   time: number | null

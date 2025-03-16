@@ -1,5 +1,6 @@
 import {
   addDoc,
+  arrayUnion,
   collection,
   CollectionReference,
   deleteDoc,
@@ -7,10 +8,11 @@ import {
   DocumentReference,
   Firestore,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from "firebase/firestore"
 import AbstractStore from "./store"
-import { Question } from "../types"
+import { PromptOption, Question } from "../types"
 import PromptOptionStore from "./options"
 import { clx } from "."
 
@@ -50,6 +52,7 @@ export default class QuestionStore extends AbstractStore {
       prompt: "Untitled Prompt",
       prompt_img: null,
       prompt_type: "multiple-choice",
+      options: [],
       anonymous: false,
       points: 1,
       time: null,
@@ -72,5 +75,20 @@ export default class QuestionStore extends AbstractStore {
   public async delete(qref: DocumentReference<Question>) {
     await deleteDoc(qref)
     /* TODO - fetch all sub-collections and delete (cloud functions?) */
+  }
+
+  public async appendOption(
+    qref: DocumentReference<Question>,
+    oref: DocumentReference<PromptOption>
+  ) {
+    await setDoc(
+      qref,
+      {
+        options: arrayUnion(oref),
+      },
+      {
+        merge: true,
+      }
+    )
   }
 }

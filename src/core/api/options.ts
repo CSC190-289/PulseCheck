@@ -1,31 +1,101 @@
-import { addDoc, collection, CollectionReference } from "firebase/firestore"
-import AbstractStore from "./store"
-import { PromptOption } from "../types"
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  CollectionReference,
+  deleteDoc,
+  doc,
+  DocumentData,
+  DocumentReference,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore"
+import AbstractStore, {
+  CollectionParams,
+  DocumentParams,
+  IStore,
+} from "./store"
+import { PromptOption, Question } from "../types"
 import { clx } from "."
 
-export default class PromptOptionStore extends AbstractStore {
-  /**
-   * Collects all options based on given `pid` and `qid`.
-   * @param pid Poll ID in polls collection
-   * @param qid Question ID in questions collection
-   * @returns Subcollection reference to polls/`:pid`/questions/`:qid`/options
-   */
-  public collect(pid: string, qid: string) {
+export default class PromptOptionStore
+  extends AbstractStore
+  implements IStore<PromptOption>
+{
+  public doc(
+    params: DocumentParams<PromptOption>
+  ): DocumentReference<PromptOption> {
+    return doc(
+      this.db,
+      clx.polls,
+      params.pid,
+      clx.questions,
+      params.qid,
+      clx.options,
+      params.oid
+    ) as DocumentReference<PromptOption>
+  }
+
+  public collect(
+    params: CollectionParams<PromptOption>
+  ): CollectionReference<PromptOption> {
     return collection(
       this.db,
       clx.polls,
-      pid,
+      params.pid,
       clx.questions,
-      qid,
+      params.qid,
       clx.options
     ) as CollectionReference<PromptOption>
   }
 
   public async add(ref: CollectionReference<PromptOption>) {
+    const qref = ref.parent as DocumentReference<Question> | null
+    if (!qref) {
+      throw new Error(
+        "PromptOptions collection needs a parent document (questions)."
+      )
+    }
     const oref = await addDoc(ref, {
       text: "",
       correct: false,
     })
+    /* update question doc to include refernece to   */
+    await setDoc(qref, { options: arrayUnion(oref) }, { merge: true })
     return oref
+  }
+
+  public async updateByRef(
+    ref: DocumentReference<PromptOption, DocumentData>,
+    payload: Partial<PromptOption>
+  ): Promise<void> {
+    await updateDoc(ref, payload)
+  }
+
+  public async updateById(
+    params: DocumentParams<PromptOption>,
+    payload: Partial<PromptOption>
+  ): Promise<void> {
+    const ref = this.doc(params)
+    await this.updateByRef(ref, payload)
+  }
+
+  public async deleteByRef(
+    ref: DocumentReference<PromptOption, DocumentData>
+  ): Promise<void> {
+    const qref = ref.parent.parent as DocumentReference<Question> | null
+    if (!qref) {
+      throw new Error(
+        "PromptOptions collection needs a parent document (questions)."
+      )
+    }
+    await deleteDoc(ref)
+    await setDoc(qref, { options: arrayRemove(ref) }, { merge: true })
+  }
+
+  public async deleteById(params: DocumentParams<PromptOption>): Promise<void> {
+    const ref = this.doc(params)
+    await this.deleteByRef(ref)
   }
 }
