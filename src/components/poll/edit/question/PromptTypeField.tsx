@@ -1,8 +1,7 @@
-import { db } from "@/core/api/firebase"
+import api from "@/core/api"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { PromptType } from "@/core/types"
 import { MenuItem, TextField } from "@mui/material"
-import { doc, updateDoc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 
 interface Props {
@@ -20,9 +19,12 @@ export default function PromptTypeField(props: Props) {
 
   useEffect(() => {
     async function savePromptType(text: PromptType) {
-      const ref = doc(db, "polls", pid, "questions", qid)
       try {
-        await updateDoc(ref, {
+        if (text === promptType) {
+          return
+        }
+        const ref = api.polls.questions.doc(pid, qid)
+        await api.polls.questions.update(ref, {
           prompt_type: text,
         })
       } catch {

@@ -72,7 +72,7 @@ export default function PollLobby() {
       if (!user) {
         return
       }
-      const docRef = doc(db, "lobby", lobbyId)
+      const docRef = doc(fs, "lobby", lobbyId)
       try {
         await updateDoc(docRef, {
           users: arrayRemove(user.uid),

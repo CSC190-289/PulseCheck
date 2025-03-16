@@ -1,28 +1,37 @@
 import {
-  Box,
+  Divider,
   FormControlLabel,
-  FormGroup,
+  Grid2,
   Switch,
   Typography,
 } from "@mui/material"
-import { DocumentData, DocumentReference } from "firebase/firestore"
+import TimerSwitch from "./TimerSwitch"
+import React from "react"
 
 interface Props {
-  qref: DocumentReference<DocumentData, DocumentData>
+  pid: string
+  qid: string
+  points: number
+  anonymous: boolean
+  time: number | null
 }
 
-export default function Settings() {
-  /* TODO - update form */
+export default function Settings(props: Props) {
+  const { pid, qid, time } = props
+
   return (
-    <Box>
-      <Typography variant='button'>Settings</Typography>
-      {/* TODO - wrap in grid for dynamic layout and save space? */}
-      <FormGroup>
-        <FormControlLabel control={<Switch />} label='Async' />
-        <FormControlLabel control={<Switch />} label='Anonymous' />
-        <FormControlLabel control={<Switch />} label='Timed' />
-        {/* TODO - expand to allow user to enter timer, seconds? minutes? both?  */}
-      </FormGroup>
-    </Box>
+    <React.Fragment>
+      <Divider>
+        <Typography>Settings</Typography>
+      </Divider>
+      <Grid2 container spacing={2}>
+        <Grid2 size={{ xl: 3, lg: 3, md: 4, sm: 6, xs: 12 }}>
+          <FormControlLabel label='Anonymous' control={<Switch />} />
+        </Grid2>
+        <Grid2 size={{ xl: 3, lg: 3, md: 4, sm: 6, xs: 12 }}>
+          <TimerSwitch pid={pid} qid={qid} time={time} />
+        </Grid2>
+      </Grid2>
+    </React.Fragment>
   )
 }

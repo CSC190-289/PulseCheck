@@ -9,12 +9,12 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore"
-import BaseStore from "./store"
+import AbstractStore from "./store"
 import { Question } from "../types"
 import PromptOptionStore from "./options"
 import { clx } from "."
 
-export default class QuestionStore extends BaseStore {
+export default class QuestionStore extends AbstractStore {
   private readonly _options: PromptOptionStore
 
   constructor(firestore: Firestore) {
@@ -24,19 +24,6 @@ export default class QuestionStore extends BaseStore {
 
   public get options() {
     return this._options
-  }
-
-  public async add(ref: CollectionReference<Question>) {
-    await addDoc(ref, {
-      prompt: "Untitled Prompt",
-      prompt_img: null,
-      prompt_type: "multiple-choice",
-      anonymous: false,
-      points: 1,
-      time: null,
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
-    })
   }
 
   public doc(pid: string, qid: string) {
@@ -58,11 +45,25 @@ export default class QuestionStore extends BaseStore {
     ) as CollectionReference<Question>
   }
 
+  public async add(ref: CollectionReference<Question>) {
+    const qref = await addDoc(ref, {
+      prompt: "Untitled Prompt",
+      prompt_img: null,
+      prompt_type: "multiple-choice",
+      anonymous: false,
+      points: 1,
+      time: null,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+    })
+    return qref
+  }
+
   public async update(
     qref: DocumentReference<Question>,
     payload: Partial<Question>
   ) {
-    await updateDoc(qref, {
+    return updateDoc(qref, {
       ...payload,
       updated_at: serverTimestamp(),
     })

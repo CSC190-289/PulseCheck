@@ -81,7 +81,7 @@ export default api
 */
 
 export async function findLobbyWithCode(code: string): Promise<Lobby> {
-  const ref = collection(db, "lobby")
+  const ref = collection(fs, "lobby")
   const q = query(ref, where("room_code", "==", code))
   const ss = await getDocs(q)
   if (!ss.empty) {
@@ -98,7 +98,7 @@ export async function findLobbyWithCode(code: string): Promise<Lobby> {
 }
 
 export async function createUser(uid: string, displayName: string) {
-  const ref = doc(db, "users", uid)
+  const ref = doc(fs, "users", uid)
   await setDoc(
     ref,
     {
@@ -110,7 +110,7 @@ export async function createUser(uid: string, displayName: string) {
 }
 
 export async function joinLobby(lobbyId: string, userId: string) {
-  const ref = doc(db, "lobby", lobbyId)
+  const ref = doc(fs, "lobby", lobbyId)
 
   await updateDoc(ref, {
     users: arrayUnion(userId),

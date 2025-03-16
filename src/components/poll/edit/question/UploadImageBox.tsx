@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material"
-
 interface Props {
   pid: string
+  qid: string
 }
 
 /**
@@ -12,7 +12,6 @@ interface Props {
  * @returns {JSX.Element}
  */
 export default function UploadImageBox(props: Props) {
-  console.debug("pe.uib.props", props)
   /**
    * @Bran7astic
    * You're going to have to use a mix of the useState and useRef hook.
@@ -47,7 +46,7 @@ export default function UploadImageBox(props: Props) {
    */
   return (
     <Box>
-      <Typography>Upload Image Here</Typography>
+      <Typography>Upload Image for Question({props.qid})</Typography>
     </Box>
   )
 }

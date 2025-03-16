@@ -1,7 +1,6 @@
-import { db } from "@/core/api/firebase"
+import api from "@/core/api"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { TextField } from "@mui/material"
-import { doc, updateDoc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 
 interface Props {
@@ -19,9 +18,12 @@ export default function PromptField(props: Props) {
 
   useEffect(() => {
     async function savePrompt(text: string) {
-      const ref = doc(db, "polls", pid, "questions", qid)
       try {
-        await updateDoc(ref, {
+        if (text === prompt) {
+          return
+        }
+        const ref = api.polls.questions.doc(pid, qid)
+        await api.polls.questions.update(ref, {
           prompt: text,
         })
       } catch {

@@ -4,7 +4,7 @@ import {
   ThemeProvider as MuiThemeProvider,
   PaletteMode,
 } from "@mui/material/styles"
-import { CssBaseline, useMediaQuery } from "@mui/material"
+import { CssBaseline } from "@mui/material"
 import { createCustomTheme } from "@/styles/theme"
 import { ThemeContext } from "@/core/contexts/ThemeContext"
 

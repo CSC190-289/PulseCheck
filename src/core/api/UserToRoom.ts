@@ -13,14 +13,14 @@ import {
   QueryDocumentSnapshot,
   DocumentData,
 } from "firebase/firestore"
-import { db } from "@/core/api/firebase"
+import { fs } from "@/core/api"
 
 export function AddingUserToRoom(
   displayName: string,
   roomCode: string,
   callback: () => void
 ) {
-  const userInfoCollection = collection(db, "users")
+  const userInfoCollection = collection(fs, "users")
   //Add info of users to firebase!
 
   async function addingUserinfo() {
@@ -62,7 +62,7 @@ export function AddingUserToRoom(
 
 function usersToLobby() {
   // const userInfoCollection = collection(db, "users")
-  const lobbyRoom = doc(db, "lobby/P4janotZxKGC7LLPIwls")
+  const lobbyRoom = doc(fs, "lobby/P4janotZxKGC7LLPIwls")
 
   async function lobbyDoc() {
     const docData = {
@@ -82,7 +82,7 @@ function usersToLobby() {
   //gets lobby if any
   async function queryForLobbyDoc() {
     const usersLobbyquery = query(
-      collection(db, "users"),
+      collection(fs, "users"),
       where("RoomCode", "==", "111111"),
       limit(300)
     )

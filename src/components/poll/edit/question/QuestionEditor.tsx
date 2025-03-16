@@ -4,72 +4,108 @@ import {
   AccordionDetails,
   AccordionSummary,
   Typography,
-  TextField,
   Stack,
   Grid2,
+  AccordionActions,
+  Button,
 } from "@mui/material"
-import { DragHandle } from "@mui/icons-material"
+import { Add, DragHandle, ExpandMore } from "@mui/icons-material"
 import UploadImageBox from "./UploadImageBox"
-import { PromptOption, Question } from "@/core/types"
-import { useCollection } from "react-firebase-hooks/firestore"
-import { collection, DocumentData, DocumentReference, Query, query } from "firebase/firestore"
-import { db } from "@/core/api/firebase"
+import { Question } from "@/core/types"
 import PromptField from "./PromptField"
 import PromptTypeField from "./PromptTypeField"
 import Settings from "./Settings"
+import { useSnackbar } from "@/core/hooks"
+import api from "@/core/api"
+import PromptOptionList from "./PromptOptionList"
 
 interface Props {
-  pid: string /* poll id */
-  qid: string /* question id */
-  ref: DocumentReference<DocumentData, DocumentData>
+  pid: string
+  qid: string
   index: number
   data: Question
+  defaultExpanded?: boolean
 }
 
 export default function QuestionEditor(props: Props) {
   const { pid, qid, index, data } = props
-  const optQuery = query(
-    collection(db, "polls", pid, "questions", qid, "options")
-  ) as Query<PromptOption>
-  const [opts] = useCollection(optQuery)
+  const snackbar = useSnackbar()
+
+  const handleRemove = () => {
+    /* delete question in poll(id) */
+    const aux = async () => {
+      try {
+        const ref = api.polls.questions.doc(pid, qid)
+        await api.polls.questions.delete(ref)
+      } catch {
+        snackbar.show({
+          type: "error",
+          message: "Failed to remove question",
+        })
+      }
+    }
+    void aux()
+  }
+
+  const handleAddOption = () => {
+    const aux = async () => {
+      const ref = api.polls.questions.options.collect(pid, qid)
+      await api.polls.questions.options.add(ref)
+    }
+    void aux()
+  }
 
   return (
-    <Accordion>
-      <AccordionSummary>
-        <Box display={"flex"}>
-          <DragHandle />
-          <Typography sx={{ wordBreak: "break-word" }} ml={1}>
-            <strong>
-              {index + 1}. {data.prompt}
-            </strong>
+    <Accordion defaultExpanded={props.defaultExpanded}>
+      <AccordionSummary expandIcon={<ExpandMore />}>
+        <Box display={"flex"} columnGap={2}>
+          <Box>
+            <DragHandle color='action' />
+          </Box>
+          <Typography sx={{ wordBreak: "break-word" }}>
+            <strong>{index + 1}.</strong> {data.prompt}
           </Typography>
         </Box>
       </AccordionSummary>
       <AccordionDetails>
         <Grid2 container spacing={2}>
           <Grid2 size={{ xl: 12, lg: 12, md: 12, sm: 12, xs: 12 }}>
-            <Stack spacing={3}>
-              <UploadImageBox pid={pid} />
+            <Stack spacing={2}>
+              <UploadImageBox pid={pid} qid={qid} />
               <PromptField pid={pid} qid={qid} prompt={data.prompt} />
               <PromptTypeField
                 pid={pid}
                 qid={qid}
                 promptType={data.prompt_type}
               />
-              {opts?.docs.map((x, i) => (
-                <TextField
-                  key={x.id}
-                  placeholder={`Option ${i}`}
-                  value={x.data().text}
-                />
-              ))}
+              <PromptOptionList
+                pid={pid}
+                qid={qid}
+                promptType={data.prompt_type}
+              />
+              <Box flex={1} display={"flex"} justifyContent={"center"}>
+                <Button startIcon={<Add />} onClick={handleAddOption}>
+                  Add Option
+                </Button>
+              </Box>
             </Stack>
           </Grid2>
           <Grid2 size={{ xl: 12, lg: 12, md: 12, sm: 12, xs: 12 }}>
-            <Settings />
+            <Settings
+              pid={pid}
+              qid={qid}
+              points={data.points}
+              anonymous={data.anonymous}
+              time={data.time}
+            />
           </Grid2>
         </Grid2>
       </AccordionDetails>
+      <AccordionActions>
+        <Button color='error' onClick={handleRemove}>
+          Remove
+        </Button>
+      </AccordionActions>
     </Accordion>
   )
 }
