@@ -19,7 +19,7 @@ export default function PromptField(props: Props) {
   useEffect(() => {
     async function savePrompt(text: string) {
       try {
-        if (text === prompt) {
+        if (text === props.prompt) {
           return
         }
         const ref = api.polls.questions.doc(pid, qid)

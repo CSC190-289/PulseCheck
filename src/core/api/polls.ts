@@ -6,9 +6,11 @@ import {
   collection,
   CollectionReference,
   doc,
+  DocumentData,
   DocumentReference,
   Firestore,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore"
 import { clx } from "."
 
@@ -18,6 +20,10 @@ export default class PollStore extends AbstractStore {
   constructor(db: Firestore) {
     super(db)
     this._questions = new QuestionStore(super.db)
+  }
+
+  public get questions(): QuestionStore {
+    return this._questions
   }
 
   public doc(pid: string) {
@@ -37,7 +43,13 @@ export default class PollStore extends AbstractStore {
     })
   }
 
-  public get questions(): QuestionStore {
-    return this._questions
+  public async update(
+    ref: DocumentReference<Poll, DocumentData>,
+    payload: Partial<Poll>
+  ) {
+    await updateDoc(ref, {
+      ...payload,
+      updated_at: serverTimestamp(),
+    })
   }
 }

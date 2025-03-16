@@ -36,7 +36,7 @@ export default function TimerSwitch(props: Props) {
         if (newTime !== null && newTime <= 0) {
           return
         }
-        if (newTime === time) {
+        if (newTime === props.time) {
           return
         }
         const ref = api.polls.questions.doc(pid, qid)

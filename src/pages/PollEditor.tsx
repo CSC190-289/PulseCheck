@@ -1,9 +1,8 @@
-import { Container, Fab, Stack, Tooltip } from "@mui/material"
+import { Container, Fab, Skeleton, Stack, Tooltip } from "@mui/material"
 import React, { useEffect } from "react"
 import Toolbar from "@/components/poll/edit/Toolbar"
 import { useNavigate, useParams } from "react-router-dom"
 import { useDocumentData } from "react-firebase-hooks/firestore"
-import { Timestamp } from "firebase/firestore"
 import QuestionList from "@/components/poll/edit/question/QuestionList"
 import { useSnackbar } from "@/core/hooks"
 import api from "@/core/api"
@@ -12,9 +11,7 @@ import { RA } from "@/styles"
 
 export default function PollEditor() {
   const params = useParams()
-  /* debug params.id (poll id) */
   const id = params.id ?? ""
-  console.debug("params.id", id)
   const navigate = useNavigate()
   const snackbar = useSnackbar()
 
@@ -28,7 +25,12 @@ export default function PollEditor() {
   const pollRef = api.polls.doc(id)
   const [poll] = useDocumentData(pollRef)
 
-  console.debug("pe.poll", poll)
+  useEffect(() => {
+    /* debugger */
+    if (poll) {
+      console.debug("pe.poll", poll)
+    }
+  }, [poll])
 
   const handleAddQuestion = () => {
     const aux = async () => {
@@ -47,11 +49,9 @@ export default function PollEditor() {
 
   return (
     <React.Fragment>
-      <Toolbar
-        pollId={id}
-        title={poll?.title ?? "MISSING TITLE"}
-        lastUpdated={poll?.updated_at ?? Timestamp.now()}
-      />
+      {poll && (
+        <Toolbar pid={id} title={poll.title} lastUpdated={poll.updated_at} />
+      )}
       <Container sx={{ marginBlock: 2 }} maxWidth='xl'>
         <Stack spacing={2} alignItems={"center"}>
           <QuestionList pid={id} />

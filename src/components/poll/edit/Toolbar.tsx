@@ -5,16 +5,15 @@ import {
   Box,
   Typography,
 } from "@mui/material"
-import { serverTimestamp, Timestamp } from "firebase/firestore"
+import { Timestamp } from "firebase/firestore"
 import { useEffect, useState } from "react"
-import { db } from "@/core/api/firebase"
-import { doc, updateDoc } from "firebase/firestore"
+import api from "@/core/api"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { Done, Edit } from "@mui/icons-material"
 
 interface Props {
   /* TODO - declare props here */
-  pollId: string
+  pid: string
   title: string /* poll title from firestore */
   lastUpdated: Timestamp
 }
@@ -27,28 +26,30 @@ interface Props {
  * @returns {JSX.Element}
  */
 export default function Toolbar(props: Props) {
-  console.debug("pe.toolbar.props", props)
-
-  const { pollId, lastUpdated } = props
+  const { pid, lastUpdated } = props
   const [title, setTitle] = useState(props.title)
-  const [editTitle, setEditTitle] = useState(true)
+  const [isEditing, setIsEditing] = useState(true)
   const snackbar = useSnackbar()
+
   const handleClickEdit = () => {
-    if (editTitle === true) {
-      setEditTitle(false)
+    if (isEditing === true) {
+      setIsEditing(false)
     } else {
-      setEditTitle(true)
+      setIsEditing(true)
     }
-    return editTitle
+    return isEditing
   }
 
   useEffect(() => {
     async function savePrompt(text: string) {
-      const ref = doc(db, "polls", pollId)
       try {
-        await updateDoc(ref, {
+        /* keep this to skip first onMount */
+        if (text === props.title) {
+          return
+        }
+        const ref = api.polls.doc(pid)
+        await api.polls.update(ref, {
           title: text,
-          lastUpdated: serverTimestamp(),
         })
       } catch {
         snackbar.show({
@@ -57,10 +58,10 @@ export default function Toolbar(props: Props) {
         })
       }
     }
-    if (editTitle === true) {
+    if (isEditing === true) {
       void savePrompt(title)
     }
-  }, [pollId, title, snackbar, editTitle])
+  }, [pid, props.title, title, snackbar, isEditing])
 
   return (
     <MUIToolbar
@@ -78,14 +79,15 @@ export default function Toolbar(props: Props) {
             justifyContent: "center",
           }}>
           <TextField
-            label='Title Here'
+            size='small'
+            placeholder='Poll Title'
             hiddenLabel
             defaultValue={props.title}
             onChange={(e) => setTitle(e.target.value)}
-            disabled={editTitle}
+            disabled={isEditing}
             fullWidth
           />
-          {editTitle ? (
+          {isEditing ? (
             <IconButton color='primary' onClick={handleClickEdit}>
               <Edit />
             </IconButton>
