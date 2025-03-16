@@ -12,8 +12,7 @@ import useSnackbar from "@/core/hooks/useSnackbar"
 import { Done, Edit } from "@mui/icons-material"
 
 interface Props {
-  /* TODO - declare props here */
-  pid: string
+  pid: string /* poll id */
   title: string /* poll title from firestore */
   lastUpdated: Timestamp
 }
