@@ -1,4 +1,12 @@
-import { Container, Fab, Stack, Tooltip } from "@mui/material"
+import {
+  Container,
+  Fab,
+  LinearProgress,
+  Skeleton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material"
 import React, { useEffect } from "react"
 import Toolbar from "@/components/poll/edit/Toolbar"
 import { useNavigate, useParams } from "react-router-dom"
@@ -17,20 +25,14 @@ export default function PollEditor() {
 
   useEffect(() => {
     if (!id) {
-      console.debug("what the figma?")
       void navigate(-1)
     }
   }, [id, navigate])
 
   const pollRef = api.polls.doc(id)
-  const [poll] = useDocumentData(pollRef)
+  const [poll, loading, error] = useDocumentData(pollRef)
 
-  useEffect(() => {
-    /* debugger */
-    if (poll) {
-      console.debug("pe.poll", poll)
-    }
-  }, [poll])
+  console.debug("pe.poll", poll)
 
   const handleAddQuestion = () => {
     const aux = async () => {
@@ -47,10 +49,20 @@ export default function PollEditor() {
     void aux()
   }
 
+  if (loading) {
+    return <LinearProgress />
+  }
+
+  if (error) {
+    return <Typography>Failed to load Poll ({id})</Typography>
+  }
+
   return (
     <React.Fragment>
-      {poll && (
-        <Toolbar pid={id} title={poll.title} lastUpdated={poll.updated_at} />
+      {poll ? (
+        <Toolbar pid={id} title={poll.title} updatedAt={poll.updated_at} />
+      ) : (
+        <Skeleton />
       )}
       <Container sx={{ marginBlock: 2 }} maxWidth='xl'>
         <Stack spacing={2} alignItems={"center"}>
