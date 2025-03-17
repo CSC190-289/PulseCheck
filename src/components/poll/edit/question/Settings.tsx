@@ -41,6 +41,7 @@ export default function Settings(props: Props) {
         if (num === props.points) {
           return
         }
+
         const ref = api.polls.questions.doc(pid, qid)
         await api.polls.questions.update(ref, {
           points: num,
@@ -74,6 +75,26 @@ export default function Settings(props: Props) {
     }
     void saveAnonymous(anonymous)
   }, [pid, props.anonymous, anonymous, snackbar, qid])
+
+  useEffect(() => {
+    async function saveGraded(bool: boolean) {
+      try {
+        if (bool === true) {
+          return
+        }
+        const ref = api.polls.questions.doc(pid, qid)
+        await api.polls.questions.update(ref, {
+          points: 0,
+        })
+      } catch {
+        snackbar.show({
+          message: "Failed to update",
+          type: "error",
+        })
+      }
+    }
+    void saveGraded(graded)
+  }, [pid, props.points, graded, snackbar, qid])
 
   const handleGraded = () => {
     if (!graded) {
