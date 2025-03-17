@@ -1,5 +1,4 @@
 import { PromptOption } from "@/core/types"
-import { DragIndicator } from "@mui/icons-material"
 import { Box, Skeleton, TextField, Typography } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React, { useState } from "react"
@@ -46,10 +45,7 @@ export default function PromptOptionEditor(props: Props) {
   }
 
   return (
-    <Box display={"flex"} alignItems={"center"}>
-      <Box>
-        <DragIndicator color='action' />
-      </Box>
+    <Box display={"flex"} flex={1} alignItems={"center"}>
       <TextField
         placeholder={`Option ${index + 1}`}
         value={text}
