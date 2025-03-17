@@ -1,4 +1,4 @@
-import { IconButton, InputAdornment, Radio } from "@mui/material"
+import { IconButton, Radio } from "@mui/material"
 import React, { useState } from "react"
 
 interface Props {
@@ -23,11 +23,9 @@ export default function CorrectToggleButton(props: Props) {
 
   return (
     <React.Fragment>
-      <InputAdornment position='start'>
-        <IconButton>
-          <Radio checked={checked} onClick={handleCheckToggle} />
-        </IconButton>
-      </InputAdornment>
+      <IconButton>
+        <Radio checked={checked} onClick={handleCheckToggle} />
+      </IconButton>
     </React.Fragment>
   )
 }

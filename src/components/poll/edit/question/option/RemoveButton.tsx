@@ -1,6 +1,7 @@
+import api from "@/core/api"
 import { PromptOption } from "@/core/types"
 import { Clear } from "@mui/icons-material"
-import { IconButton, InputAdornment } from "@mui/material"
+import { IconButton } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React from "react"
 
@@ -20,15 +21,14 @@ export default function RemoveButton({ ref }: Props) {
   const handleRemove = () => {
     /* TODO - delete this option */
     console.debug(`remove option(${ref.id})`)
+    void api.polls.questions.options.deleteByRef(ref)
   }
 
   return (
     <React.Fragment>
-      <InputAdornment position='end'>
-        <IconButton onClick={handleRemove}>
-          <Clear />
-        </IconButton>
-      </InputAdornment>
+      <IconButton onClick={handleRemove}>
+        <Clear />
+      </IconButton>
     </React.Fragment>
   )
 }
