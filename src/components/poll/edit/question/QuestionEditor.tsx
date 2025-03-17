@@ -8,6 +8,7 @@ import {
   Grid2,
   AccordionActions,
   Button,
+  Skeleton,
 } from "@mui/material"
 import { Add, DragHandle, ExpandMore } from "@mui/icons-material"
 import UploadImageBox from "./UploadImageBox"
@@ -18,17 +19,20 @@ import Settings from "./Settings"
 import { useSnackbar } from "@/core/hooks"
 import api from "@/core/api"
 import PromptOptionList from "./option/PromptOptionList"
+import { useDocumentData } from "react-firebase-hooks/firestore"
+import { DocumentReference } from "firebase/firestore"
 
 interface Props {
   pid: string
   qid: string
   index: number
-  data: Question
   defaultExpanded?: boolean
+  qref: DocumentReference<Question>
 }
 
 export default function QuestionEditor(props: Props) {
-  const { pid, qid, index, data } = props
+  const { pid, qid, index, qref } = props
+  const [data, loading, error] = useDocumentData(qref)
   const snackbar = useSnackbar()
 
   const handleRemove = () => {
@@ -51,10 +55,13 @@ export default function QuestionEditor(props: Props) {
     const aux = async () => {
       const ocref = api.polls.questions.options.collect({ pid, qid })
       const oref = await api.polls.questions.options.add(ocref)
-      const qref = api.polls.questions.doc(pid, qid)
       await api.polls.questions.appendOption(qref, oref)
     }
     void aux()
+  }
+
+  if (error || loading || !data) {
+    return <Skeleton />
   }
 
   return (

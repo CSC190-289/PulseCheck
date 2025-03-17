@@ -40,7 +40,7 @@ export default function PromptTypeField(props: Props) {
     return () => {
       clearTimeout(timer)
     }
-  }, [promptType, pid, qid, snackbar])
+  }, [props.promptType, promptType, pid, qid, snackbar])
 
   return (
     <React.Fragment>

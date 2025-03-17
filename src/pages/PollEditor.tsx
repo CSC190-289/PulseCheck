@@ -66,7 +66,7 @@ export default function PollEditor() {
       )}
       <Container sx={{ marginBlock: 2 }} maxWidth='xl'>
         <Stack spacing={2} alignItems={"center"}>
-          <QuestionList pid={id} />
+          <QuestionList pid={id} questions={poll?.questions ?? []} />
           <RA.Roll triggerOnce>
             <Tooltip title='New Question'>
               <Fab color='secondary' onClick={handleAddQuestion}>

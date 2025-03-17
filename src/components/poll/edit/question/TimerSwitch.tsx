@@ -51,7 +51,7 @@ export default function TimerSwitch(props: Props) {
     return () => {
       clearTimeout(timer)
     }
-  }, [time, pid, qid])
+  }, [props.time, time, pid, qid])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedTime = stommss(e.target.value)

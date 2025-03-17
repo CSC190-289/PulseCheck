@@ -1,5 +1,6 @@
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   CollectionReference,
@@ -12,7 +13,7 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import AbstractStore from "./store"
-import { PromptOption, Question } from "../types"
+import { Poll, PromptOption, Question } from "../types"
 import PromptOptionStore from "./options"
 import { clx } from "."
 
@@ -48,6 +49,10 @@ export default class QuestionStore extends AbstractStore {
   }
 
   public async add(ref: CollectionReference<Question>) {
+    const pref = ref.parent as DocumentReference<Poll> | null
+    if (!pref) {
+      throw new Error("Questions collection needs a parent document(polls).")
+    }
     const qref = await addDoc(ref, {
       prompt: "Untitled Prompt",
       prompt_img: null,
@@ -59,6 +64,8 @@ export default class QuestionStore extends AbstractStore {
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     })
+    /* update poll doc to include reference to {qref} */
+    await setDoc(pref, { questions: arrayUnion(qref) }, { merge: true })
     return qref
   }
 
@@ -73,7 +80,13 @@ export default class QuestionStore extends AbstractStore {
   }
 
   public async delete(qref: DocumentReference<Question>) {
+    const pref = qref.parent.parent as DocumentReference<Poll> | null
+    if (!pref) {
+      throw new Error("Questions collect needs a parent document (poll)")
+    }
     await deleteDoc(qref)
+    /* update poll doc to remove reference to {qref} */
+    await setDoc(pref, { questions: arrayRemove(qref) }, { merge: true })
     /* TODO - fetch all sub-collections and delete (cloud functions?) */
   }
 

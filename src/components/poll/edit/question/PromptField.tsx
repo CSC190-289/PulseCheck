@@ -39,7 +39,7 @@ export default function PromptField(props: Props) {
     return () => {
       clearTimeout(timer)
     }
-  }, [prompt, pid, qid, snackbar])
+  }, [props.prompt, prompt, pid, qid, snackbar])
 
   return (
     <React.Fragment>

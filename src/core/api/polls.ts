@@ -38,6 +38,7 @@ export default class PollStore extends AbstractStore {
       async: true,
       anonymous: false,
       time: null,
+      questions: [],
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     })

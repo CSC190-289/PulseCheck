@@ -61,7 +61,7 @@ export default class PromptOptionStore
       text: "",
       correct: false,
     })
-    /* update question doc to include refernece to   */
+    /* update question doc to include refernece to {oref}  */
     await setDoc(qref, { options: arrayUnion(oref) }, { merge: true })
     return oref
   }
@@ -87,10 +87,11 @@ export default class PromptOptionStore
     const qref = ref.parent.parent as DocumentReference<Question> | null
     if (!qref) {
       throw new Error(
-        "PromptOptions collection needs a parent document (questions)."
+        "PromptOptions collection needs a parent document (question)."
       )
     }
     await deleteDoc(ref)
+    /* update question doc to remove reference to {oref} */
     await setDoc(qref, { options: arrayRemove(ref) }, { merge: true })
   }
 

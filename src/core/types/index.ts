@@ -12,6 +12,7 @@ export interface Poll {
   async: boolean
   anonymous: boolean | null
   time: number | null
+  questions: DocumentReference<Question>[]
   created_at: Timestamp
   updated_at: Timestamp
 }
