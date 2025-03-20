@@ -67,16 +67,17 @@ export default function TimerSwitch(props: Props) {
         onChange={() => setTimed(!timed)}
         control={<Switch />}
       />
-      {timed && (
-        <TextField
-          error={time === 0}
-          size='small'
-          placeholder='MM:SS'
-          value={mmss}
-          onChange={handleChange}
-          helperText={time === 0 ? "invalid format" : ""}
-        />
-      )}
+      {/* {timed && ( */}
+      <TextField
+        style={{ opacity: timed ? 1 : 0 }}
+        error={time === 0}
+        size='small'
+        placeholder='MM:SS'
+        value={mmss}
+        onChange={handleChange}
+        helperText={time === 0 ? "invalid format" : ""}
+      />
+      {/* )} */}
     </React.Fragment>
   )
 }

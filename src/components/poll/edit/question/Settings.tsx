@@ -127,18 +127,19 @@ export default function Settings(props: Props) {
             checked={graded}
             control={<Switch onChange={handleGraded} />}
           />
-          {graded && (
-            <TextField
-              type='number'
-              size='small'
-              placeholder='1'
-              hiddenLabel
-              defaultValue={props.points}
-              onChange={(e) => setPoints(parseInt(e.target.value))}
-              error={points < 0}
-              helperText={points < 0 ? "invalid number" : ""}
-            />
-          )}
+          {/* {graded && ( */}
+          <TextField
+            style={{ opacity: graded ? 1 : 0 }}
+            type='number'
+            size='small'
+            placeholder='1'
+            hiddenLabel
+            defaultValue={props.points}
+            onChange={(e) => setPoints(parseInt(e.target.value))}
+            error={points < 0}
+            helperText={points < 0 ? "invalid number" : ""}
+          />
+          {/* )} */}
         </Grid2>
       </Grid2>
     </React.Fragment>

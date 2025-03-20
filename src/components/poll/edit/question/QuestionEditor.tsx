@@ -77,7 +77,7 @@ export default function QuestionEditor(props: Props) {
         </Box>
       </AccordionSummary>
       <AccordionDetails>
-        <Grid2 container spacing={2}>
+        <Grid2 spacing={2}>
           <Grid2 size={{ xl: 12, lg: 12, md: 12, sm: 12, xs: 12 }}>
             <Stack spacing={2}>
               <UploadImageBox pid={pid} qid={qid} />
