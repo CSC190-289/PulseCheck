@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { Button, Container, Typography, Stack, Box } from "@mui/material"
 import RecentPollCard from "../components/dashboard/RecentPollCard"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "@/core/api"
-import api from "@/core/api"
+import { auth } from "@/core/api/firebase"
+import api from "@/core/api/firebase"
 
 export default function Dashboard() {
   const navigate = useNavigate()

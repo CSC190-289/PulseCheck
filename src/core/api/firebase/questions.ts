@@ -12,12 +12,12 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore"
-import AbstractStore from "./store"
+import BaseStore from "./store"
 import { Poll, PromptOption, Question } from "../types"
 import PromptOptionStore from "./options"
 import { clx } from "."
 
-export default class QuestionStore extends AbstractStore {
+export default class QuestionStore extends BaseStore {
   private readonly _options: PromptOptionStore
 
   constructor(firestore: Firestore) {

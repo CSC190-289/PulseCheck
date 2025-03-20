@@ -1,5 +1,5 @@
 import { Poll, User } from "../types"
-import AbstractStore from "./store"
+import BaseStore from "./store"
 import QuestionStore from "./questions"
 import {
   addDoc,
@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore"
 import { clx } from "."
 
-export default class PollStore extends AbstractStore {
+export default class PollStore extends BaseStore {
   private readonly _questions: QuestionStore
 
   constructor(db: Firestore) {

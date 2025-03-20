@@ -9,7 +9,7 @@ import { Poll, PromptOption, Question } from "../types"
  * Abstract Class for working with a Firestore database.
  * Provides a protected Firestore instance and enforces a consistent structure for subclasses.
  */
-export default abstract class AbstractStore {
+export default abstract class BaseStore {
   /**
    * Used to interact with the database. Marked a private to ensure controlled access.
    */
@@ -59,7 +59,7 @@ export type CollectionParams<T> = T extends PromptOption
 /**
  * Interface for Firestore CRUD operations.
  */
-export interface IStore<T> {
+export interface CRUDStore<T> {
   /**
    * Creates a reference to a single document of type `T` based on given parameters.
    * @param params - Parameters that identify the specific document to fetch.

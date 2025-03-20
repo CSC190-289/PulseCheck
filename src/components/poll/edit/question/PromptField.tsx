@@ -1,4 +1,4 @@
-import api from "@/core/api"
+import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { TextField } from "@mui/material"
 import React, { useEffect, useState } from "react"

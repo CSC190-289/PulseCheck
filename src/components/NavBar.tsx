@@ -13,7 +13,7 @@ import {
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "@/core/api"
+import { auth } from "@/core/api/firebase"
 import ProfileIcon from "./ProfileIcon"
 
 export default function NavBar() {

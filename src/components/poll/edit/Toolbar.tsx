@@ -8,7 +8,7 @@ import {
 } from "@mui/material"
 import { Timestamp } from "firebase/firestore"
 import { useState } from "react"
-import api from "@/core/api"
+import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { Done, Edit } from "@mui/icons-material"
 

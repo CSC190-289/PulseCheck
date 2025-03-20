@@ -1,4 +1,4 @@
-import api from "@/core/api"
+import api from "@/core/api/firebase"
 import { PromptOption } from "@/core/types"
 import { Clear } from "@mui/icons-material"
 import { IconButton } from "@mui/material"

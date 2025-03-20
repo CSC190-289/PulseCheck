@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useDocumentData } from "react-firebase-hooks/firestore"
 import QuestionList from "@/components/poll/edit/question/QuestionList"
 import { useSnackbar } from "@/core/hooks"
-import api from "@/core/api"
+import api from "@/core/api/firebase"
 import { Add } from "@mui/icons-material"
 import { RA } from "@/styles"
 

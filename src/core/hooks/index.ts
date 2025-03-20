@@ -1,5 +1,5 @@
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "../api"
+import { auth } from "../api/firebase"
 import useSnackbar from "./useSnackbar"
 import { useThemeContext } from "./useThemeContext"
 

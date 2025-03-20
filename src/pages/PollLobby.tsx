@@ -1,4 +1,4 @@
-import { auth, fs } from "@/core/api"
+import { auth, firestore } from "@/core/api/firebase"
 import {
   Typography,
   Container,
@@ -29,7 +29,7 @@ import { RA } from "@/styles"
 export default function PollLobby() {
   const params = useParams()
   const lobbyId = params.id ?? "null"
-  const ref = doc(fs, "lobby", lobbyId) as DocumentReference<Lobby>
+  const ref = doc(firestore, "lobby", lobbyId) as DocumentReference<Lobby>
   const [lobby, loading, error] = useDocumentData<Lobby>(ref)
   const [user] = useAuthState(auth)
   const snackbar = useSnackbar()
@@ -72,7 +72,7 @@ export default function PollLobby() {
       if (!user) {
         return
       }
-      const docRef = doc(fs, "lobby", lobbyId)
+      const docRef = doc(firestore, "lobby", lobbyId)
       try {
         await updateDoc(docRef, {
           users: arrayRemove(user.uid),

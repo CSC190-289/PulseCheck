@@ -1,4 +1,4 @@
-import { fs } from "@/core/api"
+import { firestore } from "@/core/api/firebase"
 import { User } from "@/core/types"
 import { stoc } from "@/utils"
 import { Avatar, Box, Card, Skeleton, Typography } from "@mui/material"
@@ -11,7 +11,7 @@ interface Props {
 
 export default function LobbiestCard(props: Props) {
   const { userId } = props
-  const ref = doc(fs, "users", userId) as DocumentReference<User>
+  const ref = doc(firestore, "users", userId) as DocumentReference<User>
   const [user, loading, error] = useDocumentData<User>(ref)
 
   return (

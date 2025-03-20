@@ -1,4 +1,4 @@
-import api from "@/core/api"
+import api from "@/core/api/firebase"
 import { mmsston, ntommss, stommss } from "@/utils"
 import { FormControlLabel, Switch, TextField } from "@mui/material"
 import React, { useEffect, useState } from "react"

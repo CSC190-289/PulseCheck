@@ -1,8 +1,8 @@
 import { doc, DocumentReference } from "firebase/firestore"
-import AbstractStore from "./store"
+import BaseStore from "./store"
 import { User } from "../types"
 
-export default class UserStore extends AbstractStore {
+export default class UserStore extends BaseStore {
   public ref(uid: string) {
     return doc(this.db, "users", uid) as DocumentReference<User>
   }

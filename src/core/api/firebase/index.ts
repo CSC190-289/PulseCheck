@@ -1,4 +1,3 @@
-import { Lobby } from "../types"
 import {
   collection,
   query,
@@ -15,6 +14,8 @@ import UserStore from "./users"
 import { initializeApp, FirebaseOptions } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
+import { getStorage } from "firebase/storage"
+import { Lobby } from "@/core/types"
 
 const config: FirebaseOptions = {
   apiKey: "AIzaSyBAGd9DDTtn8aAeab4Ydq65yErWAzO7mPg",
@@ -26,10 +27,13 @@ const config: FirebaseOptions = {
   storageBucket: "pulsecheck-7cf2b.firebasestorage.app",
 }
 
+const BUCKET_URL = "gs://pulsecheck-7cf2b.firebasestorage.app"
+
 const app = initializeApp(config)
 
 export const auth = getAuth(app)
-export const fs = getFirestore(app)
+export const firestore = getFirestore(app)
+export const storage = getStorage(app, BUCKET_URL)
 
 /**
  * Enum to model Firestore collection names.
@@ -70,7 +74,7 @@ class API {
   }
 }
 
-const api = new API(fs)
+const api = new API(firestore)
 
 export default api
 
@@ -81,7 +85,7 @@ export default api
 */
 
 export async function findLobbyWithCode(code: string): Promise<Lobby> {
-  const ref = collection(fs, "lobby")
+  const ref = collection(firestore, "lobby")
   const q = query(ref, where("room_code", "==", code))
   const ss = await getDocs(q)
   if (!ss.empty) {
@@ -98,7 +102,7 @@ export async function findLobbyWithCode(code: string): Promise<Lobby> {
 }
 
 export async function createUser(uid: string, displayName: string) {
-  const ref = doc(fs, "users", uid)
+  const ref = doc(firestore, "users", uid)
   await setDoc(
     ref,
     {
@@ -110,7 +114,7 @@ export async function createUser(uid: string, displayName: string) {
 }
 
 export async function joinLobby(lobbyId: string, userId: string) {
-  const ref = doc(fs, "lobby", lobbyId)
+  const ref = doc(firestore, "lobby", lobbyId)
 
   await updateDoc(ref, {
     users: arrayUnion(userId),

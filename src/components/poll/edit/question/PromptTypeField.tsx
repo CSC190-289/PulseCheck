@@ -1,4 +1,4 @@
-import api from "@/core/api"
+import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { PromptType } from "@/core/types"
 import { MenuItem, TextField } from "@mui/material"

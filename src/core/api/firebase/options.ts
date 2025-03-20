@@ -11,17 +11,13 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore"
-import AbstractStore, {
-  CollectionParams,
-  DocumentParams,
-  IStore,
-} from "./store"
+import BaseStore, { CollectionParams, DocumentParams, CRUDStore } from "./store"
 import { PromptOption, Question } from "../types"
 import { clx } from "."
 
 export default class PromptOptionStore
-  extends AbstractStore
-  implements IStore<PromptOption>
+  extends BaseStore
+  implements CRUDStore<PromptOption>
 {
   public doc(
     params: DocumentParams<PromptOption>

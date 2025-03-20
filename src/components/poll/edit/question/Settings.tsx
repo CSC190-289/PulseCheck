@@ -9,7 +9,7 @@ import {
 import TimerSwitch from "./TimerSwitch"
 import React, { useEffect, useState } from "react"
 import useSnackbar from "@/core/hooks/useSnackbar"
-import api from "@/core/api"
+import api from "@/core/api/firebase"
 
 interface Props {
   pid: string /* poll id */
