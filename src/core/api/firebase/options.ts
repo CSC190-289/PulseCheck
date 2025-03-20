@@ -12,7 +12,7 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import BaseStore, { CollectionParams, DocumentParams, CRUDStore } from "./store"
-import { PromptOption, Question } from "../types"
+import { PromptOption, Question } from "../../types"
 import { clx } from "."
 
 export default class PromptOptionStore

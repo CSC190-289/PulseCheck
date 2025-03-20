@@ -1,4 +1,4 @@
-import { Poll, User } from "../types"
+import { Poll, User } from "../../types"
 import BaseStore from "./store"
 import QuestionStore from "./questions"
 import {

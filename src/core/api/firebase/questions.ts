@@ -13,7 +13,7 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import BaseStore from "./store"
-import { Poll, PromptOption, Question } from "../types"
+import { Poll, PromptOption, Question } from "../../types"
 import PromptOptionStore from "./options"
 import { clx } from "."
 

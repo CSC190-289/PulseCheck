@@ -3,7 +3,7 @@ import {
   DocumentReference,
   Firestore,
 } from "firebase/firestore"
-import { Poll, PromptOption, Question } from "../types"
+import { Poll, PromptOption, Question } from "../../types"
 
 /**
  * Abstract Class for working with a Firestore database.
