@@ -7,7 +7,8 @@ import {
   Grid2,
   Toolbar,
   Button,
-  // Fab,
+  Fab,
+  LinearProgress,
 } from "@mui/material"
 import {
   arrayRemove,
@@ -18,26 +19,26 @@ import {
 import { useNavigate, useParams } from "react-router-dom"
 import { useDocumentData } from "react-firebase-hooks/firestore"
 import React from "react"
-import { Lobby } from "@/core/types"
-import LobbiestCard from "@/components/lobby/LobbiestCard"
+import { Session as PollSessionType } from "@/core/types"
 import { useAuthState } from "react-firebase-hooks/auth"
+import { Message } from "@mui/icons-material"
 import useSnackbar from "@/core/hooks/useSnackbar"
-import { RA } from "@/styles"
-// import { Message } from "@mui/icons-material"
-// import useSnackbar from "@/core/hooks/useSnackbar"
 
-export default function PollLobby() {
+export default function PollSession() {
   const params = useParams()
-  const lobbyId = params.id ?? "null"
-  const ref = doc(firestore, "lobby", lobbyId) as DocumentReference<Lobby>
-  const [lobby, loading, error] = useDocumentData<Lobby>(ref)
+  const sid = params.id ?? ""
+  const ref = doc(
+    firestore,
+    "sessions",
+    sid
+  ) as DocumentReference<PollSessionType>
+  const [session, loading, error] = useDocumentData<PollSessionType>(ref)
   const [user] = useAuthState(auth)
   const snackbar = useSnackbar()
   const navigate = useNavigate()
 
-  console.debug("PollLobby.lobby", lobby)
+  console.debug("PollLobby.session", session)
   console.debug("PollLobby.loading", loading)
-  // const snackbar = useSnackbar()
 
   if (error) {
     return (
@@ -59,20 +60,21 @@ export default function PollLobby() {
     )
   }
 
-  if (!lobby) {
+  if (!session) {
     return (
       <Container>
-        <Typography>Failed to find lobby(${lobbyId})</Typography>
+        <Typography>Failed to find lobby(${sid})</Typography>
       </Container>
     )
   }
 
   function handleLeave() {
+    /* TODO - if the user is a guest, then delete their account after deleting them from the waiting_users collection */
     async function aux() {
       if (!user) {
         return
       }
-      const docRef = doc(firestore, "lobby", lobbyId)
+      const docRef = doc(firestore, "lobby", sid)
       try {
         await updateDoc(docRef, {
           users: arrayRemove(user.uid),
@@ -95,6 +97,20 @@ export default function PollLobby() {
   }
 
   return (
+    <Box
+      display={"flex"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      height={"80vh"}>
+      <Box>
+        <Typography variant='h6'>Joining session...</Typography>
+        {/* <Typography variant='h6'>Waiting for host approval...</Typography> */}
+        <LinearProgress />
+      </Box>
+    </Box>
+  )
+
+  return (
     <React.Fragment>
       <Toolbar
         sx={{
@@ -105,35 +121,35 @@ export default function PollLobby() {
         <Box flexGrow={1} />
         <Box position={"absolute"}>
           <Typography variant='h6'>Poll Title Goes Here</Typography>
-          <Typography>{itops(lobby.users.length || 0)}</Typography>
+          {/* <Typography>{itops(session.users.length || 0)}</Typography> */}
         </Box>
       </Toolbar>
       <Container sx={{ mt: 2 }}>
-        <Grid2 container spacing={2}>
-          {lobby?.users.map((x) => (
+        {/* <Grid2 container spacing={2}>
+          {session?.users.map((x) => (
             <Grid2 key={x} size={{ lg: 3, md: 4, sm: 6, xs: 12 }}>
               <RA.Zoom triggerOnce>
-                <LobbiestCard userId={x} />
+                <UserSessionCard userId={x} />
               </RA.Zoom>
             </Grid2>
           ))}
-        </Grid2>
-        {/* <Fab
+        </Grid2> */}
+        <Fab
           color='primary'
           onClick={() =>
             snackbar.show({ type: "error", message: "Not Yet Implemented" })
           }
           sx={{ position: "absolute", bottom: 0, right: 0, mr: 2, mb: 2 }}>
           <Message />
-        </Fab> */}
+        </Fab>
       </Container>
     </React.Fragment>
   )
 }
 
-function itops(size: number) {
-  if (size > 1) {
-    return `${size} Participants`
-  }
-  return `${size} Participant`
-}
+// function itops(size: number) {
+//   if (size > 1) {
+//     return `${size} Participants`
+//   }
+//   return `${size} Participant`
+// }

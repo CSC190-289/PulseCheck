@@ -18,9 +18,10 @@ export default function App() {
         <Route path='/terms-of-service' element={<Page.TermsOfService />} />
         <Route path='/dashboard' element={<Page.Dashboard />} />
         <Route path='/poll/join' element={<Page.PollJoin />} />
-        <Route path='/poll/:id/lobby' element={<Page.PollLobby />} />
-        <Route path='/poll/:id/edit' element={<Page.PollEditor />} />
-        <Route path='/poll/:id/results' element={<Page.PollResults />} />
+        <Route path='/poll/host/:id' element={<Page.PollHost />} />
+        <Route path='/poll/session/:id' element={<Page.PollSession />} />
+        <Route path='/poll/edit/:id' element={<Page.PollEditor />} />
+        <Route path='/poll/results/:id' element={<Page.PollResults />} />
         <Route path='/poll/:id/' element={<Page.PollView />} />
         <Route path='/profile' element={<Page.Profile />} />
         <Route path='*' element={<Page.NotFound />} />

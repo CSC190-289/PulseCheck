@@ -1,8 +1,14 @@
 import { useAuthContext } from "@/core/hooks"
 import { Avatar, Badge, styled } from "@mui/material"
+import { useNavigate } from "react-router-dom"
 
 export default function ProfileIcon() {
   const auth = useAuthContext()
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    void navigate("/profile")
+  }
 
   return (
     <StyledBadge
@@ -11,8 +17,10 @@ export default function ProfileIcon() {
         vertical: "bottom",
         horizontal: "right",
       }}
-      variant='dot'>
-      <Avatar src={auth.user?.photoURL ?? undefined} />
+      sx={{ cursor: "pointer" }}
+      variant='dot'
+      onClick={handleClick}>
+      {auth.user?.photoURL ? <Avatar src={auth.user.photoURL} /> : <Avatar />}
     </StyledBadge>
   )
 }

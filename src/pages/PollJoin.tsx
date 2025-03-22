@@ -9,7 +9,11 @@ import {
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-import { createUser, findLobbyWithCode, joinLobby } from "@/core/api/firebase"
+import api, {
+  createUser,
+  findLobbyWithCode,
+  joinLobby,
+} from "@/core/api/firebase"
 import { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { useAuthState } from "react-firebase-hooks/auth"
@@ -38,16 +42,9 @@ export default function PollJoin() {
             "Please log in to join a poll! You shouldn't be here."
           )
         }
-        const lobby = await findLobbyWithCode(roomCode)
-
-        //const cred = await signInAnonymously(auth)
-
-        console.debug("lobby", lobby)
-        //console.debug("cred", cred)
-
-        await createUser(user.uid, displayName)
-        await joinLobby(lobby.id, user.uid)
-        await navigate(`/poll/${lobby.id}/lobby`)
+        const sref = await api.polls.sessions.getByCode(roomCode)
+        await api.polls.sessions.join(sref.id, user.uid)
+        await navigate(`/poll/session/${sref.id}`)
       } catch (err: unknown) {
         if (err instanceof Error) {
           snackbar.show({

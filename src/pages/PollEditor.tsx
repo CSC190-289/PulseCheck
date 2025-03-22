@@ -32,7 +32,7 @@ export default function PollEditor() {
   const pollRef = api.polls.doc(id)
   const [poll, loading, error] = useDocumentData(pollRef)
 
-  console.debug("pe.poll", poll)
+  console.debug("pe.poll", poll, loading, error)
 
   const handleAddQuestion = () => {
     const aux = async () => {
@@ -69,7 +69,10 @@ export default function PollEditor() {
           <QuestionList pid={id} questions={poll?.questions ?? []} />
           <RA.Roll triggerOnce>
             <Tooltip title='New Question'>
-              <Fab color='secondary' onClick={handleAddQuestion}>
+              <Fab
+                color='secondary'
+                disabled={!poll}
+                onClick={handleAddQuestion}>
                 <Add />
               </Fab>
             </Tooltip>

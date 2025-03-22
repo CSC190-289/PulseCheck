@@ -4,8 +4,9 @@ import GetStarted from "./GetStarted"
 import Login from "./Login"
 import NotFound from "./NotFound"
 import PollEditor from "./PollEditor"
+import PollHost from "./PollHost"
 import PollJoin from "./PollJoin"
-import PollLobby from "./PollLobby"
+import PollSession from "./PollSession"
 import PollResults from "./PollResults"
 import PollView from "./PollView"
 import PrivacyPolicy from "./PrivacyPolicy"
@@ -20,7 +21,8 @@ export const Page = {
   Login,
   Register,
   GetStarted,
-  PollLobby,
+  PollHost,
+  PollSession,
   PrivacyPolicy,
   TermsOfService,
   Dashboard,

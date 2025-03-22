@@ -12,15 +12,13 @@ export default function Dashboard() {
 
   const handleCreatePoll = () => {
     if (user) {
-      console.debug("Adding doc...")
-      const addPollToDB = async () => {
-        // Nested async function to await addDoc
-        const host = api.users.ref(user.uid)
-        const ref = await api.polls.add(host)
-        void navigate(`/poll/${ref.id}/edit`)
-        return ref
-      }
-      void addPollToDB()
+      const host = api.users.ref(user.uid)
+      void api.polls
+        .add(host)
+        .then((ref) => {
+          void navigate(`/poll/edit/${ref.id}`)
+        })
+        .catch((err) => console.debug(err))
     }
   }
 
