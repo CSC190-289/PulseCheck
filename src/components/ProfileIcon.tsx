@@ -7,7 +7,12 @@ export default function ProfileIcon() {
   const navigate = useNavigate()
 
   const handleClick = () => {
-    void navigate("/profile")
+    if (!auth.user) {
+      return
+    }
+    if (!auth.user.isAnonymous) {
+      void navigate("/profile")
+    }
   }
 
   return (

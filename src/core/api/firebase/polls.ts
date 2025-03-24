@@ -13,17 +13,24 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import { clx } from "."
+import SessionStore from "./session"
 
 export default class PollStore extends BaseStore {
   private readonly _questions: QuestionStore
+  private readonly _sessions: SessionStore
 
   constructor(db: Firestore) {
     super(db)
     this._questions = new QuestionStore(super.db)
+    this._sessions = new SessionStore(super.db)
   }
 
   public get questions(): QuestionStore {
     return this._questions
+  }
+
+  public get sessions(): SessionStore {
+    return this._sessions
   }
 
   public doc(pid: string) {

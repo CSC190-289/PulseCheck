@@ -3,7 +3,7 @@ import {
   DocumentReference,
   Firestore,
 } from "firebase/firestore"
-import { Poll, PromptOption, Question } from "../../types"
+import { Poll, Session, PromptOption, Question } from "../../types"
 
 /**
  * Abstract Class for working with a Firestore database.
@@ -38,7 +38,9 @@ export type DocumentParams<T> = T extends PromptOption
     ? { pid: string; qid: string }
     : T extends Poll
       ? { pid: string }
-      : never
+      : T extends Session
+        ? { sid: string }
+        : never
 
 /**
  * Defines a parameters for referencing a collection of documents of type `T`.
@@ -54,7 +56,9 @@ export type CollectionParams<T> = T extends PromptOption
     ? { pid: string }
     : T extends Poll
       ? null
-      : never
+      : T extends Session
+        ? null
+        : never
 
 /**
  * Interface for Firestore CRUD operations.
@@ -79,7 +83,7 @@ export interface CRUDStore<T> {
    * @param ref - A reference to the collection where the document will be created.
    * @returns A promise that resolves to a refeence for the newly created document.
    */
-  add(ref: CollectionReference<T>): Promise<DocumentReference<T>>
+  create(ref: CollectionReference<T>): Promise<DocumentReference<T>>
 
   /**
    * Updates an existing document of type `T` by its reference with the provided partial payload.

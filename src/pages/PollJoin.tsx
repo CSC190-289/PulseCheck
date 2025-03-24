@@ -9,11 +9,7 @@ import {
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-import api, {
-  createUser,
-  findLobbyWithCode,
-  joinLobby,
-} from "@/core/api/firebase"
+import api from "@/core/api/firebase"
 import { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { useAuthState } from "react-firebase-hooks/auth"
@@ -38,12 +34,13 @@ export default function PollJoin() {
           throw new Error("Display Name cannot be blank!")
         }
         if (!user) {
-          throw new Error(
-            "Please log in to join a poll! You shouldn't be here."
-          )
+          throw new Error("How did you do this?")
         }
         const sref = await api.polls.sessions.getByCode(roomCode)
-        await api.polls.sessions.join(sref.id, user.uid)
+        await api.polls.sessions.enqueue(sref.id, user.uid, {
+          display_name: displayName,
+          photo_url: user.photoURL,
+        })
         await navigate(`/poll/session/${sref.id}`)
       } catch (err: unknown) {
         if (err instanceof Error) {

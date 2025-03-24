@@ -9,7 +9,7 @@ interface Props {
   userId: string
 }
 
-export default function LobbiestCard(props: Props) {
+export default function UserSessionCard(props: Props) {
   const { userId } = props
   const ref = doc(firestore, "users", userId) as DocumentReference<User>
   const [user, loading, error] = useDocumentData<User>(ref)

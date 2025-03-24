@@ -46,7 +46,7 @@ export default class PromptOptionStore
     ) as CollectionReference<PromptOption>
   }
 
-  public async add(ref: CollectionReference<PromptOption>) {
+  public async create(ref: CollectionReference<PromptOption>) {
     const qref = ref.parent as DocumentReference<Question> | null
     if (!qref) {
       throw new Error(

@@ -59,3 +59,12 @@ export function stommss(s: string) {
   }
   return formattedVal
 }
+
+/**
+ * Converts a number to a label displaying the number of participants in a poll session.
+ * @param n Number of participants
+ * @returns Formatted participant count label
+ */
+export function ntops(n: number) {
+  return `${n} Participant${n !== 1 ? "s" : ""}`
+}

@@ -36,8 +36,55 @@ export interface PromptOption {
   correct: boolean
 }
 
-export interface Lobby {
-  id: string
-  host: string
-  users: string[]
+export interface Session {
+  host: DocumentReference<User>
+  poll_id: DocumentReference<Poll>
+  room_code: string
+  title: string
+  async: boolean
+  anonymous: boolean | null
+  time: number | null
+  question: DocumentReference<SessionQuestion>
+  state: "closed" | "in-progress" | "open"
+  created_at: Timestamp
+}
+
+export interface SessionUser {
+  photo_url: string | null
+  display_name: string
+  joined_at: Timestamp
+}
+
+export interface SessionChat {
+  user: DocumentReference<User>
+  display_name: string
+  photo_url: string | null
+  message: string
+  created_at: Timestamp
+}
+
+export interface SessionQuestion {
+  prompt_type: PromptType
+  prompt: string
+  prompt_img: string
+  options: string[]
+  points: number
+  async: boolean | null
+  anonymous: boolean | null
+  time: number | null
+}
+
+export interface SessionResponse {
+  user: DocumentReference<User>
+  answer: string
+  correct: boolean
+  created_at: Timestamp
+}
+
+export interface Submission {
+  session: DocumentReference<Session>
+  user: DocumentReference<User>
+  display_name: string
+  total_score: number
+  submitted_at: Timestamp
 }

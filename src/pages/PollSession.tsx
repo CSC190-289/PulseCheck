@@ -1,96 +1,101 @@
-import { auth, firestore } from "@/core/api/firebase"
+/* eslint-disable react-hooks/exhaustive-deps */
+import api from "@/core/api/firebase"
 import {
   Typography,
   Container,
-  CircularProgress,
   Box,
-  Grid2,
   Toolbar,
   Button,
   Fab,
   LinearProgress,
 } from "@mui/material"
-import {
-  arrayRemove,
-  doc,
-  DocumentReference,
-  updateDoc,
-} from "firebase/firestore"
 import { useNavigate, useParams } from "react-router-dom"
-import { useDocumentData } from "react-firebase-hooks/firestore"
-import React from "react"
-import { Session as PollSessionType } from "@/core/types"
-import { useAuthState } from "react-firebase-hooks/auth"
+import React, { useEffect, useState } from "react"
 import { Message } from "@mui/icons-material"
 import useSnackbar from "@/core/hooks/useSnackbar"
+import { useAuthContext } from "@/core/hooks"
+
+const CHECK_INTERVAL_MS = 2000
 
 export default function PollSession() {
   const params = useParams()
   const sid = params.id ?? ""
-  const ref = doc(
-    firestore,
-    "sessions",
-    sid
-  ) as DocumentReference<PollSessionType>
-  const [session, loading, error] = useDocumentData<PollSessionType>(ref)
-  const [user] = useAuthState(auth)
+  const { user, loading } = useAuthContext()
   const snackbar = useSnackbar()
   const navigate = useNavigate()
+  const [status, setStatus] = useState("Joining session...")
 
-  console.debug("PollLobby.session", session)
-  console.debug("PollLobby.loading", loading)
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        void navigate("/get-started")
+        return
+      }
+      const uid = user.uid
+      api.polls.sessions
+        .isWaitingForEntry(sid, uid)
+        .then((waiting) => {
+          if (waiting) {
+            setStatus("Waiting to join session...")
+            console.debug("user is waiting!")
+          } else {
+            setStatus("Access denied!")
+            if (user.isAnonymous) {
+              void user.delete()
+              void navigate("/get-started")
+            } else {
+              void navigate("/poll/join")
+            }
+          }
+        })
+        .catch((err) => console.error(err))
+    }
+  }, [user])
 
-  if (error) {
-    return (
-      <Container>
-        <Typography>Error Error Error!</Typography>
-      </Container>
-    )
-  }
-
-  if (loading) {
-    return (
-      <Grid2
-        container
-        justifyContent={"center"}
-        alignItems={"center"}
-        sx={{ height: "90vh" }}>
-        <CircularProgress size={40} />
-      </Grid2>
-    )
-  }
-
-  if (!session) {
-    return (
-      <Container>
-        <Typography>Failed to find lobby(${sid})</Typography>
-      </Container>
-    )
-  }
+  useEffect(() => {
+    /* check every now and then if user has joined the session */
+    const int = setInterval(() => {
+      if (!user) {
+        return
+      }
+      const uid = user.uid
+      api.polls.sessions
+        .hasJoined(sid, uid)
+        .then((joined) => {
+          console.debug(`joined`, joined)
+          void navigate(`/poll/session/${sid}/participate`)
+        })
+        .catch((err) => console.error(err))
+    }, CHECK_INTERVAL_MS)
+    return () => {
+      clearInterval(int)
+    }
+  }, [])
 
   function handleLeave() {
-    /* TODO - if the user is a guest, then delete their account after deleting them from the waiting_users collection */
     async function aux() {
       if (!user) {
         return
       }
-      const docRef = doc(firestore, "lobby", sid)
       try {
-        await updateDoc(docRef, {
-          users: arrayRemove(user.uid),
-        })
+        const uid = user.uid
+        if (await api.polls.sessions.isWaitingForEntry(sid, uid)) {
+          await api.polls.sessions.leaveQueue(sid, uid)
+        } else if (await api.polls.sessions.hasJoined(sid, uid)) {
+          await api.polls.sessions.leaveSession(sid, uid)
+        }
         snackbar.show({
-          message: `You left the lobby`,
+          message: `You left the session`,
           type: "info",
         })
         if (user.isAnonymous) {
-          void navigate("/")
+          await user.delete()
+          void navigate("/get-started", { replace: true })
         } else {
-          void navigate(-1)
+          void navigate("/poll/join", { replace: true })
         }
-        console.debug(`User ${user.uid} removed successfully`)
-      } catch (err) {
-        console.debug("Error removing user:", err)
+      } catch (err: unknown) {
+        console.error(err)
       }
     }
     void aux()
@@ -98,14 +103,20 @@ export default function PollSession() {
 
   return (
     <Box
+      position={"relative"}
       display={"flex"}
       justifyContent={"center"}
       alignItems={"center"}
       height={"80vh"}>
       <Box>
-        <Typography variant='h6'>Joining session...</Typography>
+        <Typography variant='h6'>{status}</Typography>
         {/* <Typography variant='h6'>Waiting for host approval...</Typography> */}
         <LinearProgress />
+      </Box>
+      <Box position={"absolute"} bottom={8} display={"flex"} flex={1}>
+        <Button variant='contained' onClick={handleLeave}>
+          Leave
+        </Button>
       </Box>
     </Box>
   )
@@ -146,10 +157,3 @@ export default function PollSession() {
     </React.Fragment>
   )
 }
-
-// function itops(size: number) {
-//   if (size > 1) {
-//     return `${size} Participants`
-//   }
-//   return `${size} Participant`
-// }

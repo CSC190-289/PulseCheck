@@ -1,12 +1,9 @@
 import { Button, Container, Stack, TextField, Typography } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-import { createUser, findLobbyWithCode, joinLobby } from "@/core/api/firebase"
-import { signInAnonymously } from "firebase/auth"
-import { auth } from "@/core/api/firebase"
+import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { FormEvent } from "react"
-//import { HelpOutline } from "@mui/icons-material"
 
 export default function GuestJoin() {
   const navigate = useNavigate()
@@ -24,14 +21,18 @@ export default function GuestJoin() {
         if (!displayName.trim()) {
           throw new Error("Display Name cannot be blank!")
         }
-        const lobby = await findLobbyWithCode(roomCode)
-        const cred = await signInAnonymously(auth)
-        console.debug("lobby", lobby)
-        console.debug("cred", cred)
-        await createUser(cred.user.uid, displayName)
-        await joinLobby(lobby.id, cred.user.uid)
-        await navigate(`/poll/${lobby.id}/lobby`)
+        /* find session with code */
+        const sref = await api.polls.sessions.getByCode(roomCode)
+        /* then sign in as a guest */
+        const cred = await api.signInAsGuest()
+        /* add yourself to the queue */
+        await api.polls.sessions.enqueue(sref.id, cred.user.uid, {
+          display_name: displayName,
+          photo_url: null,
+        })
+        await navigate(`/poll/session/${sref.id}`)
       } catch (err: unknown) {
+        console.debug(err)
         if (err instanceof Error) {
           snackbar.show({
             message: err.message,

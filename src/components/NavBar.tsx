@@ -30,8 +30,14 @@ export default function NavBar() {
     setAnchorEl(null)
   }
 
-  const handleHome = () => {
-    void navigate("/")
+  const handleClick = () => {
+    if (!user) {
+      void navigate("/")
+    } else if (!user.isAnonymous) {
+      void navigate("/dashboard")
+    } else {
+      void navigate("/")
+    }
     handleClose()
   }
 
@@ -56,12 +62,12 @@ export default function NavBar() {
           <Typography
             variant='h6'
             component={"div"}
-            onClick={handleHome}
+            onClick={handleClick}
             sx={{ cursor: "pointer" }}>
             PulseCheck
           </Typography>
           <Box flexGrow={1} />
-          {user && !user.isAnonymous && <ProfileIcon />}
+          {user && <ProfileIcon />}
         </Toolbar>
       </AppBar>
     </HideOnScroll>
