@@ -1,5 +1,6 @@
-import { BloodtypeOutlined } from "@mui/icons-material"
-import { Box, Typography, Button, Card } from "@mui/material"
+import { Box, Button, Card, CardMedia } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { useState } from "react"
 interface Props {
   pid: string
   qid: string
@@ -12,6 +13,19 @@ interface Props {
  * Displays image when the user uploads.
  * @returns {JSX.Element}
  */
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 export default function UploadImageBox(props: Props) {
   /**
    * @Bran7astic
@@ -45,10 +59,27 @@ export default function UploadImageBox(props: Props) {
    *   uploaded image to indicate to the user you can upload a new image OR drag-and-drop
    *   like a giga-chad.
    */
+  
+  const [imageURL, setImageURL] = useState<string | null>("")
+
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0]
+    if (selectedFile) {
+      console.debug(selectedFile.type)
+      if (! selectedFile.type.startsWith("image/")) {
+        alert("Please upload an image.");
+        return
+      }
+      setImageURL(URL.createObjectURL(selectedFile));
+
+    }
+  }
+
   return (
-    <Box sx = {{display: "flex", justifyContent: "center", gualignItems: "center"}}>
+    <Box sx = {{display: "flex", flex: 1, justifyContent: "center", alignItems: "center"}}>
       <Card 
-        variant="outlined" 
+        variant="outlined"
         sx={{
           padding: 10,
           borderStyle: "dashed",
@@ -56,7 +87,26 @@ export default function UploadImageBox(props: Props) {
         }}
 
       >        
-        <Typography sx = {{fontWeight: "bold"}}>Upload Image</Typography>
+
+        {imageURL && (
+          <CardMedia
+          component = "img"
+          alt = "img"
+          height = "150"
+          width = "150"
+          image = {imageURL}
+        />)}
+        
+        <Button 
+          sx = {{fontWeight: "bold"}}
+          component = "label"
+        >
+          Upload Image
+          <VisuallyHiddenInput 
+            type = "file"
+            onChange={handleFileUpload}
+            />
+        </Button>
       </Card>
     </Box>
   )
