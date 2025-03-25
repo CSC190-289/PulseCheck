@@ -54,7 +54,7 @@ export default function PromptOptionEditor(props: Props) {
         slotProps={{
           input: {
             startAdornment: opt && (
-              <CorrectToggleButton checked={opt.correct} />
+              <CorrectToggleButton ref={ref} correct={opt.correct} />
             ),
             endAdornment: <RemoveButton ref={ref} />,
           },
