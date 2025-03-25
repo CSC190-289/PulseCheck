@@ -168,7 +168,6 @@ export default function RegisterJoin() {
                 id='register-password'
                 label='Password'
                 fullWidth
-                
                 value={password}
                 type={showPassword ? "text" : "password"}
                 onChange={(e) => setPassword(e.target.value)}
@@ -207,21 +206,17 @@ export default function RegisterJoin() {
             </IconButton> */}
 
               <Typography
-                  textAlign ="right"
-                  sx={{
-                    mt:1,
-                    color: 'primary.main',
-                    '&:hover':{
-                      textDecoration:'underline'
-                    }
-                  
-    
-                  }}
-                  onClick={() => navigate('/login')}
-            >
-            Already Have an account? 
-            </Typography>
-
+                textAlign='right'
+                sx={{
+                  mt: 1,
+                  color: "primary.main",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+                onClick={() => navigate("/login")}>
+                Already Have an account?
+              </Typography>
 
               <Button
                 variant='contained'
@@ -235,8 +230,6 @@ export default function RegisterJoin() {
               </Divider>
 
               <SignInWGoogleButton />
-
-                
             </Stack>
           </CardContent>
         </Card>
