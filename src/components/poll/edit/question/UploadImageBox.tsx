@@ -1,4 +1,5 @@
-import { Box, Typography } from "@mui/material"
+import { BloodtypeOutlined } from "@mui/icons-material"
+import { Box, Typography, Button, Card } from "@mui/material"
 interface Props {
   pid: string
   qid: string
@@ -45,8 +46,18 @@ export default function UploadImageBox(props: Props) {
    *   like a giga-chad.
    */
   return (
-    <Box>
-      <Typography>Upload Image for Question({props.qid})</Typography>
+    <Box sx = {{display: "flex", justifyContent: "center", gualignItems: "center"}}>
+      <Card 
+        variant="outlined" 
+        sx={{
+          padding: 10,
+          borderStyle: "dashed",
+          borderRadius: 5,
+        }}
+
+      >        
+        <Typography sx = {{fontWeight: "bold"}}>Upload Image</Typography>
+      </Card>
     </Box>
   )
 }
