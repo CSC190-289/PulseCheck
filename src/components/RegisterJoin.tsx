@@ -11,7 +11,7 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material"
-import {RA} from "@/styles"
+import { RA } from "@/styles"
 // import {Stack} from "@mui/material/Stack"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
@@ -77,7 +77,7 @@ export default function RegisterJoin() {
     } catch (errors) {
       return false
     }
-    }
+  }
 
   const handleRegClick = async () => {
     try {
@@ -129,76 +129,73 @@ export default function RegisterJoin() {
         snackbar.show({
           message: "Email already in use, try logging in",
         })
-      // } else {
-      //   snackbar.show({
-      //     message: "Email registered Try logging in!",
-      //   })
+        // } else {
+        //   snackbar.show({
+        //     message: "Email registered Try logging in!",
+        //   })
       }
     }
   }
   return (
     <Container maxWidth='xs'>
       <RA.Bounce>
-      <Card raised sx={{ mt: 8, pb: 2 }}>
-        <CardContent>
-          <Typography
-            variant='h6'
-            textAlign='center'
-            marginTop={5}
-            marginBottom={5}>
-            Register!
-          </Typography>
-          <Stack
-            component={"form"}
-            sx={{ m: 1 }}
-            spacing={3}
-            noValidate
-            autoComplete='off'>
-            <TextField
-              id='register-email'
-              label='Email'
-              variant='outlined'
-              fullWidth
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={!!errors.email}
-              helperText={errors.email}
-            />
-            <TextField
-              id='register-password'
-              label='Password'
-              fullWidth
-              value={password}
-              type={showPassword ? "text" : "password"}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <TextField
-              id='register-retype-password'
-              label='Re-type Password'
-              fullWidth
-              type={showPassword ? "text" : "password"}
-              value={retypePassword}
-              onChange={(e) => setRetypePassword(e.target.value)}
-              error={!!errors.retypePassword}
-              helperText={errors.retypePassword}
-
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle visibility"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      edge="end"
-                      size="small"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            
-            />
-            {/* <IconButton
+        <Card raised sx={{ mt: 8, pb: 2 }}>
+          <CardContent>
+            <Typography
+              variant='h6'
+              textAlign='center'
+              marginTop={5}
+              marginBottom={5}>
+              Register!
+            </Typography>
+            <Stack
+              component={"form"}
+              sx={{ m: 1 }}
+              spacing={3}
+              noValidate
+              autoComplete='off'>
+              <TextField
+                id='register-email'
+                label='Email'
+                variant='outlined'
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                error={!!errors.email}
+                helperText={errors.email}
+              />
+              <TextField
+                id='register-password'
+                label='Password'
+                fullWidth
+                value={password}
+                type={showPassword ? "text" : "password"}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <TextField
+                id='register-retype-password'
+                label='Re-type Password'
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                value={retypePassword}
+                onChange={(e) => setRetypePassword(e.target.value)}
+                error={!!errors.retypePassword}
+                helperText={errors.retypePassword}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        aria-label='toggle visibility'
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        edge='end'
+                        size='small'>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {/* <IconButton
               sx={{
                 position: "absolute",
                 right: 50,
@@ -208,21 +205,21 @@ export default function RegisterJoin() {
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton> */}
 
-            <Button
-              variant='contained'
-              color='primary'
-              fullWidth
-              onClick={handleRegClick}>
-              Register
-            </Button>
-            <Divider>
-              <Typography color='textSecondary'> or </Typography>
-            </Divider>
+              <Button
+                variant='contained'
+                color='primary'
+                fullWidth
+                onClick={handleRegClick}>
+                Register
+              </Button>
+              <Divider>
+                <Typography color='textSecondary'> or </Typography>
+              </Divider>
 
-            <SignInWGoogleButton />
-          </Stack>
-        </CardContent>
-      </Card>
+              <SignInWGoogleButton />
+            </Stack>
+          </CardContent>
+        </Card>
       </RA.Bounce>
     </Container>
   )

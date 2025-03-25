@@ -14,5 +14,4 @@ export default function Register() {
       </Container>
     </React.Fragment>
   )
-  
 }
