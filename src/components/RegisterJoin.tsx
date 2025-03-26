@@ -8,8 +8,8 @@ import {
   TextField,
   Divider,
   Typography,
-  InputAdornment,
-  IconButton,
+  Link,
+  Box,
 } from "@mui/material"
 import { RA } from "@/styles"
 // import {Stack} from "@mui/material/Stack"
@@ -19,10 +19,14 @@ import { useState } from "react"
 import { auth, db } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 // import React from "react"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { doc, serverTimestamp, setDoc } from "firebase/firestore"
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import SignInWGoogleButton from "@/components/auth/ContinueWGoogleButton"
-import { Visibility, VisibilityOff } from "@mui/icons-material"
+// import { Visibility, VisibilityOff } from "@mui/icons-material"
+import { FirebaseError } from "firebase/app"
+
+const PASS_LEN = 6
+type ErrorField = "displayName" | "email" | "password" | "retypePassword"
 
 export default function RegisterJoin() {
   const navigate = useNavigate()
@@ -30,72 +34,108 @@ export default function RegisterJoin() {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState("")
   const [retypePassword, setRetypePassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
+  // const [showPassword, setShowPassword] = useState(false)
   // const [showRetypePassword, setShowRetypePassword] = useState(false)
   const [errors, setErrors] = useState({
+    displayName: "",
     email: "",
     password: "",
     retypePassword: "",
   })
+  const [displayName, setDisplayName] = useState("")
 
-  //   const snackbar = useSnackbar()
+  const clearFieldError = (field: ErrorField) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }))
+  }
 
-  const setFieldError = (field: string, message: string) => {
+  const setFieldError = (field: ErrorField, message: string) => {
     setErrors((prev) => ({
       ...prev,
       [field]: message,
     }))
-    throw new Error(message)
+    // throw new Error(message)
   }
 
   const validate = () => {
-    setErrors({
-      email: "",
-      password: "",
-      retypePassword: "",
-    })
-
-    try {
-      if (!email) {
-        setFieldError("email", "Email required!")
-      }
-      if (!/\S+@\S+\.\S+/.test(email)) {
-        setFieldError("email", "Invalid email")
-      }
-      if (!password) {
-        setFieldError("password", "Password required")
-      }
-
-      if (password.length < 3) {
-        setFieldError("password", "Password to short")
-      }
-
-      if (password !== retypePassword) {
-        setFieldError("retypePassword", "Passwords dont match")
-      }
-      return true
-    } catch (errors) {
-      return false
+    // setErrors({
+    //   email: "",
+    //   password: "",
+    //   retypePassword: "",
+    // })
+    let validated = true
+    if (!displayName) {
+      setFieldError("displayName", "Display name required!")
+      validated = false
     }
+    if (!email) {
+      setFieldError("email", "Email required!")
+      validated = false
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setFieldError("email", "Invalid email!")
+      validated = false
+    }
+    if (!password) {
+      setFieldError("password", "Password required!")
+      validated = false
+    } else if (password.length < PASS_LEN) {
+      setFieldError(
+        "password",
+        `Password needs to be at least ${PASS_LEN} characters.`
+      )
+      validated = false
+    }
+
+    if (password && password !== retypePassword) {
+      setFieldError("retypePassword", "Passwords don't match")
+      validated = false
+    }
+    return validated
+    // try {
+    //   if (!email) {
+    //     setFieldError("email", "Email required!")
+    //   }
+    //   if (!/\S+@\S+\.\S+/.test(email)) {
+    //     setFieldError("email", "Invalid email")
+    //   }
+    //   if (!password) {
+    //     setFieldError("password", "Password required")
+    //   }
+
+    //   if (password.length < PASS_LEN) {
+    //     setFieldError("password", "Password too short")
+    //   }
+
+    //   if (password !== retypePassword) {
+    //     setFieldError("retypePassword", "Passwords don't match")
+    //   }
+    //   return true
+    // } catch (err: unknown) {
+    //   console.debug(err)
+    //   return false
+    // }
   }
 
   const handleRegClick = async () => {
+    if (!validate()) {
+      return
+    }
     try {
-      if (!validate()) {
-        return
-      }
-
       //checking if users exists in firestore
-      const userRef = doc(db, "users", email)
-      const userSnap = await getDoc(userRef)
+      // const userRef = doc(db, "users", email)
+      // const userSnap = await getDoc(userRef)
 
       //   await createUser(email, password)
 
-      if (userSnap.exists()) {
-        setErrors((prev) => ({ ...prev, email: "Email registered already" }))
-        snackbar.show({ message: "Email already exists" })
-        return
-      }
+      /* this will never be true since you're trying to find a doc in path users/${email} */
+      /* what you want to do is query or maybe firebase auth has a way to check if an email is taken */
+      // if (userSnap.exists()) {
+      //   setErrors((prev) => ({ ...prev, email: "Email registered already" }))
+      //   snackbar.show({ message: "Email already exists" })
+      //   return
+      // }
 
       const UserCredential = await createUserWithEmailAndPassword(
         auth,
@@ -111,9 +151,11 @@ export default function RegisterJoin() {
         doc(db, "users", user.uid),
         {
           email: user.email,
-          createdAt: new Date(),
+          display_name: displayName,
+          photo_url: user.photoURL,
+          created_at: serverTimestamp(),
         },
-        { merge: true }
+        { merge: false }
       ) //data merge
 
       snackbar.show({
@@ -121,46 +163,68 @@ export default function RegisterJoin() {
       })
 
       void navigate("/dashboard")
-    } catch (error: any) {
+    } catch (err: unknown) {
       //error handling method used from firebase authentication page
-
-      if (error === "auth/email-already-in-use") {
-        setErrors((prev) => ({ ...prev, email: "Email is taken!" }))
-        snackbar.show({
-          message: "Email already in use, try logging in",
-        })
-        // } else {
-        //   snackbar.show({
-        //     message: "Email registered Try logging in!",
-        //   })
+      if (err instanceof FirebaseError) {
+        if (err.code === "auth/email-already-in-use") {
+          setErrors((prev) => ({ ...prev, email: "Email already in use!" }))
+          // snackbar.show({
+          //   message: "Email already in use, try logging in",
+          //   type: "error",
+          // })
+        }
       }
+      // if (error === "auth/email-already-in-use") {
+      // } else {
+      //   snackbar.show({
+      //     message: "Email registered Try logging in!",
+      //   })
+      // }
     }
   }
+
+  const handleLink = () => {
+    void navigate("/login")
+  }
+
   return (
     <Container maxWidth='xs'>
-      <RA.Bounce>
+      <RA.Bounce triggerOnce>
         <Card raised sx={{ mt: 8, pb: 2 }}>
           <CardContent>
-            <Typography
-              variant='h6'
-              textAlign='center'
-              marginTop={5}
-              marginBottom={5}>
+            <Typography variant='h5' textAlign='center' marginBlock={4}>
               Register!
             </Typography>
             <Stack
               component={"form"}
               sx={{ m: 1 }}
-              spacing={3}
+              spacing={2}
               noValidate
               autoComplete='off'>
               <TextField
+                label='Display Name'
+                variant='outlined'
+                fullWidth
+                value={displayName}
+                onChange={(e) => {
+                  setDisplayName(e.target.value)
+                  clearFieldError("displayName")
+                }}
+                error={!!errors.displayName}
+                helperText={errors.displayName}
+              />
+              <TextField
                 id='register-email'
                 label='Email'
+                type='email'
                 variant='outlined'
                 fullWidth
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  clearFieldError("email")
+                }}
+                // onKeyDown={() => clearFieldError("email")}
                 error={!!errors.email}
                 helperText={errors.email}
               />
@@ -169,31 +233,43 @@ export default function RegisterJoin() {
                 label='Password'
                 fullWidth
                 value={password}
-                type={showPassword ? "text" : "password"}
-                onChange={(e) => setPassword(e.target.value)}
+                // type={showPassword ? "text" : "password"}
+                type='password'
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  clearFieldError("password")
+                }}
+                // onKeyDown={() => clearFieldError("password")}
+                error={!!errors.password}
+                helperText={errors.password}
               />
               <TextField
                 id='register-retype-password'
-                label='Re-type Password'
+                label='Re-Type Password'
                 fullWidth
-                type={showPassword ? "text" : "password"}
+                // type={showPassword ? "text" : "password"}
                 value={retypePassword}
-                onChange={(e) => setRetypePassword(e.target.value)}
+                type='password'
+                onChange={(e) => {
+                  setRetypePassword(e.target.value)
+                  clearFieldError("retypePassword")
+                }}
+                // onKeyDown={() => clearFieldError("retypePassword")}
                 error={!!errors.retypePassword}
                 helperText={errors.retypePassword}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton
-                        aria-label='toggle visibility'
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        edge='end'
-                        size='small'>
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+                // InputProps={{
+                //   endAdornment: (
+                //     <InputAdornment position='end'>
+                //       <IconButton
+                //         aria-label='toggle visibility'
+                //         onClick={() => setShowPassword((prev) => !prev)}
+                //         edge='end'
+                //         size='small'>
+                //         {showPassword ? <VisibilityOff /> : <Visibility />}
+                //       </IconButton>
+                //     </InputAdornment>
+                //   ),
+                // }}
               />
               {/* <IconButton
               sx={{
@@ -204,8 +280,7 @@ export default function RegisterJoin() {
               onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton> */}
-
-              <Typography
+              {/* <Typography
                 textAlign='right'
                 sx={{
                   mt: 1,
@@ -214,15 +289,35 @@ export default function RegisterJoin() {
                     textDecoration: "underline",
                   },
                 }}
-                onClick={() => navigate("/login")}>
+                onClick={() => void navigate("/login")}>
                 Already Have an account?
-              </Typography>
+              </Typography> */}
+
+              <Box display={"flex"} flex={1} justifyContent={"right"}>
+                <Link
+                  color='textPrimary'
+                  onClick={handleLink}
+                  variant='body2'
+                  sx={{
+                    cursor: "pointer",
+                  }}>
+                  Already have an account? Login
+                </Link>
+              </Box>
 
               <Button
                 variant='contained'
                 color='primary'
                 fullWidth
-                onClick={handleRegClick}>
+                type='submit'
+                onClick={(e) => {
+                  /* 
+                    setting the button type to submit allows you to fire 
+                    the button's on click event with the 'Enter' key 🤓 
+                  */
+                  e.preventDefault()
+                  void handleRegClick()
+                }}>
                 Register
               </Button>
               <Divider>
