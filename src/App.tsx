@@ -23,7 +23,7 @@ export default function App() {
         <Route path='/poll/session/:id' element={<Page.PollSession />} />
         <Route
           path='/poll/session/:id/participate'
-          element={<Page.PollSession />}
+          element={<Page.PollParticipate />}
         />
         {/* poll routes */}
         <Route path='/poll/:id/edit' element={<Page.PollEditor />} />

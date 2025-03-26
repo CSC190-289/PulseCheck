@@ -1,7 +1,9 @@
-import { Menu as MenuIcon } from "@mui/icons-material"
+import { Login, Menu as MenuIcon } from "@mui/icons-material"
 import {
   AppBar,
   Box,
+  Button,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -30,7 +32,7 @@ export default function NavBar() {
     setAnchorEl(null)
   }
 
-  const handleClick = () => {
+  const handleLogo = () => {
     if (!user) {
       void navigate("/")
     } else if (!user.isAnonymous) {
@@ -39,6 +41,10 @@ export default function NavBar() {
       void navigate("/")
     }
     handleClose()
+  }
+
+  const handleLogin = () => {
+    void navigate("/login")
   }
 
   return (
@@ -62,12 +68,22 @@ export default function NavBar() {
           <Typography
             variant='h6'
             component={"div"}
-            onClick={handleClick}
+            onClick={handleLogo}
             sx={{ cursor: "pointer" }}>
             PulseCheck
           </Typography>
           <Box flexGrow={1} />
-          {user && <ProfileIcon />}
+          {user ? (
+            <ProfileIcon />
+          ) : (
+            <Button
+              variant='text'
+              color='inherit'
+              onClick={handleLogin}
+              endIcon={<Login />}>
+              Login
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </HideOnScroll>
@@ -125,8 +141,10 @@ function GuestMenuItems({ callback }: CallbackProps) {
       <MenuItem onClick={handleAbout}>About</MenuItem>
       <MenuItem onClick={handleFeatures}>Features</MenuItem>
       <MenuItem onClick={handleFAQs}>FAQs</MenuItem>
+      <Divider />
       <MenuItem onClick={handleToS}>Terms of Service</MenuItem>
       <MenuItem onClick={handlePP}>Privacy Policy</MenuItem>
+      <Divider />
       <MenuItem onClick={handleLoginfo}>Login</MenuItem>
       <MenuItem onClick={handleReg}>Register</MenuItem>
     </Box>

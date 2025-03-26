@@ -8,7 +8,7 @@ import {
   CardContent,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import api from "@/core/api/firebase"
 import { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
@@ -21,7 +21,15 @@ export default function PollJoin() {
   const [roomCode, setRoomCode] = useState<string>("")
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
-  const [user] = useAuthState(auth)
+  const [user, loading] = useAuthState(auth)
+
+  useEffect(() => {
+    if (!user && !loading) {
+      void navigate("/get-started")
+    } else if (user?.isAnonymous) {
+      void navigate("/get-started")
+    }
+  }, [user, loading, navigate])
 
   const handleJoinClick = (e: MouseEvent | FormEvent) => {
     e.preventDefault()

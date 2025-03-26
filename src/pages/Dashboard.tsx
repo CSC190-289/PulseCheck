@@ -16,7 +16,7 @@ export default function Dashboard() {
       void api.polls
         .add(host)
         .then((ref) => {
-          void navigate(`/poll/edit/${ref.id}`)
+          void navigate(`/poll/${ref.id}/edit`)
         })
         .catch((err) => console.debug(err))
     }

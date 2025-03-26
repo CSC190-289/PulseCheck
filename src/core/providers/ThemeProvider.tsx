@@ -28,7 +28,7 @@ import { ThemeContext } from "@/core/contexts/ThemeContext"
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   /* detect system preference */
   // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
-  const prefersDarkMode = false
+  const prefersDarkMode = true
 
   /* state for theme mode, defaulting to system preference */
   const [mode, setMode] = useState<PaletteMode>(

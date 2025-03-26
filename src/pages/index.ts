@@ -14,6 +14,7 @@ import Profile from "./Profile"
 import Register from "./Register"
 import Splash from "./Splash"
 import TermsOfService from "./TermsOfService"
+import { PollParticipate } from "./PollParticipate"
 
 export const Page = {
   Splash,
@@ -22,6 +23,7 @@ export const Page = {
   Register,
   GetStarted,
   PollHost,
+  PollParticipate,
   PollSession,
   PrivacyPolicy,
   TermsOfService,

@@ -23,49 +23,40 @@ export default function PollSession() {
   const { user, loading } = useAuthContext()
   const snackbar = useSnackbar()
   const navigate = useNavigate()
-  const [status, setStatus] = useState("Joining session...")
+  const [status, setStatus] = useState("Joining Session...")
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        void navigate("/get-started")
+    const aux = async () => {
+      if (!user || loading) {
         return
       }
-      const uid = user.uid
-      api.polls.sessions
-        .isWaitingForEntry(sid, uid)
-        .then((waiting) => {
-          if (waiting) {
-            setStatus("Waiting to join session...")
-            console.debug("user is waiting!")
+      try {
+        const uid = user.uid
+        const hasJoined = await api.polls.sessions.hasJoined(sid, uid)
+        if (hasJoined) {
+          void navigate(`/poll/session/${sid}/participate`)
+        }
+        const isWaiting = await api.polls.sessions.isWaitingForEntry(sid, uid)
+        if (!isWaiting) {
+          setStatus("Access Denied!")
+          if (user.isAnonymous) {
+            await user.delete()
+            await navigate("/get-started", { replace: true })
+            throw new Error("Unauthorized (Guest-Poll-Session)")
           } else {
-            setStatus("Access denied!")
-            if (user.isAnonymous) {
-              void user.delete()
-              void navigate("/get-started")
-            } else {
-              void navigate("/poll/join")
-            }
+            await navigate("/poll/join", { replace: true })
+            throw new Error("Unauthorized (User-Poll-Session)")
           }
-        })
-        .catch((err) => console.error(err))
+        } else {
+          setStatus("Waiting to Join Session...")
+        }
+      } catch (err: unknown) {
+        console.debug(err)
+      }
     }
-  }, [user])
-
-  useEffect(() => {
     /* check every now and then if user has joined the session */
     const int = setInterval(() => {
-      if (!user) {
-        return
-      }
-      const uid = user.uid
-      api.polls.sessions
-        .hasJoined(sid, uid)
-        .then((joined) => {
-          console.debug(`joined`, joined)
-          void navigate(`/poll/session/${sid}/participate`)
-        })
-        .catch((err) => console.error(err))
+      void aux()
     }, CHECK_INTERVAL_MS)
     return () => {
       clearInterval(int)
