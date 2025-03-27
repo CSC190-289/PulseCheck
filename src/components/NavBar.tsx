@@ -191,6 +191,7 @@ function AuthMenuItems({ callback }: CallbackProps) {
       <MenuItem onClick={handleJoinPoll}>Join Poll</MenuItem>
       <MenuItem onClick={handleResults}>Results</MenuItem>
       <MenuItem onClick={handleProfile}>Profile</MenuItem>
+      <Divider />
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Box>
   )

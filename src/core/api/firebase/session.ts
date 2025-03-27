@@ -15,10 +15,18 @@ import {
 import BaseStore from "./store"
 import { Session } from "@/core/types"
 import { clx } from "."
+import UserStore from "./session/user"
 
 export default class SessionStore extends BaseStore {
+  private readonly _users: UserStore
+
   constructor(db: Firestore) {
     super(db)
+    this._users = new UserStore(db)
+  }
+
+  public get users() {
+    return this._users
   }
 
   public doc(sid: string) {

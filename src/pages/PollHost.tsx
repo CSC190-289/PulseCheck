@@ -1,5 +1,5 @@
 import api from "@/core/api/firebase"
-import { Button, Toolbar } from "@mui/material"
+import { AppBar, Button, Toolbar } from "@mui/material"
 import React from "react"
 import { useParams } from "react-router-dom"
 
@@ -11,13 +11,12 @@ export default function PollHost() {
   /* TODO - ensure this is the host */
   return (
     <React.Fragment>
-      <Toolbar
-        sx={{
-          boxShadow: "2px 2px rgba(0,0,0,0.1",
-        }}>
-        <Button>Finish</Button>
-        <Button>Next Question</Button>
-      </Toolbar>
+      <AppBar color='inherit' position='relative'>
+        <Toolbar>
+          <Button>Finish</Button>
+          <Button>Next Question</Button>
+        </Toolbar>
+      </AppBar>
     </React.Fragment>
   )
 }

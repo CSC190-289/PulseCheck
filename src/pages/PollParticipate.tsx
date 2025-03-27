@@ -1,9 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
-import { Button, Toolbar } from "@mui/material"
-import React, { useEffect } from "react"
-import { useDocumentData } from "react-firebase-hooks/firestore"
+import {
+  AppBar,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Toolbar,
+} from "@mui/material"
+import React, { useEffect, useState } from "react"
+import {
+  useCollectionData,
+  useDocumentData,
+} from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 
 const CHECK_INTERVAL_MS = 2000
@@ -15,6 +27,8 @@ export function PollParticipate() {
   const navigate = useNavigate()
   const snackbar = useSnackbar()
   const [session] = useDocumentData(api.polls.sessions.doc(sid))
+  const [users] = useCollectionData(api.polls.sessions.users)
+  const [showDialog, setShowDialog] = useState(false)
 
   console.debug("session", session)
 
@@ -73,13 +87,23 @@ export function PollParticipate() {
 
   return (
     <React.Fragment>
-      <Toolbar
-        sx={{
-          // justifyContent: "center",
-          boxShadow: "2px 2px rgba(0,0,0,0.1",
-        }}>
-        <Button onClick={handleLeave}>Leave</Button>
-      </Toolbar>
+      <AppBar color='inherit' position='relative'>
+        <Toolbar>
+          <Button onClick={() => setShowDialog(true)}>Leave</Button>
+        </Toolbar>
+      </AppBar>
+      <Dialog open={showDialog}>
+        <DialogTitle>Confirm</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            All of your answers you submitted so far will be saved.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDialog(false)}>No</Button>
+          <Button onClick={handleLeave}>Yes</Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   )
 }
