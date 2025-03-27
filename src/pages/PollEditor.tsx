@@ -6,6 +6,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  Grid2,
 } from "@mui/material"
 import React, { useEffect } from "react"
 import Toolbar from "@/components/poll/edit/Toolbar"
@@ -16,6 +17,7 @@ import { useSnackbar } from "@/core/hooks"
 import api from "@/core/api/firebase"
 import { Add } from "@mui/icons-material"
 import { RA } from "@/styles"
+import Settings from "@/components/poll/edit/Settings"
 
 export default function PollEditor() {
   const params = useParams()
@@ -66,7 +68,13 @@ export default function PollEditor() {
       )}
       <Container sx={{ marginBlock: 2 }} maxWidth='xl'>
         <Stack spacing={2} alignItems={"center"}>
+          <Grid2 container spacing={2}></Grid2>
           <QuestionList pid={id} questions={poll?.questions ?? []} />
+          {poll ? (
+            <Settings pid={id} time={poll?.time} anonymous={poll?.anonymous} />
+          ) : (
+            <Skeleton />
+          )}
           <RA.Roll triggerOnce>
             <Tooltip title='New Question'>
               <Fab color='secondary' onClick={handleAddQuestion}>
