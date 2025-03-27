@@ -1,6 +1,7 @@
 import { Box, Button, Card, CardMedia } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useState } from "react"
+import { getStorage, ref, uploadBytes } from "firebase/storage"
 interface Props {
   pid: string
   qid: string
@@ -14,17 +15,19 @@ interface Props {
  * @returns {JSX.Element}
  */
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
   height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
+  overflow: "hidden",
+  position: "absolute",
   bottom: 0,
   left: 0,
-  whiteSpace: 'nowrap',
+  whiteSpace: "nowrap",
   width: 1,
-});
+})
+
+const storage = getStorage()
 
 export default function UploadImageBox(props: Props) {
   /**
@@ -59,53 +62,69 @@ export default function UploadImageBox(props: Props) {
    *   uploaded image to indicate to the user you can upload a new image OR drag-and-drop
    *   like a giga-chad.
    */
-  
+
+  const [file, setFile] = useState<File | null>(null)
   const [imageURL, setImageURL] = useState<string | null>("")
 
+  const fileUpload = async (fileToUpload: File, storagePath: string) => {
+    console.debug("File upload running")
+    const fileRef = ref(storage, storagePath)
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0]
-    if (selectedFile) {
-      console.debug(selectedFile.type)
-      if (! selectedFile.type.startsWith("image/")) {
-        alert("Please upload an image.");
-        return
-      }
-      setImageURL(URL.createObjectURL(selectedFile));
-
+    try {
+      const snapshot = await uploadBytes(fileRef, fileToUpload)
+    } catch (error) {
+      alert("Upload Failed")
     }
   }
 
+  const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const processFile = async () => {
+      console.debug("File handle running")
+      const selectedFile = event.target.files?.[0]
+      if (selectedFile) {
+        if (!selectedFile.type.startsWith("image/")) {
+          alert("Please upload an image.")
+          return
+        }
+        setFile(selectedFile)
+        await fileUpload(selectedFile, `pollImages/${selectedFile.name}`)
+        setImageURL(URL.createObjectURL(selectedFile))
+      }
+    }
+
+    processFile().catch((error) => {
+      console.error("Error processing file", error)
+    })
+  }
+
   return (
-    <Box sx = {{display: "flex", flex: 1, justifyContent: "center", alignItems: "center"}}>
-      <Card 
-        variant="outlined"
+    <Box
+      sx={{
+        display: "flex",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
+      <Card
+        variant='outlined'
         sx={{
           padding: 10,
           borderStyle: "dashed",
           borderRadius: 5,
-        }}
-
-      >        
-
+        }}>
         {imageURL && (
           <CardMedia
-          component = "img"
-          alt = "img"
-          height = "150"
-          width = "150"
-          image = {imageURL}
-        />)}
-        
-        <Button 
-          sx = {{fontWeight: "bold"}}
-          component = "label"
-        >
+            component='img'
+            alt='img'
+            height='150'
+            width='150'
+            image={imageURL}
+          />
+        )}
+
+        <Button sx={{ fontWeight: "bold" }} component='label'>
           Upload Image
-          <VisuallyHiddenInput 
-            type = "file"
-            onChange={handleFileUpload}
-            />
+          <VisuallyHiddenInput type='file' onChange={handleFile} />
         </Button>
       </Card>
     </Box>
