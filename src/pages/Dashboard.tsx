@@ -35,10 +35,13 @@ export default function Dashboard() {
 
   return (
     <Container maxWidth='xs'>
-      <Box mb={16} mt={16}>
+      <Box mb={16} mt={5}>
         <Stack
           sx={{ m: 1 }} // margin for everything in the box
           spacing={3}>
+          <Typography variant='h6' align='left'>
+            Dashboard
+          </Typography>
           <Button
             variant='contained'
             color='primary'
