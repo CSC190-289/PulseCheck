@@ -2,6 +2,7 @@ import { Box, Button, Card, CardMedia, CircularProgress } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useState } from "react"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
+import { doc, setDoc, updateDoc } from "firebase/firestore" 
 interface Props {
   pid: string
   qid: string
@@ -124,6 +125,7 @@ export default function UploadImageBox(props: Props) {
           // paddingLeft: "42%",
           // paddingRight: "42%",
           borderStyle: "dashed",
+          borderWidth: 2,
           borderRadius: 5,
         }}>
         {loading && <CircularProgress color='primary' size={20} />}
