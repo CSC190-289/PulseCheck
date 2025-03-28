@@ -1,7 +1,7 @@
-import { Box, Button, Card, CardMedia } from "@mui/material"
+import { Box, Button, Card, CardMedia, CircularProgress } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useState } from "react"
-import { getStorage, ref, uploadBytes } from "firebase/storage"
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
 interface Props {
   pid: string
   qid: string
@@ -63,32 +63,40 @@ export default function UploadImageBox(props: Props) {
    *   like a giga-chad.
    */
 
-  const [file, setFile] = useState<File | null>(null)
-  const [imageURL, setImageURL] = useState<string | null>("")
+  const [imageURL, setImageURL] = useState<string | null>("") // Sets image url once image is uploaded to cloud firestore
+  const [loading, setLoading] = useState<boolean>(false) // Sets loading state to prompt loading icon
 
+  // Asynchronously uploads file to cloud firestore and sets image url
   const fileUpload = async (fileToUpload: File, storagePath: string) => {
-    console.debug("File upload running")
+    setLoading(true)
     const fileRef = ref(storage, storagePath)
 
     try {
       const snapshot = await uploadBytes(fileRef, fileToUpload)
+      const downloadURL = await getDownloadURL(snapshot.ref)
+      setImageURL(downloadURL)
     } catch (error) {
-      alert("Upload Failed")
+      console.debug("An error has occurred: ", error)
     }
+    setLoading(false)
   }
 
   const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const processFile = async () => {
-      console.debug("File handle running")
       const selectedFile = event.target.files?.[0]
       if (selectedFile) {
+        // Checks if file is an image
         if (!selectedFile.type.startsWith("image/")) {
           alert("Please upload an image.")
           return
         }
-        setFile(selectedFile)
+        // Prevents files greater than 10mb
+        const fileSize = selectedFile.size / (1024 * 1024)
+        if (fileSize >= 10) {
+          alert("Please upload a file smaller than 10mb")
+          return
+        }
         await fileUpload(selectedFile, `pollImages/${selectedFile.name}`)
-        setImageURL(URL.createObjectURL(selectedFile))
       }
     }
 
@@ -100,24 +108,32 @@ export default function UploadImageBox(props: Props) {
   return (
     <Box
       sx={{
-        display: "flex",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        // display: "flex",
+        // //flex: 1,
+        // width: "100%",
+        // justifyContent: "center",
+        // alignItems: "center",
+        display: "grid",
+        placeItems: "center",
+        width: "100%",
       }}>
       <Card
         variant='outlined'
         sx={{
           padding: 10,
+          // paddingLeft: "42%",
+          // paddingRight: "42%",
           borderStyle: "dashed",
           borderRadius: 5,
         }}>
+        {loading && <CircularProgress color='primary' size={20} />}
+
         {imageURL && (
           <CardMedia
             component='img'
             alt='img'
-            height='150'
-            width='150'
+            height='200'
+            width='113'
             image={imageURL}
           />
         )}
