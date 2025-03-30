@@ -34,7 +34,7 @@ export default function PollEditor() {
   const pollRef = api.polls.doc(id)
   const [poll, loading, error] = useDocumentData(pollRef)
 
-  console.debug("pe.poll", poll)
+  // console.debug("pe.poll", poll)
 
   const handleAddQuestion = () => {
     const aux = async () => {
@@ -61,20 +61,20 @@ export default function PollEditor() {
 
   return (
     <React.Fragment>
-      {poll ? (
-        <Toolbar pid={id} title={poll.title} updatedAt={poll.updated_at} />
-      ) : (
-        <Skeleton />
+      {poll && (
+        <Toolbar
+          pid={id}
+          title={poll.title}
+          anonymous={poll.anonymous}
+          time={poll.time}
+        />
       )}
       <Container sx={{ marginBlock: 2 }} maxWidth='xl'>
         <Stack spacing={2} alignItems={"center"}>
-          <Grid2 container spacing={2}></Grid2>
+          {/* {poll && (
+            <Settings pid={id} time={poll.time} anonymous={poll.anonymous} />
+          )} */}
           <QuestionList pid={id} questions={poll?.questions ?? []} />
-          {poll ? (
-            <Settings pid={id} time={poll?.time} anonymous={poll?.anonymous} />
-          ) : (
-            <Skeleton />
-          )}
           <RA.Roll triggerOnce>
             <Tooltip title='New Question'>
               <Fab color='secondary' onClick={handleAddQuestion}>

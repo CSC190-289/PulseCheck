@@ -1,13 +1,5 @@
-import React, { useEffect, useState } from "react"
-import {
-  Typography,
-  Grid2,
-  Switch,
-  FormControlLabel,
-  Stack,
-} from "@mui/material"
-import useSnackbar from "@/core/hooks/useSnackbar"
-import api from "@/core/api/firebase"
+import React from "react"
+import { Typography, Grid2, Divider } from "@mui/material"
 import TimerSwitch from "./TimerSwitch"
 
 /**
@@ -17,57 +9,49 @@ import TimerSwitch from "./TimerSwitch"
 
 interface Props {
   pid: string /* poll id */
-  anonymous: boolean /* when users answer this question, is it public? */
+  anonymous: boolean | null /* when users answer this question, is it public? */
   time: number | null /* is this question timed? */
 }
 
 export default function Settings(props: Props) {
   const { pid, time } = props
-  const [anonymous, setAnonymous] = useState(props.anonymous)
-  const snackbar = useSnackbar()
-  /* TODO - Implement Settings  
-    
-    */
+  // const [anonymous, setAnonymous] = useState(props.anonymous)
+  // const snackbar = useSnackbar()
 
-  useEffect(() => {
-    async function saveAnonymous(bool: boolean) {
-      try {
-        if (bool === props.anonymous) {
-          return
-        }
-        const ref = api.polls.doc(pid)
-        await api.polls.update(ref, {
-          anonymous: bool,
-        })
-      } catch {
-        snackbar.show({
-          message: "Failed to update",
-          type: "error",
-        })
-      }
-    }
-    void saveAnonymous(anonymous)
-  }, [pid, props.anonymous, anonymous, snackbar])
+  // useEffect(() => {
+  //   async function saveAnonymous(bool: boolean | null) {
+  //     try {
+  //       if (bool === props.anonymous) {
+  //         return
+  //       }
+  //       const ref = api.polls.doc(pid)
+  //       await api.polls.update(ref, {
+  //         anonymous: bool,
+  //       })
+  //     } catch {
+  //       snackbar.show({
+  //         message: "Failed to update",
+  //         type: "error",
+  //       })
+  //     }
+  //   }
+  //   void saveAnonymous(anonymous)
+  // }, [pid, props.anonymous, anonymous, snackbar])
 
   return (
     <React.Fragment>
-      <Stack alignItems={"center"}>
+      <Divider>
         <Typography> Poll Settings</Typography>
-        <Grid2
-          container
-          spacing={4}
-          alignItems={"center"}
-          display={"flex"}
-          size={{ xl: 3, lg: 3, md: 4, sm: 6, xs: 12 }}>
-          <FormControlLabel
-            label='Anonymous'
-            control={
-              <Switch onChange={(e) => setAnonymous(e.target.checked)} />
-            }
-          />
-          <TimerSwitch pid={pid} time={time} />
-        </Grid2>
-      </Stack>
+      </Divider>
+      <Grid2 container spacing={2} alignItems={"center"} display={"flex"}>
+        {/* <FormControlLabel
+          label='Anonymous'
+          checked={Boolean(anonymous)}
+          control={<Switch onChange={(e) => setAnonymous(e.target.checked)} />}
+        /> */}
+        <TimerSwitch pid={pid} time={time} />
+      </Grid2>
+      {/* </Stack> */}
     </React.Fragment>
   )
 }

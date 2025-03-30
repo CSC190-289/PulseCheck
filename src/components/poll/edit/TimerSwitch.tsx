@@ -1,6 +1,6 @@
 import api from "@/core/api/firebase"
 import { mmsston, ntommss, stommss } from "@/utils"
-import { FormControlLabel, Switch, TextField } from "@mui/material"
+import { FormControlLabel, Switch, TextField, Tooltip } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 interface Props {
@@ -8,53 +8,61 @@ interface Props {
   time: number | null
 }
 
-const SAVE_DELAY = 1000
-const DEFAULT_DURATION = 10000
+const DEFAULT_DURATION = 600000
 
 export default function TimerSwitch(props: Props) {
   const { pid } = props
+  /* milliseconds */
   const [time, setTime] = useState(props.time)
-  const [mmss, setMMSS] = useState(ntommss(props.time))
-  const [timed, setTimed] = useState(props.time ? true : false)
+  /* MM:SS string format */
+  const [timeFormatted, setTimeFormatted] = useState(ntommss(props.time))
 
   useEffect(() => {
-    if (!timed) {
-      setTime(null)
-    } else {
-      setMMSS(ntommss(DEFAULT_DURATION))
-    }
-  }, [timed])
-
-  useEffect(() => {
-    setTime(mmsston(mmss))
-  }, [mmss])
+    setTime(mmsston(timeFormatted))
+  }, [timeFormatted])
 
   useEffect(() => {
     const updateTime = async (newTime: number | null) => {
+      console.debug("newTime", newTime)
       try {
-        if (newTime !== null && newTime <= 0) {
-          return
-        }
-        if (newTime === props.time) {
-          return
-        }
         const ref = api.polls.doc(pid)
         await api.polls.update(ref, { time: newTime })
       } catch (err: unknown) {
         console.error(err)
       }
     }
-    const timer = setTimeout(() => {
-      void updateTime(time)
-    }, SAVE_DELAY)
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [props.time, time, pid])
+    void updateTime(time)
+  }, [pid, time])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedTime = stommss(e.target.value)
-    setMMSS(formattedTime)
+    setTimeFormatted(formattedTime)
+  }
+
+  const formatTimeHelper = () => {
+    if (time === null) {
+      return ""
+    }
+    if (time <= 0) {
+      return "Invalid Time"
+    }
+
+    const totalSeconds = Math.floor(time / 1000)
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+
+    let result = ""
+    if (minutes > 0) {
+      result += `${minutes} minute${minutes !== 1 ? "s" : ""}`
+    }
+    if (seconds > 0) {
+      if (result.length > 0) {
+        result += ", "
+      }
+      result += `${seconds} second${seconds !== 1 ? "s" : ""}`
+    }
+
+    return result || "0 seconds"
   }
 
   return (
@@ -62,20 +70,34 @@ export default function TimerSwitch(props: Props) {
       <FormControlLabel
         labelPlacement='end'
         label='Timed'
-        checked={timed}
-        onChange={() => setTimed(!timed)}
+        checked={time !== null}
+        onChange={(_, checked) => {
+          if (checked) {
+            setTime(DEFAULT_DURATION)
+            setTimeFormatted(ntommss(DEFAULT_DURATION))
+          } else {
+            setTime(null)
+            setTimeFormatted("")
+          }
+        }}
         control={<Switch />}
       />
       {/* {timed && ( */}
-      <TextField
-        style={{ opacity: timed ? 1 : 0 }}
-        error={time === 0}
-        size='small'
-        placeholder='MM:SS'
-        value={mmss}
-        onChange={handleChange}
-        helperText={time === 0 ? "invalid format" : ""}
-      />
+      <Tooltip title={formatTimeHelper()}>
+        <TextField
+          // style={{ opacity: time ? 1 : 0 }}
+          size='small'
+          placeholder='MM:SS'
+          value={timeFormatted}
+          // disabled={Boolean(!time)}
+          onChange={handleChange}
+          error={time === 0}
+          style={{ width: "12ch" }}
+        />
+      </Tooltip>
+      {/* <Typography color='textDisabled' variant='body2'>
+        {formatTimeHelper()}
+      </Typography> */}
       {/* )} */}
     </React.Fragment>
   )
