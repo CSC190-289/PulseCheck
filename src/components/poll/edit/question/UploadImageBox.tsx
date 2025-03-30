@@ -2,7 +2,8 @@ import { Box, Button, Card, CardMedia, CircularProgress } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useState } from "react"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
-import { doc, setDoc, updateDoc } from "firebase/firestore" 
+import { doc, updateDoc } from "firebase/firestore"
+import { firestore } from "@/core/api/firebase"
 interface Props {
   pid: string
   qid: string
@@ -64,6 +65,14 @@ export default function UploadImageBox(props: Props) {
    *   like a giga-chad.
    */
 
+  const questionDocRef = doc(
+    firestore,
+    "polls",
+    props.pid,
+    "questions",
+    props.qid
+  )
+
   const [imageURL, setImageURL] = useState<string | null>("") // Sets image url once image is uploaded to cloud firestore
   const [loading, setLoading] = useState<boolean>(false) // Sets loading state to prompt loading icon
 
@@ -73,9 +82,13 @@ export default function UploadImageBox(props: Props) {
     const fileRef = ref(storage, storagePath)
 
     try {
-      const snapshot = await uploadBytes(fileRef, fileToUpload)
-      const downloadURL = await getDownloadURL(snapshot.ref)
+      const snapshot = await uploadBytes(fileRef, fileToUpload) // Uploads image
+      const downloadURL = await getDownloadURL(snapshot.ref) // Gets download URL from firestore
       setImageURL(downloadURL)
+      await updateDoc(questionDocRef, {
+        // Updates prompt_img field in question doc
+        prompt_img: downloadURL,
+      })
     } catch (error) {
       console.debug("An error has occurred: ", error)
     }
