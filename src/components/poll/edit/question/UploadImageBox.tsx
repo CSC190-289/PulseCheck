@@ -2,7 +2,7 @@ import { Box, Button, Card, CardMedia, CircularProgress } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import { useState } from "react"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, getDoc, updateDoc } from "firebase/firestore"
 import { firestore } from "@/core/api/firebase"
 interface Props {
   pid: string
@@ -84,11 +84,17 @@ export default function UploadImageBox(props: Props) {
     try {
       const snapshot = await uploadBytes(fileRef, fileToUpload) // Uploads image
       const downloadURL = await getDownloadURL(snapshot.ref) // Gets download URL from firestore
-      setImageURL(downloadURL)
       await updateDoc(questionDocRef, {
         // Updates prompt_img field in question doc
         prompt_img: downloadURL,
       })
+      const docSnapshot = await getDoc(questionDocRef)
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data()
+        const promptImgURL =
+          data && typeof data.prompt_img === "string" ? data.prompt_img : ""
+        setImageURL(promptImgURL)
+      }
     } catch (error) {
       console.debug("An error has occurred: ", error)
     }
