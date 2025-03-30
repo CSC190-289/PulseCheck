@@ -4,18 +4,23 @@ import {
   IconButton,
   Box,
   Typography,
-  Skeleton,
+  AppBar,
+  Stack,
+  FormControlLabel,
+  Switch,
+  Button,
 } from "@mui/material"
-import { Timestamp } from "firebase/firestore"
-import { useState } from "react"
+import React, { useEffect, useState } from "react"
 import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
-import { Done, Edit } from "@mui/icons-material"
+import { Description, Done, Edit, MenuOpen } from "@mui/icons-material"
+import TimerSwitch from "./TimerSwitch"
 
 interface Props {
   pid: string /* poll id */
   title: string /* poll title from firestore */
-  updatedAt: Timestamp
+  anonymous: boolean | null
+  time: number | null
 }
 
 /**
@@ -26,16 +31,45 @@ interface Props {
  * @returns {JSX.Element}
  */
 export default function Toolbar(props: Props) {
-  const { pid, updatedAt } = props
+  const { pid, time } = props
   const [title, setTitle] = useState(props.title)
   const [isEditing, setIsEditing] = useState(false)
   const snackbar = useSnackbar()
+  const [anonymous, setAnonymous] = useState(props.anonymous)
+
+  useEffect(() => {
+    async function saveAnonymous(bool: boolean | null) {
+      try {
+        if (bool === props.anonymous) {
+          return
+        }
+        const ref = api.polls.doc(pid)
+        await api.polls.update(ref, {
+          anonymous: bool,
+        })
+      } catch {
+        snackbar.show({
+          message: "Failed to update",
+          type: "error",
+        })
+      }
+    }
+    void saveAnonymous(anonymous)
+  }, [pid, props.anonymous, anonymous, snackbar])
 
   async function saveTitle(text: string) {
     const ref = api.polls.doc(pid)
     await api.polls.update(ref, {
       title: text,
     })
+  }
+
+  const handleDocClick = () => {
+    console.debug("do something")
+  }
+
+  const handleTitleClick = () => {
+    handleClickEdit()
   }
 
   const handleClickEdit = () => {
@@ -63,31 +97,21 @@ export default function Toolbar(props: Props) {
   }
 
   return (
-    <MUIToolbar
-      sx={{
-        boxShadow: "2px 2px rgba(0,0,0,0.1)",
-      }}>
-      <Box flex={1}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
+    <AppBar color='inherit' position='relative'>
+      <MUIToolbar>
+        <Stack direction={"row"} alignItems={"center"} flex={1}>
+          <IconButton size='large' color='default' onClick={handleDocClick}>
+            <Description fontSize='inherit' />
+          </IconButton>
           {isEditing ? (
             <TextField
               size='small'
               placeholder='Poll Title'
-              hiddenLabel
               defaultValue={props.title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={handleKeyPress}
               fullWidth
-              sx={{ mt: 1 }}
               slotProps={{
-                htmlInput: {
-                  style: { textAlign: "center" },
-                },
                 input: {
                   endAdornment: isEditing && (
                     <IconButton color='primary' onClick={handleClickEdit}>
@@ -98,22 +122,32 @@ export default function Toolbar(props: Props) {
               }}
             />
           ) : (
-            <Typography variant='h6'>{title}</Typography>
+            <Typography onDoubleClick={handleTitleClick}>{title}</Typography>
           )}
           {!isEditing && (
             <IconButton size='small' color='primary' onClick={handleClickEdit}>
               <Edit />
             </IconButton>
           )}
-        </Box>
-        {updatedAt ? (
-          <Typography variant='body2'>
-            Last Updated: {updatedAt.toDate().toLocaleDateString()}
-          </Typography>
-        ) : (
-          <Skeleton variant='text' />
-        )}
-      </Box>
-    </MUIToolbar>
+          <Box flex={1} />
+          <FormControlLabel
+            label='Anonymous'
+            checked={Boolean(anonymous)}
+            control={
+              <Switch onChange={(e) => setAnonymous(e.target.checked)} />
+            }
+          />
+          <TimerSwitch pid={pid} time={time} />
+          <Button>Host Poll</Button>
+          <IconButton>
+            <MenuOpen />
+          </IconButton>
+        </Stack>
+        {/* <Typography variant='body2'>
+          Last Updated:{" "}
+          {updatedAt ? updatedAt.toDate().toLocaleDateString() : ""}
+        </Typography> */}
+      </MUIToolbar>
+    </AppBar>
   )
 }

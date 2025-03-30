@@ -5,26 +5,17 @@ import React, { useEffect, useState } from "react"
 
 interface Props {
   pid: string
-  qid: string
   time: number | null
 }
 
-// const SAVE_DELAY = 1000
-const DEFAULT_DURATION = 10000
+const DEFAULT_DURATION = 600000
 
 export default function TimerSwitch(props: Props) {
-  const { pid, qid } = props
+  const { pid } = props
+  /* milliseconds */
   const [time, setTime] = useState(props.time)
+  /* MM:SS string format */
   const [timeFormatted, setTimeFormatted] = useState(ntommss(props.time))
-  // const [timed, setTimed] = useState(props.time ? true : false)
-
-  // useEffect(() => {
-  //   if (!timed) {
-  //     setTime(null)
-  //   } else {
-  //     setTimeFormatted(ntommss(DEFAULT_DURATION))
-  //   }
-  // }, [timed])
 
   useEffect(() => {
     setTime(mmsston(timeFormatted))
@@ -32,27 +23,16 @@ export default function TimerSwitch(props: Props) {
 
   useEffect(() => {
     const updateTime = async (newTime: number | null) => {
+      console.debug("newTime", newTime)
       try {
-        // if (newTime !== null && newTime <= 0) {
-        //   return
-        // }
-        // if (newTime === props.time) {
-        //   return
-        // }
-        const ref = api.polls.questions.doc(pid, qid)
-        await api.polls.questions.update(ref, { time: newTime })
+        const ref = api.polls.doc(pid)
+        await api.polls.update(ref, { time: newTime })
       } catch (err: unknown) {
         console.error(err)
       }
     }
     void updateTime(time)
-    // const timer = setTimeout(() => {
-    //   void updateTime(time)
-    // }, SAVE_DELAY)
-    // return () => {
-    //   clearTimeout(timer)
-    // }
-  }, [pid, qid, time])
+  }, [pid, time])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedTime = stommss(e.target.value)
@@ -105,15 +85,19 @@ export default function TimerSwitch(props: Props) {
       {/* {timed && ( */}
       <Tooltip title={formatTimeHelper()}>
         <TextField
-          // style={{ opacity: timed ? 1 : 0 }}
+          // style={{ opacity: time ? 1 : 0 }}
           size='small'
           placeholder='MM:SS'
           value={timeFormatted}
+          // disabled={Boolean(!time)}
           onChange={handleChange}
           error={time === 0}
           style={{ width: "12ch" }}
         />
       </Tooltip>
+      {/* <Typography color='textDisabled' variant='body2'>
+        {formatTimeHelper()}
+      </Typography> */}
       {/* )} */}
     </React.Fragment>
   )
