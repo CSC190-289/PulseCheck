@@ -8,20 +8,47 @@ import {
   CardContent,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import api from "@/core/api/firebase"
-import { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
-import { useAuthState } from "react-firebase-hooks/auth"
 import { FormEvent } from "react"
 import { RA } from "@/styles"
+import { useAuthContext } from "@/core/hooks"
+import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
+
+function DisplayNameField(props: {
+  uid: string
+  displayName: string
+  setDisplayName: React.Dispatch<React.SetStateAction<string>>
+}) {
+  const { uid, displayName, setDisplayName } = props
+  const [user, loading] = useDocumentDataOnce(api.users.ref(uid))
+
+  useEffect(() => {
+    if (user && !loading) {
+      setDisplayName(user.display_name)
+    }
+  }, [user, loading, setDisplayName])
+
+  return (
+    <React.Fragment>
+      <TextField
+        label='Display Name'
+        variant='outlined'
+        fullWidth
+        value={displayName}
+        onChange={(e) => setDisplayName(e.target.value)}
+      />
+    </React.Fragment>
+  )
+}
 
 export default function PollJoin() {
   const navigate = useNavigate()
   const [roomCode, setRoomCode] = useState<string>("")
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
-  const [user, loading] = useAuthState(auth)
+  const { user, loading } = useAuthContext()
 
   useEffect(() => {
     if (!user && !loading) {
@@ -69,28 +96,18 @@ export default function PollJoin() {
   return (
     <Container
       maxWidth='xs' //This allow the container to fit a certain size
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        minHeight: "90vh",
-      }}>
+    >
       <RA.Bounce>
-        <Card raised sx={{ paddingInline: 3, paddingBlock: 3 }}>
+        <Card raised sx={{ mt: 8, pb: 2 }}>
           <CardContent>
-            <Typography
-              variant='h5'
-              textAlign='center'
-              marginTop={3}
-              marginBottom={5}>
+            <Typography variant='h5' textAlign='center' marginBlock={4}>
               Join Poll
             </Typography>
-
             <Stack
               component='form'
               onSubmit={handleJoinClick}
               sx={{ m: 1 }} // margin for everything in the box
-              spacing={3}
+              spacing={2}
               noValidate
               autoComplete='off'>
               {/*FullWidth allows the button to extend to the xs maxwidth (styles it to match other button that have longer text or shorter)*/}
@@ -102,13 +119,13 @@ export default function PollJoin() {
                 fullWidth
                 onChange={(e) => setRoomCode(e.target.value)}
               />
-              <TextField
-                id='guest-name'
-                label='Display Name'
-                variant='outlined'
-                fullWidth
-                onChange={(e) => setDisplayName(e.target.value)}
-              />
+              {user && (
+                <DisplayNameField
+                  uid={user.uid}
+                  displayName={displayName}
+                  setDisplayName={setDisplayName}
+                />
+              )}
               <Button
                 type='submit'
                 variant='contained'

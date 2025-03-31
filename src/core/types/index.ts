@@ -3,6 +3,7 @@ import { DocumentReference, Timestamp } from "firebase/firestore"
 export interface User {
   display_name: string
   email: string
+  photo_url: string | null
   created_at: Date
 }
 

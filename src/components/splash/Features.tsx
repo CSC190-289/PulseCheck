@@ -84,8 +84,7 @@ function Features(props: { ref?: React.Ref<unknown> }) {
                 Question Banking & Randomization:
               </Typography>
               <Typography>
-                Hosts can create question banks to be able to resuse those{" "}
-                <br></br>
+                Hosts can create question banks to be able to reuse <br></br>
                 questions on future sessions. The order of questions can also be{" "}
                 <br></br>
                 randomized to prevent the sharing of answers between
