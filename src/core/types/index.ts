@@ -53,6 +53,12 @@ export interface SessionUser {
   photo_url: string | null
   display_name: string
   joined_at: Timestamp
+  incorrect: boolean
+}
+
+export interface WaitingUser {
+  photo_url: string | null
+  display_name: string
 }
 
 export interface SessionChat {

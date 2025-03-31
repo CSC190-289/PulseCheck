@@ -16,17 +16,31 @@ import BaseStore from "./store"
 import { Session } from "@/core/types"
 import { clx } from "."
 import UserStore from "./session/user"
+import WaitingUserStore from "./session/waiting_user"
+import ChatStore from "./session/chat"
 
 export default class SessionStore extends BaseStore {
   private readonly _users: UserStore
+  private readonly _waiting_users: WaitingUserStore
+  private readonly _chat: ChatStore
 
   constructor(db: Firestore) {
     super(db)
     this._users = new UserStore(db)
+    this._waiting_users = new WaitingUserStore(db)
+    this._chat = new ChatStore(db)
   }
 
   public get users() {
     return this._users
+  }
+
+  public get waiting_users() {
+    return this._waiting_users
+  }
+
+  public get chat() {
+    return this._chat
   }
 
   public doc(sid: string) {
@@ -100,5 +114,14 @@ export default class SessionStore extends BaseStore {
     const sref = this.doc(sid)
     const uref = doc(sref, clx.users, uid)
     await deleteDoc(uref)
+  }
+
+  public async isHost(sid: string, uid: string): Promise<boolean> {
+    const sref = this.doc(sid)
+    const session = await getDoc(sref)
+    if (!session.exists()) {
+      throw new Error("Session does not exist!")
+    }
+    return session.data().host.id === uid
   }
 }
