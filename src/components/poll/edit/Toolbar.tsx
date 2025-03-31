@@ -8,12 +8,26 @@ import {
   Stack,
   FormControlLabel,
   Switch,
-  Button,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
 } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
-import { Description, Done, Edit, MenuOpen } from "@mui/icons-material"
+import {
+  Campaign,
+  Description,
+  Done,
+  Edit,
+  MenuOpen,
+  Poll,
+  RocketLaunch,
+  ScreenShare,
+  SupervisorAccount,
+} from "@mui/icons-material"
 import TimerSwitch from "./TimerSwitch"
 
 interface Props {
@@ -36,6 +50,9 @@ export default function Toolbar(props: Props) {
   const [isEditing, setIsEditing] = useState(false)
   const snackbar = useSnackbar()
   const [anonymous, setAnonymous] = useState(props.anonymous)
+  const [anchorElPoll, setAnchorElPoll] = React.useState<HTMLElement | null>(
+    null
+  )
 
   useEffect(() => {
     async function saveAnonymous(bool: boolean | null) {
@@ -56,6 +73,14 @@ export default function Toolbar(props: Props) {
     }
     void saveAnonymous(anonymous)
   }, [pid, props.anonymous, anonymous, snackbar])
+
+  const handleOpenPollMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElPoll(event.currentTarget)
+  }
+
+  const handleClosePollMenu = () => {
+    setAnchorElPoll(null)
+  }
 
   async function saveTitle(text: string) {
     const ref = api.polls.doc(pid)
@@ -96,11 +121,16 @@ export default function Toolbar(props: Props) {
     }
   }
 
+  const handleHostClick = () => {
+    console.debug("create poll session")
+    handleClosePollMenu()
+  }
+
   return (
     <AppBar color='inherit' position='relative'>
       <MUIToolbar>
-        <Stack direction={"row"} alignItems={"center"} flex={1}>
-          <IconButton size='large' color='default' onClick={handleDocClick}>
+        <Stack direction={"row"} alignItems={"center"} flexGrow={1}>
+          <IconButton size='large' color='inherit' onClick={handleDocClick}>
             <Description fontSize='inherit' />
           </IconButton>
           {isEditing ? (
@@ -111,6 +141,7 @@ export default function Toolbar(props: Props) {
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={handleKeyPress}
               fullWidth
+              // sx={{ maxWidth: "48ch" }}
               slotProps={{
                 input: {
                   endAdornment: isEditing && (
@@ -129,19 +160,77 @@ export default function Toolbar(props: Props) {
               <Edit />
             </IconButton>
           )}
-          <Box flex={1} />
-          <FormControlLabel
-            label='Anonymous'
-            checked={Boolean(anonymous)}
-            control={
-              <Switch onChange={(e) => setAnonymous(e.target.checked)} />
-            }
-          />
-          <TimerSwitch pid={pid} time={time} />
-          <Button>Host Poll</Button>
-          <IconButton>
-            <MenuOpen />
-          </IconButton>
+          <Box flex={1} marginInline={2} />
+          {/* <Box sx={{ display: { xs: "none", sm: "none", md: "flex" } }}>
+            <FormControlLabel
+              label='Anonymous'
+              checked={Boolean(anonymous)}
+              control={
+                <Switch onChange={(e) => setAnonymous(e.target.checked)} />
+              }
+            />
+            <TimerSwitch pid={pid} time={time} />
+            <Button>Host</Button>
+          </Box> */}
+
+          <Box>
+            <IconButton onClick={handleOpenPollMenu} color='inherit'>
+              <MenuOpen />
+            </IconButton>
+            <Menu
+              anchorEl={anchorElPoll}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              open={Boolean(anchorElPoll)}
+              onClose={handleClosePollMenu}>
+              <MenuItem>
+                <FormControlLabel
+                  label='Anonymous'
+                  checked={Boolean(anonymous)}
+                  control={
+                    <Switch onChange={(e) => setAnonymous(e.target.checked)} />
+                  }
+                />
+              </MenuItem>
+              <MenuItem>
+                <TimerSwitch pid={pid} time={time} />
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={handleHostClick}>
+                <ListItemIcon>
+                  <Campaign />
+                </ListItemIcon>
+                <ListItemText>Host</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleHostClick}>
+                <ListItemIcon>
+                  <ScreenShare />
+                </ListItemIcon>
+                <ListItemText>Host</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleHostClick}>
+                <ListItemIcon>
+                  <Poll />
+                </ListItemIcon>
+                <ListItemText>Host</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleHostClick}>
+                <ListItemIcon>
+                  <SupervisorAccount />
+                </ListItemIcon>
+                <ListItemText>Host</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={handleHostClick}>
+                <ListItemIcon>
+                  <RocketLaunch />
+                </ListItemIcon>
+                <ListItemText>Host</ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
         </Stack>
         {/* <Typography variant='body2'>
           Last Updated:{" "}

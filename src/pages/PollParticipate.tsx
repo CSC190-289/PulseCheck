@@ -1,21 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
+import { RA } from "@/styles"
+import { ArrowBack, Close, Logout } from "@mui/icons-material"
 import {
   AppBar,
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Grid2,
+  IconButton,
   Toolbar,
+  Typography,
 } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import {
-  useCollectionData,
-  useDocumentData,
-} from "react-firebase-hooks/firestore"
+import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 
 const CHECK_INTERVAL_MS = 2000
@@ -27,10 +31,8 @@ export function PollParticipate() {
   const navigate = useNavigate()
   const snackbar = useSnackbar()
   const [session] = useDocumentData(api.polls.sessions.doc(sid))
-  const [users] = useCollectionData(api.polls.sessions.users)
+  const [users] = useCollection(api.polls.sessions.users.collect(sid))
   const [showDialog, setShowDialog] = useState(false)
-
-  console.debug("session", session)
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -89,11 +91,25 @@ export function PollParticipate() {
     <React.Fragment>
       <AppBar color='inherit' position='relative'>
         <Toolbar>
-          <Button onClick={() => setShowDialog(true)}>Leave</Button>
+          <IconButton onClick={() => setShowDialog(true)}>
+            <ArrowBack />
+          </IconButton>
+          <Typography>{session?.title}</Typography>
         </Toolbar>
       </AppBar>
+      <Container sx={{ mt: 2 }}>
+        <Grid2 container spacing={2}>
+          {users?.docs.map((x) => (
+            <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
+              <RA.Zoom triggerOnce>
+                <UserSessionCard user={x.data()} />
+              </RA.Zoom>
+            </Grid2>
+          ))}
+        </Grid2>
+      </Container>
       <Dialog open={showDialog}>
-        <DialogTitle>Confirm</DialogTitle>
+        <DialogTitle>Are you sure you want to leave?</DialogTitle>
         <DialogContent>
           <DialogContentText>
             All of your answers you submitted so far will be saved.
