@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore"
+
 /**
  * Converts string to hex color
  */
@@ -67,4 +69,53 @@ export function stommss(s: string) {
  */
 export function ntops(n: number) {
   return `${n} Participant${n !== 1 ? "s" : ""}`
+}
+
+export function ntoq(n: number) {
+  return `${n} Question${n !== 1 ? "s" : ""}`
+}
+
+export function tstos(timestamp: Timestamp) {
+  const lastUpdated = timestamp.toDate()
+  const now = new Date()
+
+  // Calculate time difference in seconds
+  const diffInSeconds = Math.floor(
+    (now.getTime() - lastUpdated.getTime()) / 1000
+  )
+
+  let timeAgo = ""
+
+  if (diffInSeconds < 60) {
+    timeAgo = `${diffInSeconds}s ago`
+  } else if (diffInSeconds < 3600) {
+    const diffInMinutes = Math.floor(diffInSeconds / 60)
+    timeAgo = `${diffInMinutes}m ago`
+  } else if (diffInSeconds < 86400) {
+    const diffInHours = Math.floor(diffInSeconds / 3600)
+    timeAgo = `${diffInHours}h ago`
+  } else if (diffInSeconds < 2592000) {
+    const diffInDays = Math.floor(diffInSeconds / 86400)
+    timeAgo = `${diffInDays}d ago`
+  } else if (diffInSeconds < 31536000) {
+    const diffInMonths = Math.floor(diffInSeconds / 2592000)
+    timeAgo = `${diffInMonths}mo ago`
+  } else {
+    const diffInYears = Math.floor(diffInSeconds / 31536000)
+    timeAgo = `${diffInYears}y ago`
+  }
+  return `${timeAgo}`
+}
+
+export function generateRoomCode() {
+  const MAX = 6
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let roomCode = ""
+
+  for (let i = 0; i < MAX; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length)
+    roomCode += characters[randomIndex]
+  }
+
+  return roomCode
 }

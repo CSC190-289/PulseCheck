@@ -1,4 +1,5 @@
 import {
+  addDoc,
   collection,
   CollectionReference,
   deleteDoc,
@@ -9,15 +10,17 @@ import {
   getDocs,
   limit,
   query,
+  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore"
-import BaseStore from "./store"
+import BaseStore from "../store"
 import { Session } from "@/core/types"
-import { clx } from "."
-import UserStore from "./session/user"
-import WaitingUserStore from "./session/waiting_user"
-import ChatStore from "./session/chat"
+import api, { clx } from ".."
+import UserStore from "./users"
+import WaitingUserStore from "./waiting_users"
+import ChatStore from "./chat"
+import { generateRoomCode } from "@/utils"
 
 export default class SessionStore extends BaseStore {
   private readonly _users: UserStore
@@ -123,5 +126,33 @@ export default class SessionStore extends BaseStore {
       throw new Error("Session does not exist!")
     }
     return session.data().host.id === uid
+  }
+
+  /**
+   * Creates Poll Session by given poll id
+   */
+  public async host(pid: string, uid: string) {
+    const uref = api.users.doc(uid)
+    const pref = api.polls.doc(pid)
+    const pollDoc = await getDoc(pref)
+    if (!pollDoc.exists()) {
+      throw new Error(`${pref.path} does not exist!`)
+    }
+    const poll = pollDoc.data()
+    if (poll.owner.path !== uref.path) {
+      throw new Error(`Unauthorized access to poll!`)
+    }
+    await addDoc(this.collect(), {
+      host: uref,
+      poll: pref,
+      room_code: generateRoomCode(),
+      title: poll.title,
+      async: poll.async,
+      anonymous: poll.anonymous,
+      time: poll.time,
+      question: null,
+      state: "open",
+      created_at: serverTimestamp(),
+    })
   }
 }

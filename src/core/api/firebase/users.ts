@@ -9,12 +9,12 @@ import BaseStore from "./store"
 import { User } from "../../types"
 
 export default class UserStore extends BaseStore {
-  public ref(uid: string) {
+  public doc(uid: string) {
     return doc(this.db, "users", uid) as DocumentReference<User>
   }
 
   public async create(uid: string, payload: Partial<User>) {
-    const uref = this.ref(uid)
+    const uref = this.doc(uid)
     const userDoc = await getDoc(uref)
     if (userDoc.exists()) {
       return setDoc(
@@ -41,7 +41,7 @@ export default class UserStore extends BaseStore {
   }
 
   public async get(uid: string): Promise<User> {
-    const uref = this.ref(uid)
+    const uref = this.doc(uid)
     const userDoc = await getDoc(uref)
     if (!userDoc.exists()) {
       throw new Error(`User${uid} does not exist!`)

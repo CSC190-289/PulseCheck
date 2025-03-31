@@ -37,16 +37,18 @@ export interface PromptOption {
   correct: boolean
 }
 
+export type SessionState = "closed" | "in-progress" | "open" | "done"
+
 export interface Session {
   host: DocumentReference<User>
-  poll_id: DocumentReference<Poll>
+  poll: DocumentReference<Poll>
   room_code: string
   title: string
   async: boolean
   anonymous: boolean | null
   time: number | null
-  question: DocumentReference<SessionQuestion>
-  state: "closed" | "in-progress" | "open"
+  question: DocumentReference<SessionQuestion> | null
+  state: SessionState
   created_at: Timestamp
 }
 

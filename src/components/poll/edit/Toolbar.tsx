@@ -19,7 +19,6 @@ import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import {
   Campaign,
-  Description,
   Done,
   Edit,
   MenuOpen,
@@ -29,6 +28,7 @@ import {
   SupervisorAccount,
 } from "@mui/icons-material"
 import TimerSwitch from "./TimerSwitch"
+import { useAuthContext } from "@/core/hooks"
 
 interface Props {
   pid: string /* poll id */
@@ -46,13 +46,12 @@ interface Props {
  */
 export default function Toolbar(props: Props) {
   const { pid, time } = props
+  const auth = useAuthContext()
   const [title, setTitle] = useState(props.title)
   const [isEditing, setIsEditing] = useState(false)
   const snackbar = useSnackbar()
   const [anonymous, setAnonymous] = useState(props.anonymous)
-  const [anchorElPoll, setAnchorElPoll] = React.useState<HTMLElement | null>(
-    null
-  )
+  const [anchorElPoll, setAnchorElPoll] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
     async function saveAnonymous(bool: boolean | null) {
@@ -89,9 +88,9 @@ export default function Toolbar(props: Props) {
     })
   }
 
-  const handleDocClick = () => {
-    console.debug("do something")
-  }
+  // const handleDocClick = () => {
+  //   console.debug("do something")
+  // }
 
   const handleTitleClick = () => {
     handleClickEdit()
@@ -122,7 +121,15 @@ export default function Toolbar(props: Props) {
   }
 
   const handleHostClick = () => {
-    console.debug("create poll session")
+    if (auth.user) {
+      const user = auth.user
+      api.polls.sessions
+        .host(pid, user.uid)
+        .then(() => {
+          /* TODO - host poll */
+        })
+        .catch((err) => console.debug(err))
+    }
     handleClosePollMenu()
   }
 
@@ -130,9 +137,9 @@ export default function Toolbar(props: Props) {
     <AppBar color='inherit' position='relative'>
       <MUIToolbar>
         <Stack direction={"row"} alignItems={"center"} flexGrow={1}>
-          <IconButton size='large' color='inherit' onClick={handleDocClick}>
+          {/* <IconButton size='large' color='inherit' onClick={handleDocClick}>
             <Description fontSize='inherit' />
-          </IconButton>
+          </IconButton> */}
           {isEditing ? (
             <TextField
               size='small'

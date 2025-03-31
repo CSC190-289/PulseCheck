@@ -22,7 +22,7 @@ function DisplayNameField(props: {
   setDisplayName: React.Dispatch<React.SetStateAction<string>>
 }) {
   const { uid, displayName, setDisplayName } = props
-  const [user, loading] = useDocumentDataOnce(api.users.ref(uid))
+  const [user, loading] = useDocumentDataOnce(api.users.doc(uid))
 
   useEffect(() => {
     if (user && !loading) {
@@ -94,9 +94,7 @@ export default function PollJoin() {
     void aux()
   }
   return (
-    <Container
-      maxWidth='xs' //This allow the container to fit a certain size
-    >
+    <Container maxWidth='xs'>
       <RA.Bounce>
         <Card raised sx={{ mt: 8, pb: 2 }}>
           <CardContent>
@@ -110,8 +108,6 @@ export default function PollJoin() {
               spacing={2}
               noValidate
               autoComplete='off'>
-              {/*FullWidth allows the button to extend to the xs maxwidth (styles it to match other button that have longer text or shorter)*/}
-              {/* We need to add the Join Function*/}
               <TextField
                 id='room-code'
                 label='Room Code'

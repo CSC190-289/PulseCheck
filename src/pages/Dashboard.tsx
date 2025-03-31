@@ -1,18 +1,28 @@
 import SignOutButton from "@/components/auth/SignOutButton"
 import { useNavigate } from "react-router-dom"
-import { Button, Container, Typography, Stack, Box } from "@mui/material"
-import RecentPollCard from "../components/dashboard/RecentPollCard"
-import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "@/core/api/firebase"
+import {
+  Button,
+  Container,
+  Typography,
+  Stack,
+  Box,
+  Card,
+  CardContent,
+  CardActionArea,
+} from "@mui/material"
 import api from "@/core/api/firebase"
+import { useAuthContext } from "@/core/hooks"
+import { useCollectionOnce } from "react-firebase-hooks/firestore"
+import { ntoq, tstos } from "@/utils"
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [user] = useAuthState(auth)
+  const { user } = useAuthContext()
+  const [polls] = useCollectionOnce(api.polls.queryUserPolls(user?.uid ?? "1"))
 
   const handleCreatePoll = () => {
     if (user) {
-      const host = api.users.ref(user.uid)
+      const host = api.users.doc(user.uid)
       void api.polls
         .add(host)
         .then((ref) => {
@@ -50,11 +60,29 @@ export default function Dashboard() {
         </Stack>
         <Stack sx={{ m: 1 }} spacing={3} textAlign={"left"}>
           <Typography variant='h6' align='left'>
-            Recent Polls
+            Your Polls
           </Typography>
-          <RecentPollCard pollTitle='Getting Stated!' result='0/100' />
-          <RecentPollCard pollTitle='Poll 2' result='90/100' />
-          <RecentPollCard pollTitle="Baby's First Poll" result='100/100' />
+          {polls?.docs.map((x) => (
+            <Card
+              key={x.id}
+              onClick={() => {
+                void navigate(`/poll/${x.id}/edit`)
+              }}>
+              <CardActionArea>
+                <CardContent>
+                  <Typography variant='h5' gutterBottom>
+                    {x.data().title}
+                  </Typography>
+                  <Typography color='textSecondary'>
+                    {ntoq(x.data().questions.length)}
+                  </Typography>
+                  <Typography color='textSecondary'>
+                    {tstos(x.data().updated_at)}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))}
         </Stack>
       </Box>
     </Container>
