@@ -69,28 +69,18 @@ export default function PollJoin() {
   return (
     <Container
       maxWidth='xs' //This allow the container to fit a certain size
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        minHeight: "90vh",
-      }}>
+    >
       <RA.Bounce>
-        <Card raised sx={{ paddingInline: 3, paddingBlock: 3 }}>
+        <Card raised sx={{ mt: 8, pb: 2 }}>
           <CardContent>
-            <Typography
-              variant='h5'
-              textAlign='center'
-              marginTop={3}
-              marginBottom={5}>
+            <Typography variant='h5' textAlign='center' marginBlock={4}>
               Join Poll
             </Typography>
-
             <Stack
               component='form'
               onSubmit={handleJoinClick}
               sx={{ m: 1 }} // margin for everything in the box
-              spacing={3}
+              spacing={2}
               noValidate
               autoComplete='off'>
               {/*FullWidth allows the button to extend to the xs maxwidth (styles it to match other button that have longer text or shorter)*/}

@@ -62,7 +62,7 @@ export default function Splash() {
             Get Started
           </Button>
         </RA.Bounce>
-        <Stack spacing={4}>
+        <Stack spacing={4} mb={32}>
           <RA.Bounce triggerOnce>
             <Typography variant='body1' marginInline={4} gutterBottom>
               PulseCheck brings your classroom back to life by turning silent
