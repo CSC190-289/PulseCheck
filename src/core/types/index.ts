@@ -79,10 +79,9 @@ export interface SessionChat {
 export interface SessionQuestion {
   prompt_type: PromptType
   prompt: string
-  prompt_img: string
+  prompt_img: string | null
   options: string[]
   points: number
-  async: boolean | null
   anonymous: boolean | null
   time: number | null
 }

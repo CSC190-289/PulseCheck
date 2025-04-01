@@ -2,18 +2,21 @@ import LeaveButton from "@/components/poll/session/LeaveButton"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
+import { SessionQuestion } from "@/core/types"
 import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
   AppBar,
   Box,
+  Button,
   Container,
   Grid2,
   LinearProgress,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material"
-import { deleteDoc, doc } from "firebase/firestore"
+import { deleteDoc, doc, getDoc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
@@ -29,7 +32,28 @@ export function PollParticipate() {
   const [session, sessionLoading] = useDocumentData(api.polls.sessions.doc(sid))
   const [users] = useCollection(api.polls.sessions.users.collect(sid))
   const [gettingstated, setGettingStated] = useState(false)
-  // const [showDialog, setShowDialog] = useState(false)
+  const [question, setQuestion] = useState<SessionQuestion | null>(null)
+
+  console.debug("question", question)
+
+  useEffect(() => {
+    async function aux() {
+      if (!(session && !sessionLoading && session.question)) {
+        return
+      }
+      try {
+        const ss = await getDoc(session?.question)
+        if (!ss.exists()) {
+          throw new Error(`question(${ss.id}) does not exist!`)
+        }
+        const q = ss.data()
+        setQuestion(q)
+      } catch (err) {
+        console.debug(err)
+      }
+    }
+    void aux()
+  }, [session, sessionLoading, session?.question])
 
   useEffect(() => {
     if (session && !sessionLoading) {
@@ -128,6 +152,24 @@ export function PollParticipate() {
           <Typography variant='h5' mb={2}>
             Waiting for Host...
           </Typography>
+        )}
+        {question && (
+          <Box mb={3}>
+            {question.prompt_img && (
+              <img
+                style={{ width: 700, height: 300, objectFit: "contain" }}
+                src={question.prompt_img}
+              />
+            )}
+            <Typography variant='h6'>{question.prompt}</Typography>
+            <Stack spacing={3} mt={3} direction={"column"}>
+              {question.options.map((x) => (
+                <Button key={x} variant='outlined'>
+                  {x}
+                </Button>
+              ))}
+            </Stack>
+          </Box>
         )}
         <Grid2 container spacing={2}>
           {users?.docs.map((x) => (

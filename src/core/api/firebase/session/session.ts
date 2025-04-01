@@ -16,7 +16,7 @@ import {
   where,
 } from "firebase/firestore"
 import BaseStore from "../store"
-import { Session } from "@/core/types"
+import { Session, SessionQuestion } from "@/core/types"
 import api, { clx } from ".."
 import UserStore from "./users"
 import WaitingUserStore from "./waiting_users"
@@ -173,10 +173,48 @@ export default class SessionStore extends BaseStore {
   }
 
   public async start(ref: DocumentReference<Session>) {
+    /* TODO - copy over questions to here */
+    const session_ss = await getDoc(ref)
+    if (!session_ss.exists()) {
+      throw new Error("Oh shit!")
+    }
+    const session = session_ss.data()
+    const poll_ss = await getDoc(session.poll)
+    const poll = poll_ss.data()
+    if (!poll) {
+      throw new Error("oh fuck")
+    }
+    const question_refs: DocumentReference<SessionQuestion>[] = []
+    for (const q of poll.questions) {
+      const opts: string[] = []
+      const pq_ss = await getDoc(q)
+      if (!pq_ss.exists()) {
+        throw new Error("what the fuck dude")
+      }
+      const pq = pq_ss.data()
+      for (const oref of pq.options) {
+        const opt_ss = await getDoc(oref)
+        if (!opt_ss.exists()) {
+          throw new Error("wow really")
+        }
+        const opt = opt_ss.data()
+        opts.push(opt.text)
+      }
+      const sqref = (await this.questions.create(ref.id, {
+        anonymous: pq.anonymous,
+        points: pq.points,
+        prompt: pq.prompt,
+        prompt_img: pq.prompt_img,
+        prompt_type: pq.prompt_type,
+        time: pq.time,
+        options: opts,
+      })) as DocumentReference<SessionQuestion>
+      question_refs.push(sqref)
+    }
     await this.updateByRef(ref, {
       state: "in-progress",
     })
-    /* TODO - copy over questions to here */
+    return question_refs
   }
 
   public async close(ref: DocumentReference<Session>) {

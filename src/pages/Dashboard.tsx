@@ -55,7 +55,9 @@ export default function Dashboard() {
           </Button>
         </Stack>
         <Stack sx={{ m: 1 }} spacing={3}>
-          <Typography variant='h6'>Your Polls</Typography>
+          {polls && polls.docs.length > 0 && (
+            <Typography variant='h6'>Your Polls</Typography>
+          )}
           {polls?.docs.map((x) => (
             <Card
               key={x.id}

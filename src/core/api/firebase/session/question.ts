@@ -1,7 +1,8 @@
-import { collection, doc, Firestore } from "firebase/firestore"
+import { addDoc, collection, doc, Firestore } from "firebase/firestore"
 import BaseStore from "../store"
 import OptionStore from "./option"
 import { clx } from ".."
+import { SessionQuestion } from "@/core/types"
 
 export default class QuestionStore extends BaseStore {
   private readonly _options: OptionStore
@@ -23,5 +24,8 @@ export default class QuestionStore extends BaseStore {
     return collection(this.db, clx.sessions, sid, clx.questions)
   }
 
-  // public async create(sid: string, payload: SessionQuestion) {}
+  public async create(sid: string, payload: SessionQuestion) {
+    const qref = await addDoc(this.collect(sid), payload)
+    return qref
+  }
 }

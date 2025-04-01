@@ -3,19 +3,27 @@ import StartButton from "@/components/poll/session/StartButton"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
-import { WaitingUser } from "@/core/types"
+import { SessionQuestion, WaitingUser } from "@/core/types"
 import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
   AppBar,
   Box,
+  Button,
   Container,
   Grid2,
   LinearProgress,
   Toolbar,
   Typography,
 } from "@mui/material"
-import { doc, onSnapshot, serverTimestamp, setDoc } from "firebase/firestore"
+import {
+  doc,
+  DocumentReference,
+  getDoc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
@@ -29,6 +37,32 @@ export default function PollHost() {
   const [users] = useCollection(api.polls.sessions.users.collect(sid))
   const navigate = useNavigate()
   const [gettingstated, setGettingStated] = useState(false)
+  const [question, setQuestion] = useState<SessionQuestion | null>(null)
+  const [questions, setQuestions] = useState<
+    DocumentReference<SessionQuestion>[]
+  >([])
+
+  console.debug("question", question)
+  console.debug("questions", questions)
+
+  useEffect(() => {
+    async function aux() {
+      if (!(session && !sessionLoading && session.question)) {
+        return
+      }
+      try {
+        const ss = await getDoc(session?.question)
+        if (!ss.exists()) {
+          throw new Error(`question(${ss.id}) does not exist!`)
+        }
+        const q = ss.data()
+        setQuestion(q)
+      } catch (err) {
+        console.debug(err)
+      }
+    }
+    void aux()
+  }, [session, sessionLoading, session?.question])
 
   useEffect(() => {
     if (session && !sessionLoading) {
@@ -98,7 +132,8 @@ export default function PollHost() {
   const handleStartSession = () => {
     async function start() {
       try {
-        await api.polls.sessions.start(sref)
+        const arr = await api.polls.sessions.start(sref)
+        setQuestions(arr)
       } catch (err) {
         console.debug(err)
       }
@@ -106,8 +141,27 @@ export default function PollHost() {
     void start()
   }
 
+  const handleNextQuestion = () => {
+    async function next() {
+      try {
+        /* TODO - go to next question */
+        if (questions.length === 0) {
+          console.debug("questions is empty!")
+          return
+        }
+        setQuestions((prev) => prev.slice(1))
+        await api.polls.sessions.updateByRef(sref, {
+          question: questions[0],
+        })
+      } catch (err) {
+        console.debug(err)
+      }
+    }
+    void next()
+  }
+
   const handleEndSession = () => {
-    async function end() {
+    async function kill() {
       try {
         await api.polls.sessions.close(sref)
         await navigate("/dashboard", { replace: true })
@@ -115,7 +169,7 @@ export default function PollHost() {
         console.debug(err)
       }
     }
-    void end()
+    void kill()
   }
 
   return (
@@ -137,7 +191,11 @@ export default function PollHost() {
             </Typography>
           </Box>
           <Box flex={1} marginInline={2} />
-          {!gettingstated && <StartButton callback={handleStartSession} />}
+          {gettingstated ? (
+            <Button onClick={handleNextQuestion}>Next</Button>
+          ) : (
+            <StartButton callback={handleStartSession} />
+          )}
         </Toolbar>
       </AppBar>
       <Container sx={{ mt: 2 }}>
@@ -145,6 +203,17 @@ export default function PollHost() {
           <Typography variant='h5' mb={2}>
             Room Code: {session?.room_code}
           </Typography>
+        )}
+        {question && (
+          <Box mb={3}>
+            {question.prompt_img && (
+              <img
+                style={{ width: 700, height: 300, objectFit: "contain" }}
+                src={question.prompt_img}
+              />
+            )}
+            <Typography variant='h6'>{question.prompt}</Typography>
+          </Box>
         )}
         <Grid2 container spacing={2}>
           {users?.docs.map((x) => (
