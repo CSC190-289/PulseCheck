@@ -27,7 +27,7 @@ export default function App() {
         />
         {/* poll routes */}
         <Route path='/poll/:id/edit' element={<Page.PollEditor />} />
-        <Route path='/poll/:id/results' element={<Page.PollResults />} />
+        <Route path='/poll/results' element={<Page.PollResults />} />
         <Route path='/poll/:id/overview' element={<Page.PollView />} />
         <Route path='/profile' element={<Page.Profile />} />
         <Route path='*' element={<Page.NotFound />} />

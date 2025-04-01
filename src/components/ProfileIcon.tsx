@@ -22,7 +22,7 @@ export default function ProfileIcon() {
         vertical: "bottom",
         horizontal: "right",
       }}
-      sx={{ cursor: "pointer" }}
+      sx={auth.user?.isAnonymous ? {} : { cursor: "pointer" }}
       variant='dot'
       onClick={handleClick}>
       {auth.user?.photoURL ? <Avatar src={auth.user.photoURL} /> : <Avatar />}

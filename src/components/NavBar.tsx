@@ -1,10 +1,27 @@
-import { Login, Menu as MenuIcon } from "@mui/icons-material"
+import {
+  AccountCircle,
+  BarChart,
+  Dashboard,
+  ExitToApp,
+  FileCopy,
+  Help,
+  Home,
+  HowToReg,
+  HowToVote,
+  Info,
+  Login,
+  Menu as MenuIcon,
+  Security,
+  Star,
+} from "@mui/icons-material"
 import {
   AppBar,
   Box,
   Button,
   Divider,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Slide,
@@ -137,16 +154,57 @@ function GuestMenuItems({ callback }: CallbackProps) {
 
   return (
     <Box>
-      <MenuItem onClick={handleHome}>Home</MenuItem>
-      <MenuItem onClick={handleAbout}>About</MenuItem>
-      <MenuItem onClick={handleFeatures}>Features</MenuItem>
-      <MenuItem onClick={handleFAQs}>FAQs</MenuItem>
+      <MenuItem onClick={handleHome}>
+        <ListItemIcon>
+          <Home />
+        </ListItemIcon>
+        <ListItemText primary='Home' />
+      </MenuItem>
+      <MenuItem onClick={handleAbout}>
+        <ListItemIcon>
+          <Info />
+        </ListItemIcon>
+        <ListItemText primary='About' />
+      </MenuItem>
+      <MenuItem onClick={handleFeatures}>
+        <ListItemIcon>
+          <Star />
+        </ListItemIcon>
+        <ListItemText primary='Features' />
+      </MenuItem>
+      <MenuItem onClick={handleFAQs}>
+        <ListItemIcon>
+          <Help />
+        </ListItemIcon>
+        <ListItemText primary='FAQs' />
+      </MenuItem>
       <Divider />
-      <MenuItem onClick={handleToS}>Terms of Service</MenuItem>
-      <MenuItem onClick={handlePP}>Privacy Policy</MenuItem>
+      <MenuItem onClick={handleToS}>
+        <ListItemIcon>
+          <FileCopy />
+        </ListItemIcon>
+        <ListItemText primary='Terms of Service' />
+      </MenuItem>
+      <MenuItem onClick={handlePP}>
+        <ListItemIcon>
+          <Security />
+        </ListItemIcon>
+        <ListItemText primary='Privacy Policy' />
+      </MenuItem>
       <Divider />
-      <MenuItem onClick={handleLoginfo}>Login</MenuItem>
-      <MenuItem onClick={handleReg}>Register</MenuItem>
+      <MenuItem onClick={handleLoginfo}>
+        <ListItemIcon>
+          <Login />
+        </ListItemIcon>
+        <ListItemText primary='Login' />
+      </MenuItem>
+
+      <MenuItem onClick={handleReg}>
+        <ListItemIcon>
+          <HowToReg />
+        </ListItemIcon>
+        <ListItemText primary='Register' />
+      </MenuItem>
     </Box>
   )
 }
@@ -187,11 +245,37 @@ function AuthMenuItems({ callback }: CallbackProps) {
 
   return (
     <Box>
-      <MenuItem onClick={handleDashboard}>Dashboard</MenuItem>
-      <MenuItem onClick={handleJoinPoll}>Join Poll</MenuItem>
-      <MenuItem onClick={handleResults}>Results</MenuItem>
-      <MenuItem onClick={handleProfile}>Profile</MenuItem>
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      <MenuItem onClick={handleDashboard}>
+        <ListItemIcon>
+          <Dashboard />
+        </ListItemIcon>
+        <ListItemText>Dashboard</ListItemText>
+      </MenuItem>
+      <MenuItem onClick={handleJoinPoll}>
+        <ListItemIcon>
+          <HowToVote />
+        </ListItemIcon>
+        <ListItemText>Join Poll</ListItemText>
+      </MenuItem>
+      <MenuItem onClick={handleResults}>
+        <ListItemIcon>
+          <BarChart />
+        </ListItemIcon>
+        <ListItemText>Results</ListItemText>
+      </MenuItem>
+      <MenuItem onClick={handleProfile}>
+        <ListItemIcon>
+          <AccountCircle />
+        </ListItemIcon>
+        <ListItemText>Profile</ListItemText>
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={handleLogout}>
+        <ListItemIcon>
+          <ExitToApp />
+        </ListItemIcon>
+        <ListItemText>Logout</ListItemText>
+      </MenuItem>
     </Box>
   )
 }

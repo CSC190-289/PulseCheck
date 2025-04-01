@@ -2,9 +2,10 @@ import { Firestore } from "firebase/firestore"
 import PollStore from "./polls"
 import UserStore from "./users"
 import { initializeApp, FirebaseOptions } from "firebase/app"
-import { getAuth, signInAnonymously } from "firebase/auth"
+import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
+import AuthStore from "./auth"
 
 const config: FirebaseOptions = {
   apiKey: "AIzaSyBAGd9DDTtn8aAeab4Ydq65yErWAzO7mPg",
@@ -52,10 +53,12 @@ export enum clx {
 class API {
   private readonly _users: UserStore
   private readonly _polls: PollStore
+  private readonly _auth: AuthStore
 
   constructor(db: Firestore) {
     this._users = new UserStore(db)
     this._polls = new PollStore(db)
+    this._auth = new AuthStore()
   }
 
   public get users(): UserStore {
@@ -66,8 +69,8 @@ class API {
     return this._polls
   }
 
-  public signInAsGuest() {
-    return signInAnonymously(auth)
+  public get auth(): AuthStore {
+    return this._auth
   }
 }
 

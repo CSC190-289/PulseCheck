@@ -9,11 +9,16 @@ import {
   DocumentData,
   DocumentReference,
   Firestore,
+  getDocs,
+  Query,
+  query,
+  QuerySnapshot,
   serverTimestamp,
   updateDoc,
+  where,
 } from "firebase/firestore"
-import { clx } from "."
-import SessionStore from "./session"
+import api, { clx } from "."
+import SessionStore from "./session/session"
 
 export default class PollStore extends BaseStore {
   private readonly _questions: QuestionStore
@@ -37,6 +42,10 @@ export default class PollStore extends BaseStore {
     return doc(this.db, clx.polls, pid) as DocumentReference<Poll>
   }
 
+  public collect() {
+    return collection(this.db, clx.polls)
+  }
+
   public async add(host: DocumentReference<User>) {
     const pcref = collection(this.db, clx.polls) as CollectionReference<Poll>
     return addDoc(pcref, {
@@ -49,6 +58,25 @@ export default class PollStore extends BaseStore {
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
     })
+  }
+
+  public queryUserPolls(uid: string): Query<Poll> {
+    const uref = api.users.doc(uid)
+    const pollsRef = this.collect()
+    const q = query(pollsRef, where("owner", "==", uref)) as Query<Poll>
+    return q
+  }
+
+  public async getUserPolls(uid: string): Promise<Poll[]> {
+    const uref = api.users.doc(uid)
+    const pollsRef = this.collect()
+    const q = query(pollsRef, where("owner", "==", uref))
+    const snapshot = (await getDocs(q)) as QuerySnapshot<Poll>
+    const polls: Poll[] = snapshot.docs.map((x) => ({
+      ...x.data(),
+      id: x.id,
+    }))
+    return polls
   }
 
   public async update(

@@ -33,7 +33,7 @@ export default function GuestJoin() {
         /* find session with code */
         const sref = await api.polls.sessions.getByCode(roomCode)
         /* then sign in as a guest */
-        const cred = await api.signInAsGuest()
+        const cred = await api.auth.signInAsGuest()
         /* add yourself to the queue */
         await api.polls.sessions.enqueue(sref.id, cred.user.uid, {
           display_name: displayName,

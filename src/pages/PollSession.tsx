@@ -1,17 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import api from "@/core/api/firebase"
-import {
-  Typography,
-  Container,
-  Box,
-  Toolbar,
-  Button,
-  Fab,
-  LinearProgress,
-} from "@mui/material"
+import { Typography, Box, Button, LinearProgress } from "@mui/material"
 import { useNavigate, useParams } from "react-router-dom"
-import React, { useEffect, useState } from "react"
-import { Message } from "@mui/icons-material"
+import { useEffect, useState } from "react"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { useAuthContext } from "@/core/hooks"
 
@@ -110,41 +101,5 @@ export default function PollSession() {
         </Button>
       </Box>
     </Box>
-  )
-
-  return (
-    <React.Fragment>
-      <Toolbar
-        sx={{
-          justifyContent: "center",
-          boxShadow: "2px 2px rgba(0,0,0,0.1)",
-        }}>
-        <Button onClick={handleLeave}>Leave</Button>
-        <Box flexGrow={1} />
-        <Box position={"absolute"}>
-          <Typography variant='h6'>Poll Title Goes Here</Typography>
-          {/* <Typography>{itops(session.users.length || 0)}</Typography> */}
-        </Box>
-      </Toolbar>
-      <Container sx={{ mt: 2 }}>
-        {/* <Grid2 container spacing={2}>
-          {session?.users.map((x) => (
-            <Grid2 key={x} size={{ lg: 3, md: 4, sm: 6, xs: 12 }}>
-              <RA.Zoom triggerOnce>
-                <UserSessionCard userId={x} />
-              </RA.Zoom>
-            </Grid2>
-          ))}
-        </Grid2> */}
-        <Fab
-          color='primary'
-          onClick={() =>
-            snackbar.show({ type: "error", message: "Not Yet Implemented" })
-          }
-          sx={{ position: "absolute", bottom: 0, right: 0, mr: 2, mb: 2 }}>
-          <Message />
-        </Fab>
-      </Container>
-    </React.Fragment>
   )
 }

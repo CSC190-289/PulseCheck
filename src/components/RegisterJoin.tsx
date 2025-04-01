@@ -12,17 +12,12 @@ import {
   Box,
 } from "@mui/material"
 import { RA } from "@/styles"
-// import {Stack} from "@mui/material/Stack"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-// import { createUser } from "@/core/api"
-import { auth, firestore } from "@/core/api/firebase"
+import api, { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
-// import React from "react"
-import { doc, serverTimestamp, setDoc } from "firebase/firestore"
 import { createUserWithEmailAndPassword } from "firebase/auth"
 import SignInWGoogleButton from "@/components/auth/ContinueWGoogleButton"
-// import { Visibility, VisibilityOff } from "@mui/icons-material"
 import { FirebaseError } from "firebase/app"
 
 const PASS_LEN = 6
@@ -146,17 +141,11 @@ export default function RegisterJoin() {
       const user = UserCredential.user
 
       //saving user to firebase
-
-      await setDoc(
-        doc(firestore, "users", user.uid),
-        {
-          email: user.email,
-          display_name: displayName,
-          photo_url: user.photoURL,
-          created_at: serverTimestamp(),
-        },
-        { merge: false }
-      ) //data merge
+      await api.users.create(user.uid, {
+        email: user.email!,
+        display_name: displayName,
+        photo_url: user.photoURL,
+      })
 
       snackbar.show({
         message: "Get Ready to Poll Up",
