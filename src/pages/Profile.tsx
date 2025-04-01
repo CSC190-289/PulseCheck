@@ -178,7 +178,7 @@ export default function Profile() {
   return (
     <Container maxWidth='xs'>
       <RA.Bounce triggerOnce>
-        <Card raised sx={{ mt: 12, pb: 3 }}>
+        <Card raised sx={{ mt: 2, pb: 3 }}>
           <CardContent>
             <Box
               sx={{
