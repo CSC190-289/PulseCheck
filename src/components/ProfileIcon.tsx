@@ -1,9 +1,19 @@
-import { auth } from "@/core/api/firebase"
+import { useAuthContext } from "@/core/hooks"
 import { Avatar, Badge, styled } from "@mui/material"
-import { useAuthState } from "react-firebase-hooks/auth"
+import { useNavigate } from "react-router-dom"
 
-export default function ProfileBadge() {
-  const [user] = useAuthState(auth)
+export default function ProfileIcon() {
+  const auth = useAuthContext()
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    if (!auth.user) {
+      return
+    }
+    if (!auth.user.isAnonymous) {
+      void navigate("/profile")
+    }
+  }
 
   return (
     <StyledBadge
@@ -12,8 +22,10 @@ export default function ProfileBadge() {
         vertical: "bottom",
         horizontal: "right",
       }}
-      variant='dot'>
-      <Avatar src={user?.photoURL ?? undefined} />
+      sx={{ cursor: "pointer" }}
+      variant='dot'
+      onClick={handleClick}>
+      {auth.user?.photoURL ? <Avatar src={auth.user.photoURL} /> : <Avatar />}
     </StyledBadge>
   )
 }

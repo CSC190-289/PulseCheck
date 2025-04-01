@@ -16,7 +16,7 @@ import { RA } from "@/styles"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 // import { createUser } from "@/core/api"
-import { auth, db } from "@/core/api/firebase"
+import { auth, firestore } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 // import React from "react"
 import { doc, serverTimestamp, setDoc } from "firebase/firestore"
@@ -148,7 +148,7 @@ export default function RegisterJoin() {
       //saving user to firebase
 
       await setDoc(
-        doc(db, "users", user.uid),
+        doc(firestore, "users", user.uid),
         {
           email: user.email,
           display_name: displayName,

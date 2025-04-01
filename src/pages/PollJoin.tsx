@@ -8,8 +8,8 @@ import {
   CardContent,
 } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import { useState } from "react"
-import { createUser, findLobbyWithCode, joinLobby } from "@/core/api"
+import { useEffect, useState } from "react"
+import api from "@/core/api/firebase"
 import { auth } from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { useAuthState } from "react-firebase-hooks/auth"
@@ -21,7 +21,15 @@ export default function PollJoin() {
   const [roomCode, setRoomCode] = useState<string>("")
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
-  const [user] = useAuthState(auth)
+  const [user, loading] = useAuthState(auth)
+
+  useEffect(() => {
+    if (!user && !loading) {
+      void navigate("/get-started")
+    } else if (user?.isAnonymous) {
+      void navigate("/get-started")
+    }
+  }, [user, loading, navigate])
 
   const handleJoinClick = (e: MouseEvent | FormEvent) => {
     e.preventDefault()
@@ -34,20 +42,14 @@ export default function PollJoin() {
           throw new Error("Display Name cannot be blank!")
         }
         if (!user) {
-          throw new Error(
-            "Please log in to join a poll! You shouldn't be here."
-          )
+          throw new Error("How did you do this?")
         }
-        const lobby = await findLobbyWithCode(roomCode)
-
-        //const cred = await signInAnonymously(auth)
-
-        console.debug("lobby", lobby)
-        //console.debug("cred", cred)
-
-        await createUser(user.uid, displayName)
-        await joinLobby(lobby.id, user.uid)
-        await navigate(`/poll/${lobby.id}/lobby`)
+        const sref = await api.polls.sessions.getByCode(roomCode)
+        await api.polls.sessions.enqueue(sref.id, user.uid, {
+          display_name: displayName,
+          photo_url: user.photoURL,
+        })
+        await navigate(`/poll/session/${sref.id}`)
       } catch (err: unknown) {
         if (err instanceof Error) {
           snackbar.show({

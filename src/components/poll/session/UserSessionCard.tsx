@@ -1,4 +1,4 @@
-import { db } from "@/core/api/firebase"
+import { firestore } from "@/core/api/firebase"
 import { User } from "@/core/types"
 import { stoc } from "@/utils"
 import { Avatar, Box, Card, Skeleton, Typography } from "@mui/material"
@@ -9,22 +9,22 @@ interface Props {
   userId: string
 }
 
-export default function LobbiestCard(props: Props) {
+export default function UserSessionCard(props: Props) {
   const { userId } = props
-  const ref = doc(db, "users", userId) as DocumentReference<User>
+  const ref = doc(firestore, "users", userId) as DocumentReference<User>
   const [user, loading, error] = useDocumentData<User>(ref)
 
   return (
     <Card>
       <Box m={1} display={"flex"} alignItems={"center"}>
-        <Avatar sx={{ mr: 1, bgcolor: stoc(user?.displayName ?? "") }} />
+        <Avatar sx={{ mr: 1, bgcolor: stoc(user?.display_name ?? "") }} />
         <Typography>
           {loading ? (
             <Skeleton variant='text' sx={{ fontSize: "1rem" }} />
           ) : error ? (
             `User(${userId})`
           ) : (
-            user?.displayName
+            user?.display_name
           )}
         </Typography>
       </Box>

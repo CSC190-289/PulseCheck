@@ -1,18 +1,90 @@
+import { DocumentReference, Timestamp } from "firebase/firestore"
+
 export interface User {
-  displayName: string
-  createdAt: Date
+  display_name: string
+  email: string
+  created_at: Date
 }
 
 export interface Poll {
-  questions: [Question]
+  owner: DocumentReference<User>
+  title: string
+  async: boolean
+  anonymous: boolean | null
+  time: number | null
+  questions: DocumentReference<Question>[]
+  created_at: Timestamp
+  updated_at: Timestamp
 }
 
 export interface Question {
-  choices: [string]
+  prompt_type: PromptType
+  prompt: string
+  prompt_img: string | null
+  options: DocumentReference<PromptOption>[]
+  points: number
+  anonymous: boolean
+  time: number | null
+  created_at: Timestamp
+  updated_at: Timestamp
 }
 
-export interface Lobby {
-  id: string
-  host: string
-  users: string[]
+export type PromptType = "multiple-choice" | "multi-select" | "ranking-poll"
+
+export interface PromptOption {
+  text: string
+  correct: boolean
+}
+
+export interface Session {
+  host: DocumentReference<User>
+  poll_id: DocumentReference<Poll>
+  room_code: string
+  title: string
+  async: boolean
+  anonymous: boolean | null
+  time: number | null
+  question: DocumentReference<SessionQuestion>
+  state: "closed" | "in-progress" | "open"
+  created_at: Timestamp
+}
+
+export interface SessionUser {
+  photo_url: string | null
+  display_name: string
+  joined_at: Timestamp
+}
+
+export interface SessionChat {
+  user: DocumentReference<User>
+  display_name: string
+  photo_url: string | null
+  message: string
+  created_at: Timestamp
+}
+
+export interface SessionQuestion {
+  prompt_type: PromptType
+  prompt: string
+  prompt_img: string
+  options: string[]
+  points: number
+  async: boolean | null
+  anonymous: boolean | null
+  time: number | null
+}
+
+export interface SessionResponse {
+  user: DocumentReference<User>
+  answer: string
+  correct: boolean
+  created_at: Timestamp
+}
+
+export interface Submission {
+  session: DocumentReference<Session>
+  user: DocumentReference<User>
+  display_name: string
+  total_score: number
+  submitted_at: Timestamp
 }
