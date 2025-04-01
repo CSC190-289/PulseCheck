@@ -7,10 +7,10 @@ export default function Login() {
   return (
     <React.Fragment>
       <Container maxWidth='sm'>
-              {/* <Typography> Login Page Goes Here </Typography> */}
-              {/* <SignInWGoogleButton /> */}
-              <UserLogin />
-            </Container>
+        {/* <Typography> Login Page Goes Here </Typography> */}
+        {/* <SignInWGoogleButton /> */}
+        <UserLogin />
+      </Container>
     </React.Fragment>
   )
 }
