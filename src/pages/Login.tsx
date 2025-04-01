@@ -1,12 +1,16 @@
-import { Typography } from "@mui/material"
+import { Container } from "@mui/material"
 import React from "react"
-import SignInWGoogleButton from "@/components/auth/ContinueWGoogleButton"
+import UserLogin from "@/components/UserLogin"
+//import SignInWGoogleButton from "@/components/auth/ContinueWGoogleButton"
 
 export default function Login() {
   return (
     <React.Fragment>
-      <Typography>Login Page Goes Here</Typography>
-      <SignInWGoogleButton />
+      <Container maxWidth='sm'>
+        {/* <Typography> Login Page Goes Here </Typography> */}
+        {/* <SignInWGoogleButton /> */}
+        <UserLogin />
+      </Container>
     </React.Fragment>
   )
 }
