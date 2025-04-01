@@ -12,6 +12,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore"
 import BaseStore from "../store"
@@ -131,7 +132,7 @@ export default class SessionStore extends BaseStore {
   /**
    * Creates Poll Session by given poll id
    */
-  public async host(pid: string, uid: string) {
+  public async host(pid: string, uid: string): Promise<string> {
     const uref = api.users.doc(uid)
     const pref = api.polls.doc(pid)
     const pollDoc = await getDoc(pref)
@@ -142,7 +143,7 @@ export default class SessionStore extends BaseStore {
     if (poll.owner.path !== uref.path) {
       throw new Error(`Unauthorized access to poll!`)
     }
-    await addDoc(this.collect(), {
+    const session = await addDoc(this.collect(), {
       host: uref,
       poll: pref,
       room_code: generateRoomCode(),
@@ -153,6 +154,27 @@ export default class SessionStore extends BaseStore {
       question: null,
       state: "open",
       created_at: serverTimestamp(),
+    })
+    return session.id
+  }
+
+  public async updateByRef(
+    ref: DocumentReference<Session>,
+    payload: Partial<Session>
+  ) {
+    await updateDoc(ref, payload)
+  }
+
+  public async start(ref: DocumentReference<Session>) {
+    await this.updateByRef(ref, {
+      state: "in-progress",
+    })
+  }
+
+  public async close(ref: DocumentReference<Session>) {
+    await this.updateByRef(ref, {
+      room_code: ref.id,
+      state: "closed",
     })
   }
 }

@@ -3,7 +3,6 @@ import { Typography, Grid2, Divider } from "@mui/material"
 import TimerSwitch from "./TimerSwitch"
 
 /**
- * @todo add docs
  * @author VerySirias
  */
 
@@ -13,6 +12,9 @@ interface Props {
   time: number | null /* is this question timed? */
 }
 
+/**
+ * @deprecated Do not use this anymore.
+ */
 export default function Settings(props: Props) {
   const { pid, time } = props
   // const [anonymous, setAnonymous] = useState(props.anonymous)

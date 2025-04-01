@@ -1,4 +1,3 @@
-import SignOutButton from "@/components/auth/SignOutButton"
 import { useNavigate } from "react-router-dom"
 import {
   Button,
@@ -37,11 +36,9 @@ export default function Dashboard() {
   }
 
   return (
-    <Container maxWidth='xs'>
-      <Box mb={16} mt={16}>
-        <Stack
-          sx={{ m: 1 }} // margin for everything in the box
-          spacing={3}>
+    <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
+      <Box mt={2}>
+        <Stack spacing={3}>
           <Button
             variant='contained'
             color='primary'
@@ -56,12 +53,9 @@ export default function Dashboard() {
             onClick={handleCreatePoll}>
             Create Poll
           </Button>
-          <SignOutButton />
         </Stack>
-        <Stack sx={{ m: 1 }} spacing={3} textAlign={"left"}>
-          <Typography variant='h6' align='left'>
-            Your Polls
-          </Typography>
+        <Stack sx={{ m: 1 }} spacing={3}>
+          <Typography variant='h6'>Your Polls</Typography>
           {polls?.docs.map((x) => (
             <Card
               key={x.id}
@@ -70,13 +64,13 @@ export default function Dashboard() {
               }}>
               <CardActionArea>
                 <CardContent>
-                  <Typography variant='h5' gutterBottom>
+                  <Typography variant='h6' gutterBottom>
                     {x.data().title}
                   </Typography>
-                  <Typography color='textSecondary'>
+                  <Typography variant='body2' color='textSecondary'>
                     {ntoq(x.data().questions.length)}
                   </Typography>
-                  <Typography color='textSecondary'>
+                  <Typography variant='body2' color='textSecondary'>
                     {tstos(x.data().updated_at)}
                   </Typography>
                 </CardContent>

@@ -32,6 +32,9 @@ export default function TimerSwitch(props: Props) {
 
   useEffect(() => {
     const updateTime = async (newTime: number | null) => {
+      if (newTime === props.time) {
+        return
+      }
       try {
         // if (newTime !== null && newTime <= 0) {
         //   return

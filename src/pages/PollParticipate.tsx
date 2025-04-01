@@ -1,24 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import LeaveButton from "@/components/poll/session/LeaveButton"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
 import { RA } from "@/styles"
-import { ArrowBack, Close, Logout } from "@mui/icons-material"
+import { ntops } from "@/utils"
 import {
   AppBar,
-  Button,
+  Box,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Grid2,
-  IconButton,
+  LinearProgress,
   Toolbar,
   Typography,
 } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import { deleteDoc, doc } from "firebase/firestore"
+import React, { useEffect } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -32,7 +29,17 @@ export function PollParticipate() {
   const snackbar = useSnackbar()
   const [session] = useDocumentData(api.polls.sessions.doc(sid))
   const [users] = useCollection(api.polls.sessions.users.collect(sid))
-  const [showDialog, setShowDialog] = useState(false)
+  // const [showDialog, setShowDialog] = useState(false)
+
+  // useEffect(() => {
+  //   if (!sid) {
+  //     return
+  //   }
+  //   if (!user) {
+  //     return
+  //   }
+
+  // }, [sid])
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -52,6 +59,9 @@ export function PollParticipate() {
           } else {
             await navigate("/poll/join")
           }
+        } else {
+          const wuref = api.polls.sessions.waiting_users.collect(sid)
+          void deleteDoc(doc(wuref, user.uid))
         }
       }
       void aux()
@@ -61,7 +71,7 @@ export function PollParticipate() {
     }
   }, [])
 
-  function handleLeave() {
+  function leaveSession() {
     async function aux() {
       if (!user) {
         return
@@ -91,13 +101,30 @@ export function PollParticipate() {
     <React.Fragment>
       <AppBar color='inherit' position='relative'>
         <Toolbar>
-          <IconButton onClick={() => setShowDialog(true)}>
+          {/* <IconButton onClick={() => setShowDialog(true)}>
             <ArrowBack />
-          </IconButton>
-          <Typography>{session?.title}</Typography>
+          </IconButton> */}
+          <LeaveButton
+            callback={leaveSession}
+            dialogTitle='Are you sure you want to leave?'
+            dialogContent='All answers you submitted will be discarded.'
+          />
+          <Box textAlign={"initial"}>
+            <Typography>{session?.title}</Typography>
+            <Typography
+              variant='caption'
+              component={"div"}
+              color='textSecondary'>
+              {ntops(users?.docs.length ?? 0)}
+            </Typography>
+          </Box>
         </Toolbar>
       </AppBar>
+      <LinearProgress />
       <Container sx={{ mt: 2 }}>
+        <Typography variant='h5' mb={2}>
+          Waiting for Host...
+        </Typography>
         <Grid2 container spacing={2}>
           {users?.docs.map((x) => (
             <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
@@ -108,7 +135,7 @@ export function PollParticipate() {
           ))}
         </Grid2>
       </Container>
-      <Dialog open={showDialog}>
+      {/* <Dialog open={showDialog}>
         <DialogTitle>Are you sure you want to leave?</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -119,7 +146,7 @@ export function PollParticipate() {
           <Button onClick={() => setShowDialog(false)}>No</Button>
           <Button onClick={handleLeave}>Yes</Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </React.Fragment>
   )
 }

@@ -17,18 +17,10 @@ import {
 import React, { useEffect, useState } from "react"
 import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
-import {
-  Campaign,
-  Done,
-  Edit,
-  MenuOpen,
-  Poll,
-  RocketLaunch,
-  ScreenShare,
-  SupervisorAccount,
-} from "@mui/icons-material"
+import { Done, Edit, MenuOpen, ScreenShare } from "@mui/icons-material"
 import TimerSwitch from "./TimerSwitch"
 import { useAuthContext } from "@/core/hooks"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
   pid: string /* poll id */
@@ -52,6 +44,7 @@ export default function Toolbar(props: Props) {
   const snackbar = useSnackbar()
   const [anonymous, setAnonymous] = useState(props.anonymous)
   const [anchorElPoll, setAnchorElPoll] = useState<HTMLElement | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function saveAnonymous(bool: boolean | null) {
@@ -121,12 +114,14 @@ export default function Toolbar(props: Props) {
   }
 
   const handleHostClick = () => {
+    /* create a poll session and host it */
     if (auth.user) {
       const user = auth.user
       api.polls.sessions
         .host(pid, user.uid)
-        .then(() => {
+        .then((sessionId) => {
           /* TODO - host poll */
+          void navigate(`/poll/session/${sessionId}/host`)
         })
         .catch((err) => console.debug(err))
     }
@@ -208,31 +203,7 @@ export default function Toolbar(props: Props) {
               <Divider />
               <MenuItem onClick={handleHostClick}>
                 <ListItemIcon>
-                  <Campaign />
-                </ListItemIcon>
-                <ListItemText>Host</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleHostClick}>
-                <ListItemIcon>
                   <ScreenShare />
-                </ListItemIcon>
-                <ListItemText>Host</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleHostClick}>
-                <ListItemIcon>
-                  <Poll />
-                </ListItemIcon>
-                <ListItemText>Host</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleHostClick}>
-                <ListItemIcon>
-                  <SupervisorAccount />
-                </ListItemIcon>
-                <ListItemText>Host</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={handleHostClick}>
-                <ListItemIcon>
-                  <RocketLaunch />
                 </ListItemIcon>
                 <ListItemText>Host</ListItemText>
               </MenuItem>

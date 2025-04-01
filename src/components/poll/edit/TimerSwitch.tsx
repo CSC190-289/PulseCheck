@@ -23,7 +23,9 @@ export default function TimerSwitch(props: Props) {
 
   useEffect(() => {
     const updateTime = async (newTime: number | null) => {
-      console.debug("newTime", newTime)
+      if (newTime === props.time) {
+        return
+      }
       try {
         const ref = api.polls.doc(pid)
         await api.polls.update(ref, { time: newTime })

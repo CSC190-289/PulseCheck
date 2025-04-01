@@ -1,28 +1,48 @@
 import { PromptOption } from "@/core/types"
 import { Box, Skeleton, TextField, Typography } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useDocumentData } from "react-firebase-hooks/firestore"
 import CorrectToggleButton from "./CorrectToggleButton"
 import RemoveButton from "./RemoveButton"
+import api from "@/core/api/firebase"
 
 interface Props {
   ref: DocumentReference<PromptOption>
   index: number
 }
 
+const SAVE_DELAY = 1000
+
 /**
- * @todo add docs
+ * Editor for options of a question (prompt).
  * @author Camputron, VerySirias
  */
 export default function PromptOptionEditor(props: Props) {
   const { ref, index } = props
   const [opt, loading, error] = useDocumentData(ref)
   const [text, setText] = useState(opt?.text ?? "")
-  /* TODO - Implement PromptOption textfield editor
-  The state is already implemented, there should be a deboucne delay to update
-  firestore. Use the API store to update the document.
-   */
+
+  useEffect(() => {
+    async function savePrompt(newText: string) {
+      try {
+        if (newText === opt?.text) {
+          return
+        }
+        await api.polls.questions.options.updateByRef(ref, {
+          text: newText,
+        })
+      } catch (err) {
+        console.debug(err)
+      }
+    }
+    const timeout = setTimeout(() => {
+      void savePrompt(text)
+    }, SAVE_DELAY)
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [ref, text, opt?.text])
 
   if (error) {
     return (

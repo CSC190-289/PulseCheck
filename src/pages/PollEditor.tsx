@@ -2,11 +2,9 @@ import {
   Container,
   Fab,
   LinearProgress,
-  Skeleton,
   Stack,
   Tooltip,
   Typography,
-  Grid2,
 } from "@mui/material"
 import React, { useEffect } from "react"
 import Toolbar from "@/components/poll/edit/Toolbar"
@@ -17,7 +15,6 @@ import { useSnackbar } from "@/core/hooks"
 import api from "@/core/api/firebase"
 import { Add } from "@mui/icons-material"
 import { RA } from "@/styles"
-import Settings from "@/components/poll/edit/Settings"
 
 export default function PollEditor() {
   const params = useParams()
