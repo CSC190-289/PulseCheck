@@ -178,7 +178,7 @@ export default function Profile() {
   return (
     <Container maxWidth='xs'>
       <RA.Bounce triggerOnce>
-        <Card raised sx={{ mt: 12, pb: 3 }}>
+        <Card raised sx={{ mt: 5, pb: 4 }}>
           <CardContent>
             <Box
               sx={{
@@ -186,7 +186,7 @@ export default function Profile() {
                 alignItems: "center",
                 flexDirection: "column",
               }}>
-              <Avatar src={photoURL} alt={displayName} sx={{ mr: 2 }}>
+              <Avatar src={photoURL} alt={displayName} sx={{ mr: 1, alignItems: "centered"}}>
                 {displayName ? displayName.charAt(0).toUpperCase() : "U"}
               </Avatar>
               <Typography variant='h4'>
@@ -202,7 +202,7 @@ export default function Profile() {
                     helperText={error.displayName}
                   />
                 ) : (
-                  <Typography variant='body1' fontWeight='medium'>
+                  <Typography variant='body1' fontWeight='Bold' sx={{mr: 1}}>
                     {displayName}
                   </Typography>
                 )}
