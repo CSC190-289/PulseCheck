@@ -96,7 +96,6 @@ export default function PollHost() {
   }
 
   const handleStartSession = () => {
-    /* TODO - start session */
     async function start() {
       try {
         await api.polls.sessions.start(sref)
@@ -108,8 +107,7 @@ export default function PollHost() {
   }
 
   const handleEndSession = () => {
-    /* TODO - kill session */
-    async function kill() {
+    async function end() {
       try {
         await api.polls.sessions.close(sref)
         await navigate("/dashboard", { replace: true })
@@ -117,7 +115,7 @@ export default function PollHost() {
         console.debug(err)
       }
     }
-    void kill()
+    void end()
   }
 
   return (

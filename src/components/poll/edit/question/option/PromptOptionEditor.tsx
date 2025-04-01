@@ -21,12 +21,12 @@ const SAVE_DELAY = 1000
 export default function PromptOptionEditor(props: Props) {
   const { ref, index } = props
   const [opt, loading, error] = useDocumentData(ref)
-  const [text, setText] = useState(opt?.text ?? "")
+  const [text, setText] = useState("")
 
   useEffect(() => {
-    async function savePrompt(newText: string) {
+    async function savePrompt(newText: string | undefined) {
       try {
-        if (newText === opt?.text) {
+        if (!newText || !opt || newText === opt?.text) {
           return
         }
         await api.polls.questions.options.updateByRef(ref, {
@@ -42,7 +42,13 @@ export default function PromptOptionEditor(props: Props) {
     return () => {
       clearTimeout(timeout)
     }
-  }, [ref, text, opt?.text])
+  }, [ref, text, opt])
+
+  useEffect(() => {
+    if (opt && !loading) {
+      setText(opt.text)
+    }
+  }, [opt, loading])
 
   if (error) {
     return (

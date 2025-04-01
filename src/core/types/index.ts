@@ -38,6 +38,10 @@ export interface PromptOption {
 }
 
 export type SessionState = "closed" | "in-progress" | "open" | "done"
+/* if a session is closed, then it was ended by the host */
+/* if a session is in-progress, then it was started by the host */
+/* if a session is open, then the host hasn't started the session yet */
+/* if a session is done, then the host finished the session */
 
 export interface Session {
   host: DocumentReference<User>

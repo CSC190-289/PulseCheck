@@ -22,17 +22,20 @@ import UserStore from "./users"
 import WaitingUserStore from "./waiting_users"
 import ChatStore from "./chat"
 import { generateRoomCode } from "@/utils"
+import QuestionStore from "./question"
 
 export default class SessionStore extends BaseStore {
   private readonly _users: UserStore
   private readonly _waiting_users: WaitingUserStore
   private readonly _chat: ChatStore
+  private readonly _questions: QuestionStore
 
   constructor(db: Firestore) {
     super(db)
     this._users = new UserStore(db)
     this._waiting_users = new WaitingUserStore(db)
     this._chat = new ChatStore(db)
+    this._questions = new QuestionStore(db)
   }
 
   public get users() {
@@ -45,6 +48,10 @@ export default class SessionStore extends BaseStore {
 
   public get chat() {
     return this._chat
+  }
+
+  public get questions() {
+    return this._questions
   }
 
   public doc(sid: string) {
@@ -169,6 +176,7 @@ export default class SessionStore extends BaseStore {
     await this.updateByRef(ref, {
       state: "in-progress",
     })
+    /* TODO - copy over questions to here */
   }
 
   public async close(ref: DocumentReference<Session>) {
