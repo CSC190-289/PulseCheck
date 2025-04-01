@@ -21,6 +21,7 @@ export default function LeaveButton(props: Props) {
 
   const handleLeave = () => {
     props.callback()
+    setOpen(false)
   }
 
   return (
