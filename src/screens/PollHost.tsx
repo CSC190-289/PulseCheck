@@ -32,9 +32,9 @@ export default function PollHost() {
   const params = useParams()
   const { user, loading } = useAuthContext()
   const sid = params.id ?? ""
-  const sref = api.polls.sessions.doc(sid)
+  const sref = api.sessions.doc(sid)
   const [session, sessionLoading] = useDocumentData(sref)
-  const [users] = useCollection(api.polls.sessions.users.collect(sid))
+  const [users] = useCollection(api.sessions.users.collect(sid))
   const navigate = useNavigate()
   const [gettingstated, setGettingStated] = useState(false)
   const [question, setQuestion] = useState<SessionQuestion | null>(null)
@@ -77,7 +77,7 @@ export default function PollHost() {
   useEffect(() => {
     /* ensure user is host */
     if (user && !loading) {
-      api.polls.sessions
+      api.sessions
         .isHost(sid, user.uid)
         .then((isHost) => {
           if (!isHost) {
@@ -96,8 +96,8 @@ export default function PollHost() {
     if (!sid) {
       return
     }
-    const usersRef = api.polls.sessions.users.collect(sid)
-    const wuRef = api.polls.sessions.waiting_users.collect(sid)
+    const usersRef = api.sessions.users.collect(sid)
+    const wuRef = api.sessions.waiting_users.collect(sid)
     const unsubscribeUsers = onSnapshot(wuRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         async function addUser(userId: string, data: WaitingUser) {
@@ -132,7 +132,7 @@ export default function PollHost() {
   const handleStartSession = () => {
     async function start() {
       try {
-        const arr = await api.polls.sessions.start(sref)
+        const arr = await api.sessions.start(sref)
         setQuestions(arr)
       } catch (err) {
         console.debug(err)
@@ -147,13 +147,13 @@ export default function PollHost() {
         /* TODO - go to next question */
         if (questions.length === 0) {
           console.debug("no mas questions!")
-          await api.polls.sessions.updateByRef(sref, {
+          await api.sessions.updateByRef(sref, {
             question: null,
           })
           return
         }
         setQuestions((prev) => prev.slice(1))
-        await api.polls.sessions.updateByRef(sref, {
+        await api.sessions.updateByRef(sref, {
           question: questions[0],
         })
       } catch (err) {
@@ -166,7 +166,7 @@ export default function PollHost() {
   const handleEndSession = () => {
     async function kill() {
       try {
-        await api.polls.sessions.close(sref)
+        await api.sessions.close(sref)
         await navigate("/dashboard", { replace: true })
       } catch (err) {
         console.debug(err)

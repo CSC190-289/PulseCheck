@@ -117,7 +117,7 @@ export default function Toolbar(props: Props) {
     /* create a poll session and host it */
     if (auth.user) {
       const user = auth.user
-      api.polls.sessions
+      api.sessions
         .host(pid, user.uid)
         .then((sessionId) => {
           /* TODO - host poll */

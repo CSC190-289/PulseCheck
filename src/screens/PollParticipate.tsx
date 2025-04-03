@@ -29,8 +29,8 @@ export function PollParticipate() {
   const { user, loading } = useAuthContext()
   const navigate = useNavigate()
   const snackbar = useSnackbar()
-  const [session, sessionLoading] = useDocumentData(api.polls.sessions.doc(sid))
-  const [users] = useCollection(api.polls.sessions.users.collect(sid))
+  const [session, sessionLoading] = useDocumentData(api.sessions.doc(sid))
+  const [users] = useCollection(api.sessions.users.collect(sid))
   const [gettingstated, setGettingStated] = useState(false)
   const [question, setQuestion] = useState<SessionQuestion | null>(null)
 
@@ -79,7 +79,7 @@ export function PollParticipate() {
           return
         }
         const uid = user.uid
-        const hasJoined = await api.polls.sessions.hasJoined(sid, uid)
+        const hasJoined = await api.sessions.hasJoined(sid, uid)
         if (!hasJoined) {
           if (user.isAnonymous) {
             await user.delete()
@@ -88,7 +88,7 @@ export function PollParticipate() {
             await navigate("/poll/join")
           }
         } else {
-          const wuref = api.polls.sessions.waiting_users.collect(sid)
+          const wuref = api.sessions.waiting_users.collect(sid)
           void deleteDoc(doc(wuref, user.uid))
         }
       }
@@ -107,7 +107,7 @@ export function PollParticipate() {
       }
       try {
         const uid = user.uid
-        await api.polls.sessions.leaveSession(sid, uid)
+        await api.sessions.leaveSession(sid, uid)
         /* TODO - confirm to leave, because this will affect their results */
         snackbar.show({
           message: "You left the session",

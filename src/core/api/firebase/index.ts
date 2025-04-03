@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
 import AuthStore from "./auth"
+import SessionStore from "./sessions/sessions"
 
 const config: FirebaseOptions = {
   apiKey: "AIzaSyBAGd9DDTtn8aAeab4Ydq65yErWAzO7mPg",
@@ -50,15 +51,21 @@ export enum clx {
 /**
  * Serves as a central interface for managing Firestore.
  */
-class API {
+class APIStore {
+  private readonly _auth: AuthStore
   private readonly _users: UserStore
   private readonly _polls: PollStore
-  private readonly _auth: AuthStore
+  private readonly _sessions: SessionStore
 
   constructor(db: Firestore) {
+    this._auth = new AuthStore()
     this._users = new UserStore(db)
     this._polls = new PollStore(db)
-    this._auth = new AuthStore()
+    this._sessions = new SessionStore(db)
+  }
+
+  public get auth(): AuthStore {
+    return this._auth
   }
 
   public get users(): UserStore {
@@ -69,11 +76,11 @@ class API {
     return this._polls
   }
 
-  public get auth(): AuthStore {
-    return this._auth
+  public get sessions(): SessionStore {
+    return this._sessions
   }
 }
 
-const api = new API(firestore)
+const api = new APIStore(firestore)
 
 export default api

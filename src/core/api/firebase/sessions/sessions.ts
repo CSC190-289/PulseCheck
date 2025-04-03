@@ -173,10 +173,10 @@ export default class SessionStore extends BaseStore {
   }
 
   public async start(ref: DocumentReference<Session>) {
-    /* TODO - copy over questions to here */
+    /* find session doc by {ref} */
     const session_ss = await getDoc(ref)
     if (!session_ss.exists()) {
-      throw new Error("Oh shit!")
+      throw new Error(`session(${ref.id}) does not exist!`)
     }
     const session = session_ss.data()
     const poll_ss = await getDoc(session.poll)

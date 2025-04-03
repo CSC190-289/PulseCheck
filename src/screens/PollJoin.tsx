@@ -71,8 +71,8 @@ export default function PollJoin() {
         if (!user) {
           throw new Error("How did you do this?")
         }
-        const sref = await api.polls.sessions.getByCode(roomCode)
-        await api.polls.sessions.enqueue(sref.id, user.uid, {
+        const sref = await api.sessions.getByCode(roomCode)
+        await api.sessions.enqueue(sref.id, user.uid, {
           display_name: displayName,
           photo_url: user.photoURL,
         })
