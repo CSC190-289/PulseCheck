@@ -35,6 +35,10 @@ import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "@/core/api/firebase"
 import ProfileIcon from "./ProfileIcon"
 
+/**
+ * Old version of the app bar.
+ * @deprecated
+ */
 export default function NavBar() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>()
   const navigate = useNavigate()
