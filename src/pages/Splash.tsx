@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import About from "../components/splash/About"
 import FAQs from "../components/splash/FAQs"
 import Features from "../components/splash/Features"
+import FooterLink from "../components/splash/FooterLink"
 import { useRef, useEffect } from "react"
 import { RA } from "@/styles"
 import { ExpandCircleDown } from "@mui/icons-material"
@@ -82,6 +83,10 @@ export default function Splash() {
           </Container>
           <FAQs ref={faqRef} />
         </Stack>
+      </Box>
+      <Box mb={3}>
+        <FooterLink text='Privacy Policy' path='privacy-policy' />
+        <FooterLink text='Term of Service' path='terms-of-service' />
       </Box>
     </Container>
   )
