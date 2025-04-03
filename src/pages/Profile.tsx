@@ -11,6 +11,8 @@ import {
   Avatar,
   Link,
 } from "@mui/material"
+import {styled} from "@mui/materials/styles"
+import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage"
 import { RA } from "@/styles"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
@@ -390,3 +392,9 @@ export default function Profile() {
     </Container>
   )
 }
+
+
+//add in real time update for how long someone has been a user
+//get rid of the successfully updated box and put it on top
+// get rid of edit box and use the edit pencil icon on the index.ts documentation
+//
