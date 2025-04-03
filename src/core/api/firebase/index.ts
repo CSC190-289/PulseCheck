@@ -7,6 +7,8 @@ import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
 import AuthStore from "./auth"
 import SessionStore from "./sessions/sessions"
+import SubmissionStore from "./submissions"
+import { Submission } from "@/core/types"
 
 const config: FirebaseOptions = {
   apiKey: "AIzaSyBAGd9DDTtn8aAeab4Ydq65yErWAzO7mPg",
@@ -46,6 +48,8 @@ export enum clx {
   waiting_users = "waiting_users",
   /* Collection for storing responses for poll session questions */
   responses = "responses",
+  /* Collection for storing user submissions for poll sessions */
+  submissions = "submissions",
 }
 
 /**
@@ -56,12 +60,14 @@ class APIStore {
   private readonly _users: UserStore
   private readonly _polls: PollStore
   private readonly _sessions: SessionStore
+  private readonly _submissions: SubmissionStore
 
   constructor(db: Firestore) {
     this._auth = new AuthStore()
     this._users = new UserStore(db)
     this._polls = new PollStore(db)
     this._sessions = new SessionStore(db)
+    this._submissions = new SubmissionStore(db)
   }
 
   public get auth(): AuthStore {
@@ -78,6 +84,10 @@ class APIStore {
 
   public get sessions(): SessionStore {
     return this._sessions
+  }
+
+  public get submissions(): SubmissionStore {
+    return this._submissions
   }
 }
 
