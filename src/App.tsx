@@ -1,13 +1,13 @@
 import React from "react"
 import "./styles/App.css"
 import { Route, Routes } from "react-router-dom"
-import NavBar from "./components/NavBar"
 import { Page } from "./pages"
+import AppBar from "./components/header/AppBar"
 
 export default function App() {
   return (
     <React.Fragment>
-      <NavBar />
+      <AppBar />
       <Routes>
         <Route path='/' element={<Page.Splash />} />
         <Route path='/debug' element={<Page.Debug />} />

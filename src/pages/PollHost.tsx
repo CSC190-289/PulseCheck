@@ -1,5 +1,5 @@
 import LeaveButton from "@/components/poll/session/LeaveButton"
-import StartButton from "@/components/poll/session/StartButton"
+import StartButton from "@/components/poll/session/host/StartButton"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
@@ -146,7 +146,10 @@ export default function PollHost() {
       try {
         /* TODO - go to next question */
         if (questions.length === 0) {
-          console.debug("questions is empty!")
+          console.debug("no mas questions!")
+          await api.polls.sessions.updateByRef(sref, {
+            question: null,
+          })
           return
         }
         setQuestions((prev) => prev.slice(1))

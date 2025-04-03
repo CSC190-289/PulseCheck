@@ -1,6 +1,6 @@
 import { Container } from "@mui/material"
 import React from "react"
-import UserLogin from "@/components/UserLogin"
+import UserLogin from "@/components/auth/UserLogin"
 //import SignInWGoogleButton from "@/components/auth/ContinueWGoogleButton"
 
 export default function Login() {
