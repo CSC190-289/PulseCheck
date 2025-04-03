@@ -15,8 +15,9 @@ import Register from "./Register"
 import Splash from "./Splash"
 import TermsOfService from "./TermsOfService"
 import { PollParticipate } from "./PollParticipate"
+import PollHistory from "./PollHistory"
 
-export const Page = {
+export const Screen = {
   Splash,
   Debug,
   Login,
@@ -31,6 +32,7 @@ export const Page = {
   PollJoin,
   PollEditor,
   PollResults,
+  PollHistory,
   PollView,
   Profile,
   NotFound,
