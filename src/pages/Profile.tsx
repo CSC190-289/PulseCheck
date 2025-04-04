@@ -18,7 +18,6 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { auth } from "@/core/api/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
-import ThemeToggleButton from "@/components/ThemeToggleButton"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { firestore } from "@/core/api/firebase"
 import {
@@ -30,9 +29,14 @@ import {
 } from "firebase/firestore"
 import { updateEmail, updateProfile } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
+import ThemeSelect from "@/components/ThemeSelect"
 
 type ErrorField = "displayName" | "email"
 
+/**
+ * Displays authenticated user's profile information
+ * @author tdhillon113
+ */
 export default function Profile() {
   const snackbar = useSnackbar()
   const navigate = useNavigate()
@@ -88,6 +92,7 @@ export default function Profile() {
           })
         }
       } else {
+        /* @tdhillon113 If the user refreshes the page, they will always get redirected to the login screen. Ping for more details. */
         navigate("/login")
       }
     }
@@ -188,7 +193,10 @@ export default function Profile() {
                 alignItems: "center",
                 flexDirection: "column",
               }}>
-              <Avatar src={photoURL} alt={displayName} sx={{ mr: 1, alignItems: "centered"}}>
+              <Avatar
+                src={photoURL}
+                alt={displayName}
+                sx={{ mr: 1, alignItems: "centered" }}>
                 {displayName ? displayName.charAt(0).toUpperCase() : "U"}
               </Avatar>
               <Typography variant='h4'>
@@ -204,7 +212,7 @@ export default function Profile() {
                     helperText={error.displayName}
                   />
                 ) : (
-                  <Typography variant='body1' fontWeight='Bold' sx={{mr: 1}}>
+                  <Typography variant='body1' fontWeight='Bold' sx={{ mr: 1 }}>
                     {displayName}
                   </Typography>
                 )}
@@ -374,13 +382,8 @@ export default function Profile() {
                     Theme Appearance
                   </Typography>
                 </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}>
-                  <ThemeToggleButton />
+                <Box>
+                  <ThemeSelect fullWidth />
                 </Box>
               </Box>
 
