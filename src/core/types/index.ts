@@ -1,5 +1,11 @@
 import { DocumentReference, Timestamp } from "firebase/firestore"
 
+export enum ThemeType {
+  SYSTEM_THEME = "system-theme",
+  LIGHT = "light",
+  DARK = "dark",
+}
+
 export interface User {
   display_name: string
   email: string

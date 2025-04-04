@@ -1,8 +1,10 @@
 import { PaletteMode } from "@mui/material"
 import { createContext } from "react"
+import { ThemeType } from "../types"
 
 interface ThemeContextType {
   toggleTheme: () => void
+  setTheme: (type: ThemeType) => void
   mode: PaletteMode
 }
 
