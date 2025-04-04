@@ -2,7 +2,7 @@ import LeaveButton from "@/components/poll/session/LeaveButton"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
-import { SessionQuestion } from "@/core/types"
+import { SessionQuestion, SessionState } from "@/core/types"
 import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
@@ -57,13 +57,13 @@ export function PollParticipate() {
 
   useEffect(() => {
     if (session && !sessionLoading) {
-      if (session.state === "closed") {
+      if (session.state === SessionState.CLOSED) {
         snackbar.show({
           message: "Host Ended Session",
           type: "info",
         })
         void navigate("/poll/join")
-      } else if (session.state === "in-progress") {
+      } else if (session.state === SessionState.IN_PROGRESS) {
         setGettingStated(true)
       }
     }
@@ -181,18 +181,6 @@ export function PollParticipate() {
           ))}
         </Grid2>
       </Container>
-      {/* <Dialog open={showDialog}>
-        <DialogTitle>Are you sure you want to leave?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            All of your answers you submitted so far will be saved.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowDialog(false)}>No</Button>
-          <Button onClick={handleLeave}>Yes</Button>
-        </DialogActions>
-      </Dialog> */}
     </React.Fragment>
   )
 }
