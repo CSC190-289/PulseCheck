@@ -1,7 +1,7 @@
 import {
   Card,
   CardContent,
-  Button,
+  // Button,
   Box,
   Container,
   Typography,
@@ -11,11 +11,11 @@ import {
   Avatar,
   Skeleton,
   IconButton,
-  Link,
+  // Link,
 } from "@mui/material"
 import { Edit, Check, Close } from "@mui/icons-material"
-import { styled } from "@mui/material/styles"
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
+// import { styled } from "@mui/material/styles"
+// import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
 import { RA } from "@/styles"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
@@ -23,17 +23,17 @@ import { auth } from "@/core/api/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { firestore } from "@/core/api/firebase"
-import { doc, Timestamp, setDoc, getDoc, updateDoc } from "firebase/firestore"
+import { doc, Timestamp, getDoc, updateDoc } from "firebase/firestore"
 import { updateEmail, updateProfile } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
 import ThemeSelect from "@/components/ThemeSelect"
 
 type ErrorField = "displayName" | "email"
 
-interface User {
-  // photo_url: string
+interface UserData {
   display_name: string
-  created_at: Date
+  created_at: Timestamp
+  email?: string
 }
 
 /**
@@ -61,7 +61,7 @@ export default function Profile() {
   })
   const [editUser, setEditUser] = useState<string | null>(null)
   const [tempVal, setTempVal] = useState("")
-  const [notif, setNotif] = useState({ show: false, message: "", type: "" })
+  // const [notif, setNotif] = useState({ show: false, message: "", type: "" })
 
   console.debug("originalEmail", originalEmail)
   console.debug("name", name)
@@ -72,23 +72,27 @@ export default function Profile() {
     const loadUserData = async () => {
       if (user) {
         // Set email and photo URL from auth
-        setEmail(user.email || "")
-        setOriginalEmail(user.email || "")
-        setPhotoURL(user.photoURL || "")
+        setEmail(user.email ?? "")
+        setOriginalEmail(user.email ?? "")
+        setPhotoURL(user.photoURL ?? "")
 
         // Get display name from Firestore
         try {
           const userRef = doc(firestore, "users", user.uid)
+
+          // interface User = {
+          //   display_name : string
+          //   created_at : Timestamp
+          // }
+
           const userDoc = await getDoc(userRef)
-
           if (userDoc.exists()) {
-            const userData = userDoc.data()
-            const firestoreDisplayName = userData.display_name || ""
+            const userData = userDoc.data() as UserData
+            const firestoreDisplayName = userData.display_name ?? ""
+            const createdTimestamp = userData.created_at ?? null
 
-            const createdTimestamp = userData.created_at || null
             setCreatedAt(createdTimestamp)
             //@Michael : is null okay to use?
-
             setName(firestoreDisplayName)
             setDisplayName(firestoreDisplayName)
             setOriginalName(firestoreDisplayName)
@@ -114,7 +118,7 @@ export default function Profile() {
       }
     }
 
-    loadUserData()
+    void loadUserData()
   }, [user, navigate, snackbar])
 
   const clearFieldError = (field: ErrorField) => {
@@ -135,7 +139,7 @@ export default function Profile() {
   //   navigate('/dashboard')
   // }
 
-  const saveChanges = async (field: string) => {
+  const saveChanges = async (field: string): Promise<void> => {
     if (!user) {
       return
     }
@@ -172,20 +176,20 @@ export default function Profile() {
         type: "success",
       })
       //edit to snackbar so that message loads on top
-    } catch (error: unknown) {
-      console.error("Error updating", error)
-      if (error instanceof FirebaseError) {
-        if (error.code === "auth/email-already-in-use") {
+    } catch (err: unknown) {
+      console.error("Error updating", err)
+      if (err instanceof FirebaseError) {
+        if (err.code === "email in use <3 ") {
           setError((prev) => ({ ...prev, email: "Email already in use!" }))
-        } else if (error.code === "auth/requires-recent-login") {
+        } else if (err.code === "requires login!") {
           snackbar.show({
             message: "Please login again to update your profile",
             type: "error",
           })
-          navigate("/login", { state: { requiresReauth: true } })
+          void navigate("/login", { state: { requiresReauth: true } })
         } else {
           snackbar.show({
-            message: `Error: ${error.message}`,
+            message: `Error: ${err.message}`,
             type: "error",
           })
         }
@@ -201,6 +205,12 @@ export default function Profile() {
     }
   }
 
+  const handleSaveDisplayName = (): void => {
+    void saveChanges("displayName")
+  }
+  const handleSaveEmail = (): void => {
+    void saveChanges("email")
+  }
   return (
     <Container maxWidth='xs'>
       <RA.Bounce triggerOnce>
@@ -295,17 +305,11 @@ export default function Profile() {
                     <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
                       <IconButton
                         color='primary'
-                        onClick={() => {
-                          void (async () => {
-                            try {
-                              await saveChanges("displayName")
-                            } catch (err) {
-                              console.error("Error saving display name:", err)
-                            }
-                          })()
+                        onClick={
+                          handleSaveDisplayName
                           //needed to check an issue where a pop up window was preventing
                           //login properly
-                        }}
+                        }
                         disabled={save}
                         size='small'>
                         <Check fontSize='small' />
@@ -370,15 +374,7 @@ export default function Profile() {
                     <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
                       <IconButton
                         color='primary'
-                        onClick={() => {
-                          void (async () => {
-                            try {
-                              await saveChanges("email")
-                            } catch (err) {
-                              console.error("Error saving email:", err)
-                            }
-                          })()
-                        }}
+                        onClick={handleSaveEmail}
                         disabled={save}
                         size='small'>
                         <Check fontSize='small' />
@@ -430,4 +426,3 @@ export default function Profile() {
 //add in real time update for how long someone has been a user
 //get rid of the successfully updated box and put it on top
 // get rid of edit box and use the edit pencil icon on the index.ts documentation
-  
