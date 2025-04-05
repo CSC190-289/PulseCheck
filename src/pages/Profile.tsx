@@ -9,10 +9,13 @@ import {
   Divider,
   Stack,
   Avatar,
+  Skeleton,
+  IconButton,
   Link,
 } from "@mui/material"
-import {styled} from "@mui/materials/styles"
-import {getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage"
+import { Edit, Check, Close } from "@mui/icons-material"
+import { styled } from "@mui/material/styles"
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
 import { RA } from "@/styles"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
@@ -20,26 +23,28 @@ import { auth } from "@/core/api/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { firestore } from "@/core/api/firebase"
-import {
-  doc,
-  serverTimestamp,
-  setDoc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore"
+import { doc, Timestamp, setDoc, getDoc, updateDoc } from "firebase/firestore"
 import { updateEmail, updateProfile } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
 import ThemeSelect from "@/components/ThemeSelect"
 
 type ErrorField = "displayName" | "email"
 
+interface User {
+  // photo_url: string
+  display_name: string
+  created_at: Date
+}
+
 /**
  * Displays authenticated user's profile information
  * @author tdhillon113
  */
 export default function Profile() {
+  // const { uid  } = useAuthState(auth)
   const snackbar = useSnackbar()
   const navigate = useNavigate()
+
   const [user] = useAuthState(auth)
   const [save, setSave] = useState(false)
   const [email, setEmail] = useState<string>("")
@@ -48,12 +53,13 @@ export default function Profile() {
   const [originalName, setOriginalName] = useState("")
   const [photoURL, setPhotoURL] = useState("")
   const [displayName, setDisplayName] = useState("")
+  const [createdAt, setCreatedAt] = useState<Timestamp | null>(null)
   const [error, setError] = useState({
     displayName: "",
     username: "",
     email: "",
   })
-  const [editUser, setEditUser] = useState(null)
+  const [editUser, setEditUser] = useState<string | null>(null)
   const [tempVal, setTempVal] = useState("")
   const [notif, setNotif] = useState({ show: false, message: "", type: "" })
 
@@ -75,9 +81,15 @@ export default function Profile() {
             const userData = userDoc.data()
             const firestoreDisplayName = userData.display_name || ""
 
+            const createdTimestamp = userData.created_at || null
+            setCreatedAt(createdTimestamp)
+            //@Michael : is null okay to use?
+
             setName(firestoreDisplayName)
             setDisplayName(firestoreDisplayName)
             setOriginalName(firestoreDisplayName)
+
+            // user.created_at = joinedAt
           } else {
             // Fallback to auth display name if Firestore doc doesn't exist
             setName(user.displayName || "")
@@ -91,9 +103,10 @@ export default function Profile() {
             type: "error",
           })
         }
-      } else {
-        /* @tdhillon113 If the user refreshes the page, they will always get redirected to the login screen. Ping for more details. */
-        navigate("/login")
+        // } else {
+        //   /* @tdhillon113 If the user refreshes the page, they will always get redirected to the login screen. Ping for more details. */
+        //   navigate("/login")
+        // }
       }
     }
 
@@ -104,7 +117,7 @@ export default function Profile() {
     setError((prev) => ({ ...prev, [field]: "" }))
   }
 
-  const Edit = (field: string, value: string) => {
+  const handleEdit = (field: string, value: string) => {
     setEditUser(field)
     setTempVal(value)
   }
@@ -148,11 +161,11 @@ export default function Profile() {
         setOriginalEmail(tempVal)
       }
 
-      setNotif({
-        show: true,
+      snackbar.show({
         message: "Profile updated successfully",
         type: "success",
       })
+      //edit to snackbar so that message loads on top
     } catch (error: unknown) {
       console.error("Error updating", error)
       if (error instanceof FirebaseError) {
@@ -185,7 +198,7 @@ export default function Profile() {
   return (
     <Container maxWidth='xs'>
       <RA.Bounce triggerOnce>
-        <Card raised sx={{ mt: 5, pb: 4 }}>
+        <Card raised sx={{ mt: 8, pb: 3 }}>
           <CardContent>
             <Box
               sx={{
@@ -196,7 +209,12 @@ export default function Profile() {
               <Avatar
                 src={photoURL}
                 alt={displayName}
-                sx={{ mr: 1, alignItems: "centered" }}>
+                sx={{
+                  mr: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
                 {displayName ? displayName.charAt(0).toUpperCase() : "U"}
               </Avatar>
               <Typography variant='h4'>
@@ -217,6 +235,16 @@ export default function Profile() {
                   </Typography>
                 )}
               </Typography>
+              {createdAt ? (
+                <Typography variant='body2'>
+                  Member Since: {createdAt.toDate().toLocaleDateString()}
+                </Typography>
+              ) : (
+                <Skeleton variant='text' />
+              )}
+              {/* // <Typography>
+              //   Member Since: {updateAt.fromDate().toLocalDateString()}
+              // </Typography> */}
             </Box>
             <Divider sx={{ mb: 3 }}></Divider>
             <Stack spacing={3}>
@@ -227,7 +255,7 @@ export default function Profile() {
                   borderRadius: 1,
                   p: 2,
                 }}>
-                {/* Display Name Section with centered title */}
+               
                 <Box sx={{ textAlign: "center", mb: 2 }}>
                   <Typography variant='body2' color='textSecondary'>
                     Display Name
@@ -260,28 +288,37 @@ export default function Profile() {
                   </Box>
                   {editUser === "displayName" ? (
                     <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-                      <Button
-                        variant='contained'
-                        size='small'
+                      <IconButton
                         color='primary'
-                        onClick={() => saveChanges("displayName")}
-                        disabled={save}>
-                        Save
-                      </Button>
-                      <Button
-                        variant='outlined'
-                        size='small'
+                        onClick={() => {
+                          void (async () => {
+                            try {
+                              await saveChanges("displayName")
+                            } catch (err) {
+                              console.error("Error saving display name:", err)
+                            }
+                          })()
+                          //needed to check an issue where a pop up window was preventing 
+                          //login properly
+                        }}
+                        disabled={save}
+                        size='small'>
+                        <Check fontSize='small' />
+                      </IconButton>
+                      <IconButton
                         color='error'
-                        onClick={cancelEdit}>
-                        Cancel
-                      </Button>
+                        onClick={cancelEdit}
+                        size='small'>
+                        <Close fontSize='small' />
+                      </IconButton>
                     </Box>
                   ) : (
-                    <Button
+                    <IconButton
                       color='primary'
-                      onClick={() => Edit("displayName", displayName)}>
-                      Edit
-                    </Button>
+                      onClick={() => handleEdit("displayName", displayName)}
+                      size='small'>
+                      <Edit fontSize='small' />
+                    </IconButton>
                   )}
                 </Box>
               </Box>
@@ -293,7 +330,8 @@ export default function Profile() {
                   borderRadius: 1,
                   p: 2,
                 }}>
-                {/* Email Section with centered title */}
+               
+
                 <Box sx={{ textAlign: "center", mb: 2 }}>
                   <Typography variant='body2' color='textSecondary'>
                     Email
@@ -327,49 +365,39 @@ export default function Profile() {
                   </Box>
                   {editUser === "email" ? (
                     <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-                      <Button
-                        variant='contained'
-                        size='small'
+                      <IconButton
                         color='primary'
-                        onClick={() => saveChanges("email")}
-                        disabled={save}>
-                        Save
-                      </Button>
-                      <Button
-                        variant='outlined'
-                        size='small'
+                        onClick={() => {
+                          void (async () => {
+                            try {
+                              await saveChanges("email")
+                            } catch (err) {
+                              console.error("Error saving email:", err)
+                            }
+                          })()
+                        }}
+                        disabled={save}
+                        size='small'>
+                        <Check fontSize='small' />
+                      </IconButton>
+                      <IconButton
                         color='error'
-                        onClick={cancelEdit}>
-                        Cancel
-                      </Button>
+                        onClick={cancelEdit}
+                        size='small'>
+                        <Close fontSize='small' />
+                      </IconButton>
                     </Box>
                   ) : (
-                    <Button
+                    <IconButton
                       color='primary'
-                      onClick={() => Edit("email", email)}>
-                      Edit
-                    </Button>
+                      onClick={() => handleEdit("email", email)}
+                      size='small'>
+                      <Edit fontSize='small' />
+                    </IconButton>
                   )}
                 </Box>
               </Box>
 
-              {notif.show && (
-                <Box
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    bgcolor:
-                      notif.type === "success"
-                        ? "success.light"
-                        : "error.light",
-                    color:
-                      notif.type === "success" ? "success.dark" : "error.dark",
-                  }}>
-                  <Typography>{notif.message}</Typography>
-                </Box>
-              )}
-
-              {/* Theme Appearance with centered title */}
               <Box
                 sx={{
                   border: 1,
@@ -396,8 +424,6 @@ export default function Profile() {
   )
 }
 
-
 //add in real time update for how long someone has been a user
 //get rid of the successfully updated box and put it on top
 // get rid of edit box and use the edit pencil icon on the index.ts documentation
-//
