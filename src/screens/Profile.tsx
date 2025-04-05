@@ -233,9 +233,9 @@ export default function Profile() {
                 }}>
                 {displayName ? displayName.charAt(0).toUpperCase() : "U"}
               </Avatar>
-              <Typography variant='h4'>
+              {/* <Typography variant='h4'>
                 {editUser === "displayName" ? (
-                  <TextField
+                  <TextField sx={{justifyContent: 'center'}}
                     variant='standard'
                     value={tempVal}
                     onChange={(e) => {
@@ -245,12 +245,12 @@ export default function Profile() {
                     error={!!error.displayName}
                     helperText={error.displayName}
                   />
-                ) : (
-                  <Typography variant='body1' fontWeight='Bold' sx={{ mr: 1 }}>
-                    {displayName}
-                  </Typography>
-                )}
+                ) : ( */}
+              <Typography variant='body1' fontWeight='Bold' sx={{ mr: 1 }}>
+                {displayName}
               </Typography>
+              {/* //   )}
+              // </Typography> */}
               {createdAt ? (
                 <Typography variant='body2'>
                   Member Since: {createdAt.toDate().toLocaleDateString()}
