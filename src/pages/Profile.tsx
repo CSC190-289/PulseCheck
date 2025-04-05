@@ -219,7 +219,8 @@ export default function Profile() {
               </Avatar>
               <Typography variant='h4'>
                 {editUser === "displayName" ? (
-                  <TextField
+                  <TextField 
+                    
                     variant='standard'
                     value={tempVal}
                     onChange={(e) => {
