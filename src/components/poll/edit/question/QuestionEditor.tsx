@@ -10,7 +10,7 @@ import {
   Button,
   Skeleton,
 } from "@mui/material"
-import { Add, DragHandle, ExpandMore } from "@mui/icons-material"
+import { Add, ExpandMore } from "@mui/icons-material"
 import UploadImageBox from "./UploadImageBox"
 import { Question } from "@/core/types"
 import PromptField from "./PromptField"
@@ -68,9 +68,9 @@ export default function QuestionEditor(props: Props) {
     <Accordion defaultExpanded={props.defaultExpanded}>
       <AccordionSummary expandIcon={<ExpandMore />}>
         <Box display={"flex"} columnGap={2}>
-          <Box>
+          {/* <Box>
             <DragHandle color='action' />
-          </Box>
+          </Box> */}
           <Typography sx={{ wordBreak: "break-word" }}>
             <strong>{index + 1}.</strong> {data.prompt}
           </Typography>

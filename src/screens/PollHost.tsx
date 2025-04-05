@@ -16,14 +16,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material"
-import {
-  doc,
-  DocumentReference,
-  getDoc,
-  onSnapshot,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore"
+import { DocumentReference, getDoc, onSnapshot } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
@@ -42,8 +35,8 @@ export default function PollHost() {
     DocumentReference<SessionQuestion>[]
   >([])
 
-  console.debug("question", question)
-  console.debug("questions", questions)
+  // console.debug("question", question)
+  // console.debug("questions", questions)
 
   useEffect(() => {
     async function aux() {
@@ -96,18 +89,23 @@ export default function PollHost() {
     if (!sid) {
       return
     }
-    const usersRef = api.sessions.users.collect(sid)
+    // const usersRef = api.sessions.users.collect(sid)
     const wuRef = api.sessions.waiting_users.collect(sid)
     const unsubscribeUsers = onSnapshot(wuRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         async function addUser(userId: string, data: WaitingUser) {
           try {
-            await setDoc(doc(usersRef, userId), {
+            await api.sessions.users.set(sid, userId, {
               display_name: data.display_name,
               photo_url: data.photo_url,
-              joined_at: serverTimestamp(),
               incorrect: false,
             })
+            // await setDoc(doc(usersRef, userId), {
+            //   display_name: data.display_name,
+            //   photo_url: data.photo_url,
+            //   joined_at: serverTimestamp(),
+            //   incorrect: false,
+            // })
           } catch (err) {
             console.debug(err)
           }

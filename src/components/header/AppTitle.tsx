@@ -3,6 +3,8 @@ import { Box, Typography } from "@mui/material"
 import Image from "mui-image"
 import { Link } from "react-router-dom"
 
+const SZ = 40
+
 export default function AppTitle() {
   const { user } = useAuthContext()
   return (
@@ -23,7 +25,7 @@ export default function AppTitle() {
       <Typography pt={0.5} variant='h6'>
         PulseCheck
       </Typography>
-      <Image src='/favicon.png' width={48} height={48} />
+      <Image src='/favicon.png' width={SZ} height={SZ} />
     </Box>
   )
 }

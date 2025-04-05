@@ -3,7 +3,7 @@ import { Box, Divider, Stack, Typography } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React from "react"
 import PromptOptionEditor from "./PromptOptionEditor"
-import { DragIndicator } from "@mui/icons-material"
+// import { DragIndicator } from "@mui/icons-material"
 
 interface Props {
   options: DocumentReference<PromptOption>[]
@@ -22,9 +22,9 @@ export default function PromptOptionList(props: Props) {
         {options.map((x, i) => (
           <Box
             key={x.id}
-            draggable
+            // draggable
             style={{ display: "flex", alignItems: "center" }}>
-            <DragIndicator color='action' />
+            {/* <DragIndicator color='action' /> */}
             <PromptOptionEditor key={x.id} ref={x} index={i} />
           </Box>
         ))}
