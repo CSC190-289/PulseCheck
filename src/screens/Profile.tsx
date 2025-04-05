@@ -225,8 +225,7 @@ export default function Profile() {
               </Avatar>
               <Typography variant='h4'>
                 {editUser === "displayName" ? (
-                  <TextField 
-                    
+                  <TextField
                     variant='standard'
                     value={tempVal}
                     onChange={(e) => {
@@ -262,7 +261,6 @@ export default function Profile() {
                   borderRadius: 1,
                   p: 2,
                 }}>
-               
                 <Box sx={{ textAlign: "center", mb: 2 }}>
                   <Typography variant='body2' color='textSecondary'>
                     Display Name
@@ -305,7 +303,7 @@ export default function Profile() {
                               console.error("Error saving display name:", err)
                             }
                           })()
-                          //needed to check an issue where a pop up window was preventing 
+                          //needed to check an issue where a pop up window was preventing
                           //login properly
                         }}
                         disabled={save}
@@ -337,8 +335,6 @@ export default function Profile() {
                   borderRadius: 1,
                   p: 2,
                 }}>
-               
-
                 <Box sx={{ textAlign: "center", mb: 2 }}>
                   <Typography variant='body2' color='textSecondary'>
                     Email
