@@ -430,3 +430,4 @@ export default function Profile() {
 //add in real time update for how long someone has been a user
 //get rid of the successfully updated box and put it on top
 // get rid of edit box and use the edit pencil icon on the index.ts documentation
+  
