@@ -1,6 +1,6 @@
 import { expect, test } from "vitest"
 import { render } from "vitest-browser-react"
-import NotFound from "@/pages/NotFound"
+import NotFound from "@/screens/NotFound"
 import { BrowserRouter } from "react-router-dom"
 
 test("renders notfound", () => {

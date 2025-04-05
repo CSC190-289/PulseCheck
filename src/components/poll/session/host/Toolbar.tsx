@@ -9,7 +9,7 @@ import LeaveButton from "../LeaveButton"
 import { Session, SessionUser } from "@/core/types"
 import { ntops } from "@/utils"
 import { QuerySnapshot } from "firebase/firestore"
-import StartButton from "../StartButton"
+import StartButton from "./StartButton"
 
 interface Props {
   session?: Session

@@ -1,6 +1,6 @@
 import { Container } from "@mui/material"
 import React from "react"
-import RegisterJoin from "@/components/RegisterJoin"
+import RegisterJoin from "@/components/auth/RegisterJoin"
 // import SignInWGoogleButton from "@/components/auth/SignInWGoogleButton"
 
 export default function Register() {

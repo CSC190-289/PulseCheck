@@ -19,6 +19,31 @@ export function stoc(str: string) {
 }
 
 /**
+ * Generated initials from a given name string based on the following rules:
+ *  - If there is only one word, return the first character.
+ *  - If there are two words, return the first character of each word.
+ *  - If there are three or more words, take the first two characters of the first two words.
+ *  - The resulting initials are always in uppercase.
+ *  - Leading, trailing, and extra spaces are trimmed before processing.
+ * @param name - The input name string.
+ * @returns The formatted uppercase initials.
+ */
+export function stoni(name: string) {
+  const words = name.trim().split(/\s+/) // Split by whitespace and remove extra spaces
+  let initials = ""
+
+  if (words.length === 1) {
+    initials = words[0].slice(0, 1) // Take the first letter of the single word
+  } else if (words.length === 2) {
+    initials = words[0].slice(0, 1) + words[1].slice(0, 1) // Take first letter of both words
+  } else {
+    initials = words[0].slice(0, 2) + words[1].slice(0, 2) // Take first 2 letters of first 2 words
+  }
+
+  return initials.toUpperCase()
+}
+
+/**
  * Converts MM:SS to milliseconds (number)
  */
 export function mmsston(formattedMMSS: string): number | null {
