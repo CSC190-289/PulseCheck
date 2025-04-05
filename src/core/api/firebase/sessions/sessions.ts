@@ -182,20 +182,20 @@ export default class SessionStore extends BaseStore {
     const poll_ss = await getDoc(session.poll)
     const poll = poll_ss.data()
     if (!poll) {
-      throw new Error("oh fuck")
+      throw new Error(`poll(${poll_ss.id}) does not exist!`)
     }
     const question_refs: DocumentReference<SessionQuestion>[] = []
     for (const q of poll.questions) {
       const opts: string[] = []
       const pq_ss = await getDoc(q)
       if (!pq_ss.exists()) {
-        throw new Error("what the fuck dude")
+        throw new Error(`question(${pq_ss.id}) does not exist!`)
       }
       const pq = pq_ss.data()
       for (const oref of pq.options) {
         const opt_ss = await getDoc(oref)
         if (!opt_ss.exists()) {
-          throw new Error("wow really")
+          throw new Error(`opt(${opt_ss.id}) does not exist!`)
         }
         const opt = opt_ss.data()
         opts.push(opt.text)

@@ -3,7 +3,7 @@ import StartButton from "@/components/poll/session/host/StartButton"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
-import { SessionQuestion, WaitingUser } from "@/core/types"
+import { SessionQuestion, SessionState, WaitingUser } from "@/core/types"
 import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
@@ -66,9 +66,9 @@ export default function PollHost() {
 
   useEffect(() => {
     if (session && !sessionLoading) {
-      if (session.state === "closed") {
+      if (session.state === SessionState.CLOSED) {
         void navigate("/dashboard")
-      } else if (session.state === "in-progress") {
+      } else if (session.state === SessionState.IN_PROGRESS) {
         setGettingStated(true)
       }
     }
@@ -115,7 +115,10 @@ export default function PollHost() {
         if (change.type === "added") {
           const userId = change.doc.id
           const userData = change.doc.data()
-          void addUser(userId, userData)
+          /* if the session state is open, then allow the user to join */
+          if (session && session.state === SessionState.OPEN) {
+            void addUser(userId, userData)
+          }
         }
       })
     })
@@ -123,7 +126,7 @@ export default function PollHost() {
     return () => {
       unsubscribeUsers()
     }
-  }, [sid])
+  }, [sid, session])
 
   if (sessionLoading) {
     return <LinearProgress />
