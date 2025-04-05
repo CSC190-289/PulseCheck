@@ -1,4 +1,9 @@
-import { Box, Typography } from "@mui/material"
+import { Box, Button, Card, CardMedia, CircularProgress } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { useState } from "react"
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
+import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { firestore } from "@/core/api/firebase"
 interface Props {
   pid: string
   qid: string
@@ -11,6 +16,21 @@ interface Props {
  * Displays image when the user uploads.
  * @returns {JSX.Element}
  */
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+})
+
+const storage = getStorage()
+
 export default function UploadImageBox(props: Props) {
   /**
    * @Bran7astic
@@ -44,9 +64,106 @@ export default function UploadImageBox(props: Props) {
    *   uploaded image to indicate to the user you can upload a new image OR drag-and-drop
    *   like a giga-chad.
    */
+
+  const questionDocRef = doc(
+    firestore,
+    "polls",
+    props.pid,
+    "questions",
+    props.qid
+  )
+
+  const [imageURL, setImageURL] = useState<string | null>("") // Sets image url once image is uploaded to cloud firestore
+  const [loading, setLoading] = useState<boolean>(false) // Sets loading state to prompt loading icon
+
+  // Asynchronously uploads file to cloud firestore and sets image url
+  const fileUpload = async (fileToUpload: File, storagePath: string) => {
+    setLoading(true)
+    const fileRef = ref(storage, storagePath)
+
+    try {
+      const snapshot = await uploadBytes(fileRef, fileToUpload) // Uploads image
+      const downloadURL = await getDownloadURL(snapshot.ref) // Gets download URL from firestore
+      await updateDoc(questionDocRef, {
+        // Updates prompt_img field in question doc
+        prompt_img: downloadURL,
+      })
+      const docSnapshot = await getDoc(questionDocRef)
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data()
+        const promptImgURL =
+          data && typeof data.prompt_img === "string" ? data.prompt_img : ""
+        setImageURL(promptImgURL)
+      }
+    } catch (error) {
+      console.debug("An error has occurred: ", error)
+    }
+    setLoading(false)
+  }
+
+  const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const processFile = async () => {
+      const selectedFile = event.target.files?.[0]
+      if (selectedFile) {
+        // Checks if file is an image
+        if (!selectedFile.type.startsWith("image/")) {
+          alert("Please upload an image.")
+          return
+        }
+        // Prevents files greater than 10mb
+        const fileSize = selectedFile.size / (1024 * 1024)
+        if (fileSize >= 10) {
+          alert("Please upload a file smaller than 10mb")
+          return
+        }
+        await fileUpload(selectedFile, `pollImages/${selectedFile.name}`)
+      }
+    }
+
+    processFile().catch((error) => {
+      console.error("Error processing file", error)
+    })
+  }
+
   return (
-    <Box>
-      <Typography>Upload Image for Question({props.qid})</Typography>
+    <Box
+      sx={{
+        // display: "flex",
+        // //flex: 1,
+        // width: "100%",
+        // justifyContent: "center",
+        // alignItems: "center",
+        display: "grid",
+        placeItems: "center",
+        width: "100%",
+      }}>
+      <Card
+        variant='outlined'
+        sx={{
+          padding: 10,
+          // paddingLeft: "42%",
+          // paddingRight: "42%",
+          borderStyle: "dashed",
+          borderWidth: 2,
+          borderRadius: 5,
+        }}>
+        {loading && <CircularProgress color='primary' size={20} />}
+
+        {imageURL && (
+          <CardMedia
+            component='img'
+            alt='img'
+            height='200'
+            width='113'
+            image={imageURL}
+          />
+        )}
+
+        <Button sx={{ fontWeight: "bold" }} component='label'>
+          Upload Image
+          <VisuallyHiddenInput type='file' onChange={handleFile} />
+        </Button>
+      </Card>
     </Box>
   )
 }

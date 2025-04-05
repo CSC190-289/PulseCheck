@@ -63,6 +63,10 @@ export default function Profile() {
   const [tempVal, setTempVal] = useState("")
   const [notif, setNotif] = useState({ show: false, message: "", type: "" })
 
+  console.debug("originalEmail", originalEmail)
+  console.debug("name", name)
+  console.debug("originalName", originalName)
+
   useEffect(() => {
     // Load user data on component mount
     const loadUserData = async () => {
@@ -92,12 +96,12 @@ export default function Profile() {
             // user.created_at = joinedAt
           } else {
             // Fallback to auth display name if Firestore doc doesn't exist
-            setName(user.displayName || "")
-            setDisplayName(user.displayName || "")
-            setOriginalName(user.displayName || "")
+            setName(user.displayName ?? "")
+            setDisplayName(user.displayName ?? "")
+            setOriginalName(user.displayName ?? "")
           }
-        } catch (error) {
-          console.error("Error fetching user data:", error)
+        } catch (err) {
+          console.error("Error fetching user data:", err)
           snackbar.show({
             message: "Failed to load profile data",
             type: "error",
@@ -132,7 +136,9 @@ export default function Profile() {
   // }
 
   const saveChanges = async (field: string) => {
-    if (!user) return
+    if (!user) {
+      return
+    }
     setSave(true)
 
     try {

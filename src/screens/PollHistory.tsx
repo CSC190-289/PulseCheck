@@ -1,10 +1,10 @@
 import { Typography } from "@mui/material"
 import React from "react"
 
-export default function Login() {
+export default function PollHistory() {
   return (
     <React.Fragment>
-      <Typography>Login Page Goes Here</Typography>
+      <Typography>Implement Me</Typography>
     </React.Fragment>
   )
 }

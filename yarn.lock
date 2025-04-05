@@ -2052,6 +2052,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mui-image@npm:^1":
+  version: 1.0.5
+  resolution: "@types/mui-image@npm:1.0.5"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10c0/ac81f6e290571a7534271464203d6ab92d997ebb266c35b7611adbcc12c3ee5a0f65d67e072f234f3689cc38903e8c94d785fc164ca987f19e6b33b51083daed
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0":
   version: 22.13.4
   resolution: "@types/node@npm:22.13.4"
@@ -4348,6 +4357,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mui-image@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "mui-image@npm:1.0.7"
+  peerDependencies:
+    "@emotion/react": ^11.4.1
+    "@emotion/styled": ^11.3.0
+    "@mui/material": ^5.0.1
+    prop-types: ^15.7.2
+    react: ^17.0.2 || ^18.0.0
+  checksum: 10c0/8625d4efe0cccc5294e8d670bf9a0ea5a60a084c79727913b5d69d89459e920320c7b5289164098d33cfddec6bc43c13f550ff175ea89bc62a421790db3d737c
+  languageName: node
+  linkType: hard
+
 "mute-stream@npm:^2.0.0":
   version: 2.0.0
   resolution: "mute-stream@npm:2.0.0"
@@ -4726,6 +4748,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:^6.6.3"
     "@testing-library/react": "npm:^16.2.0"
     "@testing-library/user-event": "npm:^14.6.1"
+    "@types/mui-image": "npm:^1"
     "@types/react": "npm:^19.0.8"
     "@types/react-dom": "npm:^19.0.3"
     "@types/react-router-dom": "npm:^5.3.3"
@@ -4739,6 +4762,7 @@ __metadata:
     firebase: "npm:^11.3.1"
     globals: "npm:^15.14.0"
     jsdom: "npm:^26.0.0"
+    mui-image: "npm:^1.0.7"
     playwright: "npm:^1.50.1"
     prettier: "npm:^3.5.1"
     react: "npm:^19.0.0"

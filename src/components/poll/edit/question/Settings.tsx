@@ -113,6 +113,7 @@ export default function Settings(props: Props) {
         <Grid2 size={{ xl: 3, lg: 3, md: 4, sm: 6, xs: 12 }}>
           <FormControlLabel
             label='Anonymous'
+            checked={anonymous}
             control={
               <Switch onChange={(e) => setAnonymous(e.target.checked)} />
             }

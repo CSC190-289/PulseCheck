@@ -1,32 +1,28 @@
-import { firestore } from "@/core/api/firebase"
-import { User } from "@/core/types"
+import { SessionUser } from "@/core/types"
 import { stoc } from "@/utils"
-import { Avatar, Box, Card, Skeleton, Typography } from "@mui/material"
-import { doc, DocumentReference } from "firebase/firestore"
-import { useDocumentData } from "react-firebase-hooks/firestore"
+import { Avatar, Box, Card, Typography } from "@mui/material"
 
 interface Props {
-  userId: string
+  user: SessionUser
 }
 
 export default function UserSessionCard(props: Props) {
-  const { userId } = props
-  const ref = doc(firestore, "users", userId) as DocumentReference<User>
-  const [user, loading, error] = useDocumentData<User>(ref)
+  const { user } = props
 
   return (
-    <Card>
+    <Card
+    // sx={{
+    //   border: "1px solid",
+    //   borderColor: "error.main",
+    // }}
+    >
       <Box m={1} display={"flex"} alignItems={"center"}>
-        <Avatar sx={{ mr: 1, bgcolor: stoc(user?.display_name ?? "") }} />
-        <Typography>
-          {loading ? (
-            <Skeleton variant='text' sx={{ fontSize: "1rem" }} />
-          ) : error ? (
-            `User(${userId})`
-          ) : (
-            user?.display_name
-          )}
-        </Typography>
+        {user.photo_url ? (
+          <Avatar src={user.photo_url} />
+        ) : (
+          <Avatar color={stoc(user.display_name)} />
+        )}
+        <Typography ml={1}>{user.display_name}</Typography>
       </Box>
     </Card>
   )

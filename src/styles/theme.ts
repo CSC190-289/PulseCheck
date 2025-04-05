@@ -13,6 +13,7 @@ const opts = (mode: PaletteMode): ThemeOptions => ({
   },
   typography: {
     fontFamily: "monospace",
+    fontSize: 12,
   },
 })
 

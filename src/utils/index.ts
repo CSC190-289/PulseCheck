@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore"
+
 /**
  * Converts string to hex color
  */
@@ -14,6 +16,31 @@ export function stoc(str: string) {
     color += `00${value.toString(16)}`.slice(-2)
   }
   return color
+}
+
+/**
+ * Generated initials from a given name string based on the following rules:
+ *  - If there is only one word, return the first character.
+ *  - If there are two words, return the first character of each word.
+ *  - If there are three or more words, take the first two characters of the first two words.
+ *  - The resulting initials are always in uppercase.
+ *  - Leading, trailing, and extra spaces are trimmed before processing.
+ * @param name - The input name string.
+ * @returns The formatted uppercase initials.
+ */
+export function stoni(name: string) {
+  const words = name.trim().split(/\s+/) // Split by whitespace and remove extra spaces
+  let initials = ""
+
+  if (words.length === 1) {
+    initials = words[0].slice(0, 1) // Take the first letter of the single word
+  } else if (words.length === 2) {
+    initials = words[0].slice(0, 1) + words[1].slice(0, 1) // Take first letter of both words
+  } else {
+    initials = words[0].slice(0, 2) + words[1].slice(0, 2) // Take first 2 letters of first 2 words
+  }
+
+  return initials.toUpperCase()
 }
 
 /**
@@ -67,4 +94,53 @@ export function stommss(s: string) {
  */
 export function ntops(n: number) {
   return `${n} Participant${n !== 1 ? "s" : ""}`
+}
+
+export function ntoq(n: number) {
+  return `${n} Question${n !== 1 ? "s" : ""}`
+}
+
+export function tstos(timestamp: Timestamp) {
+  const lastUpdated = timestamp.toDate()
+  const now = new Date()
+
+  // Calculate time difference in seconds
+  const diffInSeconds = Math.floor(
+    (now.getTime() - lastUpdated.getTime()) / 1000
+  )
+
+  let timeAgo = ""
+
+  if (diffInSeconds < 60) {
+    timeAgo = `${diffInSeconds}s ago`
+  } else if (diffInSeconds < 3600) {
+    const diffInMinutes = Math.floor(diffInSeconds / 60)
+    timeAgo = `${diffInMinutes}m ago`
+  } else if (diffInSeconds < 86400) {
+    const diffInHours = Math.floor(diffInSeconds / 3600)
+    timeAgo = `${diffInHours}h ago`
+  } else if (diffInSeconds < 2592000) {
+    const diffInDays = Math.floor(diffInSeconds / 86400)
+    timeAgo = `${diffInDays}d ago`
+  } else if (diffInSeconds < 31536000) {
+    const diffInMonths = Math.floor(diffInSeconds / 2592000)
+    timeAgo = `${diffInMonths}mo ago`
+  } else {
+    const diffInYears = Math.floor(diffInSeconds / 31536000)
+    timeAgo = `${diffInYears}y ago`
+  }
+  return `${timeAgo}`
+}
+
+export function generateRoomCode() {
+  const MAX = 6
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let roomCode = ""
+
+  for (let i = 0; i < MAX; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length)
+    roomCode += characters[randomIndex]
+  }
+
+  return roomCode
 }

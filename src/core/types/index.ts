@@ -9,6 +9,7 @@ export enum ThemeType {
 export interface User {
   display_name: string
   email: string
+  photo_url: string | null
   created_at: Date
 }
 
@@ -42,16 +43,22 @@ export interface PromptOption {
   correct: boolean
 }
 
+export type SessionState = "closed" | "in-progress" | "open" | "done"
+/* if a session is closed, then it was ended by the host */
+/* if a session is in-progress, then it was started by the host */
+/* if a session is open, then the host hasn't started the session yet */
+/* if a session is done, then the host finished the session */
+
 export interface Session {
   host: DocumentReference<User>
-  poll_id: DocumentReference<Poll>
+  poll: DocumentReference<Poll>
   room_code: string
   title: string
   async: boolean
   anonymous: boolean | null
   time: number | null
-  question: DocumentReference<SessionQuestion>
-  state: "closed" | "in-progress" | "open"
+  question: DocumentReference<SessionQuestion> | null
+  state: SessionState
   created_at: Timestamp
 }
 
@@ -59,6 +66,12 @@ export interface SessionUser {
   photo_url: string | null
   display_name: string
   joined_at: Timestamp
+  incorrect: boolean
+}
+
+export interface WaitingUser {
+  photo_url: string | null
+  display_name: string
 }
 
 export interface SessionChat {
@@ -72,10 +85,9 @@ export interface SessionChat {
 export interface SessionQuestion {
   prompt_type: PromptType
   prompt: string
-  prompt_img: string
+  prompt_img: string | null
   options: string[]
   points: number
-  async: boolean | null
   anonymous: boolean | null
   time: number | null
 }
