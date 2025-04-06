@@ -24,6 +24,9 @@ import ChatStore from "./chat"
 import { generateRoomCode } from "@/utils"
 import QuestionStore from "./question"
 
+/**
+ * Manages /sessions collection in Firestore.
+ */
 export default class SessionStore extends BaseStore {
   private readonly _users: UserStore
   private readonly _waiting_users: WaitingUserStore
@@ -159,6 +162,7 @@ export default class SessionStore extends BaseStore {
       anonymous: poll.anonymous,
       time: poll.time,
       question: null,
+      questions: poll.questions,
       state: SessionState.OPEN,
       created_at: serverTimestamp(),
     })

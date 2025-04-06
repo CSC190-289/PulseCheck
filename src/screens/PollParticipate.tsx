@@ -34,7 +34,7 @@ export function PollParticipate() {
   const [gettingstated, setGettingStated] = useState(false)
   const [question, setQuestion] = useState<SessionQuestion | null>(null)
 
-  console.debug("question", question)
+  // console.debug("question", question)
 
   useEffect(() => {
     async function aux() {

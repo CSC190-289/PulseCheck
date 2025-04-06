@@ -8,6 +8,9 @@ import {
 import BaseStore from "./store"
 import { User } from "../../types"
 
+/**
+ * Manages /users collection in Firestore.
+ */
 export default class UserStore extends BaseStore {
   public doc(uid: string) {
     return doc(this.db, "users", uid) as DocumentReference<User>

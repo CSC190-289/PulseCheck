@@ -1,12 +1,18 @@
 import { DocumentReference, Timestamp } from "firebase/firestore"
 
+/**
+ * Represents a user in the system.
+ */
 export interface User {
   display_name: string
   email: string
   photo_url: string | null
-  created_at: Date
+  created_at: Timestamp
 }
 
+/**
+ * Represents a poll created by a user.
+ */
 export interface Poll {
   owner: DocumentReference<User>
   title: string
@@ -56,6 +62,7 @@ export interface Session {
   anonymous: boolean | null
   time: number | null
   question: DocumentReference<SessionQuestion> | null
+  questions: DocumentReference<SessionQuestion>[]
   state: SessionState
   created_at: Timestamp
 }

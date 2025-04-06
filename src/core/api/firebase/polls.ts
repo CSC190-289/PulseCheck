@@ -19,6 +19,9 @@ import {
 } from "firebase/firestore"
 import api, { clx } from "."
 
+/**
+ * Manages /polls collection in Firestore.
+ */
 export default class PollStore extends BaseStore {
   private readonly _questions: QuestionStore
 
