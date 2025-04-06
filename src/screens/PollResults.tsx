@@ -1,33 +1,29 @@
-import {
-  Container,
-  Typography,
-  Box,
-  Stack,
-  Card,
-  CardContent,
-  CardActionArea,
-} from "@mui/material"
-import { Timestamp, DocumentReference } from "firebase/firestore"
-import { Session, SessionQuestion } from "@/core/types"
-import { User } from "@/core/types"
-import { Question } from "@/core/types"
-import { useNavigate, useParams } from "react-router-dom"
-import { useSnackbar } from "@/core/hooks"
-import {
-  useDocumentData,
-  useDocumentDataOnce,
-  useDocumentOnce,
-} from "react-firebase-hooks/firestore"
+import { Container, Typography, Box, Stack, Divider } from "@mui/material"
+//import { useSnackbar } from "@/core/hooks"
+import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/core/api/firebase"
-import React from "react"
+import subAnswerCard from "@/components/poll/submission/subAnswerCard"
+import scoreDetails from "@/components/poll/submission/scoreDetails"
+import subChart from "@/components/poll/submission/subchart"
+import { useParams } from "react-router-dom"
+
+/**
+ * Allows users to set the settings for a question of a poll.
+ * @author VerySirias
+ * @returns {JSX.Element}
+ */
+
+// interface Props {
+//   //submission: submissionProp
+// }
 
 export default function PollResults() {
   const params = useParams()
   const id = params.id ?? ""
   const ref = api.submissions.doc(id)
   const [sub] = useDocumentDataOnce(ref)
-  const snackbar = useSnackbar()
-  const user = sub?.user
+  //  const snackbar = useSnackbar()
+  //  const user = sub?.user
   const display_name = sub?.display_name
   const total_score = sub?.total_score
   const submitted_at = sub?.submitted_at
@@ -35,120 +31,28 @@ export default function PollResults() {
   return (
     <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
       <Box mt={2}>
-        <Stack sx={{ m: 1 }} spacing={3}>
+        <Stack sx={{ m: 1 }} spacing={1}>
           <Typography variant='h5' textAlign='center'>
-            {" "}
-            {display_name}{" "}
+            MICHEAL!!!
           </Typography>
-          <Box
-            sx={{
-              height: 200,
-              bgcolor: "Highlight",
-            }}
-            fulWidth>
-            <Typography variant='h5' textAlign='center'>
-              {" "}
-              REPLACE WITH CHART
-            </Typography>
-          </Box>
+          <Divider></Divider>
+          <Typography variant='h6' textAlign='center'>
+            {display_name}
+          </Typography>
+          <Typography variant='subtitle2' textAlign='center'>
+            Submitted At{" "}
+            {submitted_at ? submitted_at.toDate().toLocaleDateString() : ""}
+          </Typography>
+          <Typography variant='subtitle2' textAlign='center'>
+            Your Total Sorce Is {total_score}
+          </Typography>
+
+          {subChart()}
+          <Stack> {scoreDetails()} </Stack>
+          <Stack> {subAnswerCard()}</Stack>
         </Stack>
       </Box>{" "}
-      <Box>
-        <Stack>
-          <Typography variant='h6' textAlign='left'>
-            {" "}
-            Score Details
-          </Typography>{" "}
-          <Typography variant='subtitle2' textAlign='left'>
-            {" "}
-            Lowest Score: [Data]
-          </Typography>{" "}
-          <Typography variant='subtitle2' textAlign='left'>
-            {" "}
-            Mean Score: [Data]
-          </Typography>{" "}
-          <Typography variant='subtitle2' textAlign='left'>
-            {" "}
-            Highest Score: [Data]
-          </Typography>{" "}
-          <Typography variant='subtitle2' textAlign='left'>
-            {" "}
-            Median Score: [Data]
-          </Typography>{" "}
-          <Typography variant='subtitle2' textAlign='left'>
-            {" "}
-            Lowest Quartile: [Data]
-          </Typography>{" "}
-          <Typography variant='subtitle2' textAlign='left'>
-            {" "}
-            Upper Quartile: [Data]
-          </Typography>{" "}
-        </Stack>
-        <Stack>
-          <Typography variant='h6' textAlign='left'>
-            {" "}
-            REPLACE WITH CHART
-          </Typography>{" "}
-        </Stack>
-        <Stack sx={{ m: 1 }} spacing={3}>
-          <Card>
-            <CardActionArea>
-              <CardContent>
-                <Box>
-                  <Box
-                    sx={{
-                      height: 150,
-                      bgcolor: "Highlight",
-                    }}
-                    fulWidth>
-                    <Typography variant='h5' textAlign='center'>
-                      {" "}
-                      REPLACE WITH IMG
-                    </Typography>
-                  </Box>
-                  <Typography variant='h6' gutterBottom>
-                    Title
-                  </Typography>
-                  <Typography variant='body2' color='textSecondary'>
-                    You chose [blank]
-                  </Typography>
-                  <Typography variant='body2' color='textSecondary'>
-                    Correct Answer!
-                  </Typography>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-          <Card sx={{ bgcolor: "coral" }}>
-            <CardActionArea>
-              <CardContent>
-                <Box>
-                  <Box
-                    sx={{
-                      height: 150,
-                      bgcolor: "Highlight",
-                    }}
-                    fulWidth>
-                    <Typography variant='h5' textAlign='center'>
-                      {" "}
-                      REPLACE WITH IMG
-                    </Typography>
-                  </Box>
-                  <Typography variant='h6' gutterBottom>
-                    Title
-                  </Typography>
-                  <Typography variant='body2' color='textSecondary'>
-                    You chose [blank]
-                  </Typography>
-                  <Typography variant='body2' color='textSecondary'>
-                    Correct Answer: not the one you picked
-                  </Typography>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Stack>
-      </Box>
+      <Box></Box>
     </Container>
   )
 }
