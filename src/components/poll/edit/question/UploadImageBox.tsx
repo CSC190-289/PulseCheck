@@ -1,12 +1,23 @@
-import { Box, Button, Card, CardMedia, CircularProgress } from "@mui/material"
+import {
+  Box,
+  Card,
+  CardMedia,
+  CircularProgress,
+  IconButton,
+  Stack,
+  Tooltip,
+} from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import React from "react"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
 import { firestore } from "@/core/api/firebase"
+import { CloudUpload, Delete } from "@mui/icons-material"
 interface Props {
   pid: string
   qid: string
+  url: string | null
 }
 
 /**
@@ -75,7 +86,13 @@ export default function UploadImageBox(props: Props) {
 
   const [imageURL, setImageURL] = useState<string | null>("") // Sets image url once image is uploaded to cloud firestore
   const [loading, setLoading] = useState<boolean>(false) // Sets loading state to prompt loading icon
+  useEffect(() => {
+    setImageURL(props.url)
+  }, [props.url])
 
+  useEffect(() => {
+    console.debug("Image URL: ", imageURL)
+  }, [imageURL])
   // Asynchronously uploads file to cloud firestore and sets image url
   const fileUpload = async (fileToUpload: File, storagePath: string) => {
     setLoading(true)
@@ -102,6 +119,7 @@ export default function UploadImageBox(props: Props) {
   }
 
   const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.debug("File Uploading")
     const processFile = async () => {
       const selectedFile = event.target.files?.[0]
       if (selectedFile) {
@@ -125,6 +143,18 @@ export default function UploadImageBox(props: Props) {
     })
   }
 
+  const handleDelete = () => {
+    const deleteFile = async () => {
+      setImageURL(null)
+      await updateDoc(questionDocRef, {
+        prompt_img: null,
+      })
+    }
+    deleteFile().catch((error) => {
+      console.error("Error deleting file", error)
+    })
+  }
+
   return (
     <Box
       sx={{
@@ -140,17 +170,14 @@ export default function UploadImageBox(props: Props) {
       <Card
         variant='outlined'
         sx={{
-          padding: 10,
-          // paddingLeft: "42%",
-          // paddingRight: "42%",
+          padding: 5,
           borderStyle: "dashed",
           borderWidth: 2,
           borderRadius: 5,
         }}>
-        {loading && <CircularProgress color='primary' size={20} />}
-
         {imageURL && (
           <CardMedia
+            sx={{ objectFit: "contain" }}
             component='img'
             alt='img'
             height='200'
@@ -158,11 +185,27 @@ export default function UploadImageBox(props: Props) {
             image={imageURL}
           />
         )}
-
-        <Button sx={{ fontWeight: "bold" }} component='label'>
-          Upload Image
-          <VisuallyHiddenInput type='file' onChange={handleFile} />
-        </Button>
+        <Stack
+          direction='row'
+          sx={{ alignItems: "center", justifyContent: "center" }}>
+          {loading ? (
+            <CircularProgress color='primary' size={25} />
+          ) : (
+            <Tooltip title='Upload Image'>
+              <IconButton component='label' color='primary' size='large'>
+                <CloudUpload fontSize='inherit' />
+                <VisuallyHiddenInput type='file' onChange={handleFile} />
+              </IconButton>
+            </Tooltip>
+          )}
+          {imageURL && (
+            <Tooltip title='Delete Image'>
+              <IconButton onClick={handleDelete} color='primary' size='large'>
+                <Delete fontSize='inherit' />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Stack>
       </Card>
     </Box>
   )

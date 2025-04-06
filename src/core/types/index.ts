@@ -3,6 +3,12 @@ import { DocumentReference, Timestamp } from "firebase/firestore"
 /**
  * Represents a user in the system.
  */
+export enum ThemeType {
+  SYSTEM_THEME = "system-theme",
+  LIGHT = "light",
+  DARK = "dark",
+}
+
 export interface User {
   display_name: string
   email: string
