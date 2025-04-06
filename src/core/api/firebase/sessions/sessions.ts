@@ -16,7 +16,7 @@ import {
   where,
 } from "firebase/firestore"
 import BaseStore from "../store"
-import { Session, SessionQuestion } from "@/core/types"
+import { Session, SessionQuestion, SessionState } from "@/core/types"
 import api, { clx } from ".."
 import UserStore from "./users"
 import WaitingUserStore from "./waiting_users"
@@ -159,7 +159,7 @@ export default class SessionStore extends BaseStore {
       anonymous: poll.anonymous,
       time: poll.time,
       question: null,
-      state: "open",
+      state: SessionState.OPEN,
       created_at: serverTimestamp(),
     })
     return session.id
@@ -212,7 +212,7 @@ export default class SessionStore extends BaseStore {
       question_refs.push(sqref)
     }
     await this.updateByRef(ref, {
-      state: "in-progress",
+      state: SessionState.IN_PROGRESS,
     })
     return question_refs
   }
@@ -220,7 +220,7 @@ export default class SessionStore extends BaseStore {
   public async close(ref: DocumentReference<Session>) {
     await this.updateByRef(ref, {
       room_code: ref.id,
-      state: "closed",
+      state: SessionState.CLOSED,
     })
   }
 }

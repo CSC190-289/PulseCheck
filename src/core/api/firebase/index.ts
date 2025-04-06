@@ -8,7 +8,6 @@ import { getStorage } from "firebase/storage"
 import AuthStore from "./auth"
 import SessionStore from "./sessions/sessions"
 import SubmissionStore from "./submissions"
-import { Submission } from "@/core/types"
 
 const config: FirebaseOptions = {
   apiKey: "AIzaSyBAGd9DDTtn8aAeab4Ydq65yErWAzO7mPg",
