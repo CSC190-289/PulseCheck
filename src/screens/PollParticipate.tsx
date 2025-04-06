@@ -1,8 +1,9 @@
 import LeaveButton from "@/components/poll/session/LeaveButton"
+import ResponseDialog from "@/components/poll/session/participate/ResponseDialog"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
-import { SessionQuestion, SessionState } from "@/core/types"
+import { SessionState } from "@/core/types"
 import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
@@ -16,7 +17,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material"
-import { deleteDoc, doc, getDoc } from "firebase/firestore"
+import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
@@ -29,31 +30,12 @@ export function PollParticipate() {
   const { user, loading } = useAuthContext()
   const navigate = useNavigate()
   const snackbar = useSnackbar()
-  const [session, sessionLoading] = useDocumentData(api.sessions.doc(sid))
+  const sref = api.sessions.doc(sid)
+  const [session, sessionLoading] = useDocumentData(sref)
   const [users] = useCollection(api.sessions.users.collect(sid))
   const [gettingstated, setGettingStated] = useState(false)
-  const [question, setQuestion] = useState<SessionQuestion | null>(null)
-
-  // console.debug("question", question)
-
-  useEffect(() => {
-    async function aux() {
-      if (!(session && !sessionLoading && session.question)) {
-        return
-      }
-      try {
-        const ss = await getDoc(session?.question)
-        if (!ss.exists()) {
-          throw new Error(`question(${ss.id}) does not exist!`)
-        }
-        const q = ss.data()
-        setQuestion(q)
-      } catch (err) {
-        console.debug(err)
-      }
-    }
-    void aux()
-  }, [session, sessionLoading, session?.question])
+  /** the current questiont to be shown */
+  const question = session?.question
 
   useEffect(() => {
     if (session && !sessionLoading) {
@@ -152,6 +134,11 @@ export function PollParticipate() {
             Waiting for Host...
           </Typography>
         )}
+        {/* @tdhillion113 If you're reading this, then you're on the track.
+            I need you to implement this component below.
+        */}
+        <ResponseDialog session={session} sref={sref} />
+        {/* render the current question here */}
         {question && (
           <Box mb={3}>
             {question.prompt_img && (
@@ -170,6 +157,7 @@ export function PollParticipate() {
             </Stack>
           </Box>
         )}
+        {/* render the users who are in the poll session */}
         <Grid2 container spacing={2}>
           {users?.docs.map((x) => (
             <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>

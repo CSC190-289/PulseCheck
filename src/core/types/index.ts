@@ -67,10 +67,25 @@ export interface Session {
   async: boolean
   anonymous: boolean | null
   time: number | null
-  question: DocumentReference<SessionQuestion> | null
+  question: CurrentQuestion | null
   questions: DocumentReference<SessionQuestion>[]
+  answers: SessionAnswer[]
   state: SessionState
   created_at: Timestamp
+}
+
+export interface CurrentQuestion {
+  prompt_type: PromptType
+  prompt: string
+  prompt_img: string | null
+  options: string[]
+  anonymous: boolean | null
+  time: number | null
+}
+
+export interface SessionAnswer {
+  uid: string
+  option: string
 }
 
 export interface SessionUser {
@@ -97,7 +112,7 @@ export interface SessionQuestion {
   prompt_type: PromptType
   prompt: string
   prompt_img: string | null
-  options: string[]
+  options: PromptOption[]
   points: number
   anonymous: boolean | null
   time: number | null

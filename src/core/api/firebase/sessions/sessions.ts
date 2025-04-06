@@ -1,6 +1,7 @@
 import {
   addDoc,
   arrayRemove,
+  arrayUnion,
   collection,
   CollectionReference,
   deleteDoc,
@@ -17,7 +18,14 @@ import {
   where,
 } from "firebase/firestore"
 import BaseStore from "../store"
-import { Session, SessionQuestion, SessionState } from "@/core/types"
+import {
+  CurrentQuestion,
+  PromptOption,
+  Session,
+  SessionAnswer,
+  SessionQuestion,
+  SessionState,
+} from "@/core/types"
 import api, { clx } from ".."
 import UserStore from "./users"
 import WaitingUserStore from "./waiting_users"
@@ -164,6 +172,7 @@ export default class SessionStore extends BaseStore {
       time: poll.time,
       question: null,
       questions: [],
+      answers: [],
       state: SessionState.OPEN,
       created_at: serverTimestamp(),
     })
@@ -178,32 +187,36 @@ export default class SessionStore extends BaseStore {
   }
 
   public async start(ref: DocumentReference<Session>) {
-    /* find session doc by {ref} */
+    /* fetch session doc by {ref} */
     const session_ss = await getDoc(ref)
     if (!session_ss.exists()) {
       throw new Error(`session(${ref.id}) does not exist!`)
     }
     const session = session_ss.data()
+    /* fetch session's poll by {session.poll} */
     const poll_ss = await getDoc(session.poll)
     const poll = poll_ss.data()
     if (!poll) {
       throw new Error(`poll(${poll_ss.id}) does not exist!`)
     }
     const question_refs: DocumentReference<SessionQuestion>[] = []
+    /* iterate all of the poll's questions */
     for (const q of poll.questions) {
-      const opts: string[] = []
+      const opts: PromptOption[] = []
+      /* fetch the question's data */
       const pq_ss = await getDoc(q)
       if (!pq_ss.exists()) {
         throw new Error(`question(${pq_ss.id}) does not exist!`)
       }
       const pq = pq_ss.data()
+      /* iterate the question's options */
       for (const oref of pq.options) {
         const opt_ss = await getDoc(oref)
         if (!opt_ss.exists()) {
           throw new Error(`opt(${opt_ss.id}) does not exist!`)
         }
         const opt = opt_ss.data()
-        opts.push(opt.text)
+        opts.push(opt)
       }
       const sqref = (await this.questions.create(ref.id, {
         anonymous: pq.anonymous,
@@ -231,17 +244,54 @@ export default class SessionStore extends BaseStore {
     const questions = session.questions
     const nextQuestion = questions.shift()
     if (nextQuestion) {
+      const q_ss = await getDoc(nextQuestion)
+      if (!q_ss.exists()) {
+        throw new Error(`nextQuestion(${nextQuestion.id}) does nto exist!`)
+      }
+      const q = q_ss.data()
+      const payload: CurrentQuestion = {
+        prompt_type: q.prompt_type,
+        prompt: q.prompt,
+        prompt_img: q.prompt_img,
+        options: q.options.map((x) => x.text),
+        anonymous: q.anonymous,
+        time: q.time,
+      }
       await setDoc(
         ref,
         {
-          question: nextQuestion ?? null,
+          question: payload,
           questions: arrayRemove(nextQuestion),
+          answers: [],
         },
         { merge: true }
       )
     } else {
-      await setDoc(ref, { question: null, questions: [] }, { merge: true })
+      await setDoc(
+        ref,
+        {
+          question: null,
+          questions: [],
+          answers: [],
+          state: SessionState.DONE,
+        },
+        { merge: true }
+      )
     }
+  }
+
+  /**
+   * Records a user's answer to the current question in session doc.
+   */
+  public async recordAnswer(
+    ref: DocumentReference<Session>,
+    payload: SessionAnswer
+  ) {
+    await setDoc(ref, { answers: arrayUnion(payload) }, { merge: true })
+    // await this.questions.responses.setDoc(sid, qid, uid, {
+    //   answer: payload.answer,
+    //   correct: false,
+    // })
   }
 
   public async close(ref: DocumentReference<Session>) {

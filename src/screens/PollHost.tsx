@@ -1,25 +1,26 @@
 import LeaveButton from "@/components/poll/session/LeaveButton"
-import StartButton from "@/components/poll/session/host/StartButton"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
-import { SessionQuestion, SessionState, WaitingUser } from "@/core/types"
+import { SessionState, WaitingUser } from "@/core/types"
 import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
   AppBar,
   Box,
-  Button,
   Container,
   Grid2,
   LinearProgress,
   Toolbar,
   Typography,
 } from "@mui/material"
-import { getDoc, onSnapshot } from "firebase/firestore"
-import React, { useEffect, useState } from "react"
+import { onSnapshot } from "firebase/firestore"
+import React, { useEffect } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
+import HostButton from "@/components/poll/session/host/HostButton"
+import RoomTitle from "@/components/poll/session/host/RoomTitle"
+import Image from "mui-image"
 
 export default function PollHost() {
   const params = useParams()
@@ -29,38 +30,14 @@ export default function PollHost() {
   const [session, sessionLoading] = useDocumentData(sref)
   const [users] = useCollection(api.sessions.users.collect(sid))
   const navigate = useNavigate()
-  const [gettingstated, setGettingStated] = useState(false)
-  const [question, setQuestion] = useState<SessionQuestion | null>(null)
+  /** the current questiont to be shown */
+  const question = session?.question
 
   useEffect(() => {
-    async function aux() {
-      if (!(session && !sessionLoading)) {
-        return
-      }
-      if (!session.question) {
-        setQuestion(null)
-        return
-      }
-      try {
-        const ss = await getDoc(session.question)
-        if (!ss.exists()) {
-          throw new Error(`question(${ss.id}) does not exist!`)
-        }
-        const q = ss.data()
-        setQuestion(q)
-      } catch (err) {
-        console.debug(err)
-      }
-    }
-    void aux()
-  }, [session, sessionLoading, session?.question])
-
-  useEffect(() => {
+    /* if session exists and is done loading */
     if (session && !sessionLoading) {
       if (session.state === SessionState.CLOSED) {
         void navigate("/dashboard")
-      } else if (session.state === SessionState.IN_PROGRESS) {
-        setGettingStated(true)
       }
     }
   }, [session, sessionLoading, navigate])
@@ -98,12 +75,6 @@ export default function PollHost() {
               photo_url: data.photo_url,
               incorrect: false,
             })
-            // await setDoc(doc(usersRef, userId), {
-            //   display_name: data.display_name,
-            //   photo_url: data.photo_url,
-            //   joined_at: serverTimestamp(),
-            //   incorrect: false,
-            // })
           } catch (err) {
             console.debug(err)
           }
@@ -131,8 +102,6 @@ export default function PollHost() {
   const handleStartSession = () => {
     async function start() {
       try {
-        // const arr = await api.sessions.start(sref)
-        // setQuestions(arr)
         await api.sessions.start(sref)
       } catch (err) {
         console.debug(err)
@@ -144,24 +113,17 @@ export default function PollHost() {
   const handleNextQuestion = () => {
     async function next() {
       try {
-        // if (questions.length === 0) {
-        //   console.debug("no mas questions!")
-        //   await api.sessions.updateByRef(sref, {
-        //     question: null,
-        //   })
-        //   return
-        // }
-        // setQuestions((prev) => prev.slice(1))
-        // await api.sessions.updateByRef(sref, {
-        //   question: questions[0],
-        // })
-        /* TODO - go to next question */
         await api.sessions.nextQuestion(sref)
       } catch (err) {
         console.debug(err)
       }
     }
     void next()
+  }
+
+  const handleDoneSession = () => {
+    /* TOOD - handle when the session is done */
+    console.debug("do something!")
   }
 
   const handleEndSession = () => {
@@ -195,23 +157,21 @@ export default function PollHost() {
             </Typography>
           </Box>
           <Box flex={1} marginInline={2} />
-          {gettingstated ? (
-            <Button onClick={handleNextQuestion}>Next</Button>
-          ) : (
-            <StartButton callback={handleStartSession} />
-          )}
+          <HostButton
+            state={session?.state}
+            startCallback={handleStartSession}
+            nextCallback={handleNextQuestion}
+            doneCallback={handleDoneSession}
+          />
         </Toolbar>
       </AppBar>
       <Container sx={{ mt: 2 }}>
-        {!gettingstated && (
-          <Typography variant='h5' mb={2}>
-            Room Code: {session?.room_code}
-          </Typography>
-        )}
+        <RoomTitle session={session} />
+        {/* render the current question here */}
         {question && (
           <Box mb={3}>
             {question.prompt_img && (
-              <img
+              <Image
                 style={{ width: 700, height: 300, objectFit: "contain" }}
                 src={question.prompt_img}
               />
@@ -219,6 +179,7 @@ export default function PollHost() {
             <Typography variant='h6'>{question.prompt}</Typography>
           </Box>
         )}
+        {/* render users currently in the poll session */}
         <Grid2 container spacing={2}>
           {users?.docs.map((x) => (
             <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>

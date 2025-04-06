@@ -1,14 +1,17 @@
-import { Button } from "@mui/material"
+import { Button, ButtonProps } from "@mui/material"
 import React from "react"
 
-interface Props {
+type StartButtonProps = {
   callback: () => void
-}
+} & ButtonProps
 
-export default function StartButton(props: Props) {
+export default function StartButton(props: StartButtonProps) {
+  const { callback, ...etc } = props
   return (
     <React.Fragment>
-      <Button onClick={props.callback}>Start</Button>
+      <Button onClick={callback} {...etc}>
+        Start
+      </Button>
     </React.Fragment>
   )
 }

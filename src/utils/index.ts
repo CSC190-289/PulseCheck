@@ -134,7 +134,7 @@ export function tstos(timestamp: Timestamp) {
 
 export function generateRoomCode() {
   const MAX = 6
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  const characters = "ABCDEFGHJKLMNPRTUVWXY0123456789"
   let roomCode = ""
 
   for (let i = 0; i < MAX; i++) {
