@@ -16,7 +16,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material"
-import { DocumentReference, getDoc, onSnapshot } from "firebase/firestore"
+import { getDoc, onSnapshot } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
@@ -31,20 +31,18 @@ export default function PollHost() {
   const navigate = useNavigate()
   const [gettingstated, setGettingStated] = useState(false)
   const [question, setQuestion] = useState<SessionQuestion | null>(null)
-  const [questions, setQuestions] = useState<
-    DocumentReference<SessionQuestion>[]
-  >([])
-
-  // console.debug("question", question)
-  // console.debug("questions", questions)
 
   useEffect(() => {
     async function aux() {
-      if (!(session && !sessionLoading && session.question)) {
+      if (!(session && !sessionLoading)) {
+        return
+      }
+      if (!session.question) {
+        setQuestion(null)
         return
       }
       try {
-        const ss = await getDoc(session?.question)
+        const ss = await getDoc(session.question)
         if (!ss.exists()) {
           throw new Error(`question(${ss.id}) does not exist!`)
         }
@@ -133,8 +131,9 @@ export default function PollHost() {
   const handleStartSession = () => {
     async function start() {
       try {
-        const arr = await api.sessions.start(sref)
-        setQuestions(arr)
+        // const arr = await api.sessions.start(sref)
+        // setQuestions(arr)
+        await api.sessions.start(sref)
       } catch (err) {
         console.debug(err)
       }
@@ -145,18 +144,19 @@ export default function PollHost() {
   const handleNextQuestion = () => {
     async function next() {
       try {
+        // if (questions.length === 0) {
+        //   console.debug("no mas questions!")
+        //   await api.sessions.updateByRef(sref, {
+        //     question: null,
+        //   })
+        //   return
+        // }
+        // setQuestions((prev) => prev.slice(1))
+        // await api.sessions.updateByRef(sref, {
+        //   question: questions[0],
+        // })
         /* TODO - go to next question */
-        if (questions.length === 0) {
-          console.debug("no mas questions!")
-          await api.sessions.updateByRef(sref, {
-            question: null,
-          })
-          return
-        }
-        setQuestions((prev) => prev.slice(1))
-        await api.sessions.updateByRef(sref, {
-          question: questions[0],
-        })
+        await api.sessions.nextQuestion(sref)
       } catch (err) {
         console.debug(err)
       }

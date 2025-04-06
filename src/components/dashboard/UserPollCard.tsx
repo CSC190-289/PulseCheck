@@ -23,9 +23,7 @@ export default function UserPollCard(props: UserPolLCardProps) {
     <Card onClick={handleClick}>
       <CardActionArea>
         <CardContent>
-          <Typography variant='h6' gutterBottom>
-            {poll.title}
-          </Typography>
+          <Typography gutterBottom>{poll.title}</Typography>
           <Typography variant='body2' color='textSecondary'>
             {ntoq(poll.questions.length)}
           </Typography>

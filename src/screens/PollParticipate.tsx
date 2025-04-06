@@ -108,7 +108,6 @@ export function PollParticipate() {
       try {
         const uid = user.uid
         await api.sessions.leaveSession(sid, uid)
-        /* TODO - confirm to leave, because this will affect their results */
         snackbar.show({
           message: "You left the session",
           type: "info",

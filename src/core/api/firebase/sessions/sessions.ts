@@ -1,5 +1,6 @@
 import {
   addDoc,
+  arrayRemove,
   collection,
   CollectionReference,
   deleteDoc,
@@ -162,7 +163,7 @@ export default class SessionStore extends BaseStore {
       anonymous: poll.anonymous,
       time: poll.time,
       question: null,
-      questions: poll.questions,
+      questions: [],
       state: SessionState.OPEN,
       created_at: serverTimestamp(),
     })
@@ -217,8 +218,30 @@ export default class SessionStore extends BaseStore {
     }
     await this.updateByRef(ref, {
       state: SessionState.IN_PROGRESS,
+      questions: question_refs,
     })
-    return question_refs
+  }
+
+  public async nextQuestion(ref: DocumentReference<Session>) {
+    const ss = await getDoc(ref)
+    if (!ss.exists()) {
+      throw new Error(`session(${ref.id}) does not exist!`)
+    }
+    const session = ss.data()
+    const questions = session.questions
+    const nextQuestion = questions.shift()
+    if (nextQuestion) {
+      await setDoc(
+        ref,
+        {
+          question: nextQuestion ?? null,
+          questions: arrayRemove(nextQuestion),
+        },
+        { merge: true }
+      )
+    } else {
+      await setDoc(ref, { question: null, questions: [] }, { merge: true })
+    }
   }
 
   public async close(ref: DocumentReference<Session>) {
