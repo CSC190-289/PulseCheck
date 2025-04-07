@@ -17,6 +17,7 @@
 		"@emotion/styled": "^11.14.0",
 		"@mui/icons-material": "^6.4.4",
 		"@mui/material": "^6.4.4",
+		"@mui/x-charts": "^7.28.0",
 		"firebase": "^11.3.1",
 		"react": "^19.0.0",
 		"react-awesome-reveal": "^4.3.1",
