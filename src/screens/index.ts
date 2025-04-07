@@ -8,6 +8,7 @@ import PollHost from "./PollHost"
 import PollJoin from "./PollJoin"
 import PollSession from "./PollSession"
 import PollResults from "./PollResults"
+import PollHostResults from "./PollHostResults"
 import PollView from "./PollView"
 import PrivacyPolicy from "./PrivacyPolicy"
 import Profile from "./Profile"
@@ -32,6 +33,7 @@ export const Screen = {
   PollJoin,
   PollEditor,
   PollResults,
+  PollHostResults,
   PollHistory,
   PollView,
   Profile,

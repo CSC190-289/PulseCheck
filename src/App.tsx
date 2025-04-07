@@ -31,6 +31,10 @@ export default function App() {
           path='/poll/submission/:id/results'
           element={<Screen.PollResults />}
         />
+        <Route
+          path='/poll/submission/:id/hostResults'
+          element={<Screen.PollHostResults />}
+        />
         <Route path='/poll/history' element={<Screen.PollHistory />} />
         <Route path='/poll/:id/overview' element={<Screen.PollView />} />
         <Route path='/profile' element={<Screen.Profile />} />
