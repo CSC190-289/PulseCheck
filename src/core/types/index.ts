@@ -1,5 +1,8 @@
 import { DocumentReference, Timestamp } from "firebase/firestore"
 
+/**
+ * Represents a user in the system.
+ */
 export enum ThemeType {
   SYSTEM_THEME = "system-theme",
   LIGHT = "light",
@@ -10,9 +13,12 @@ export interface User {
   display_name: string
   email: string
   photo_url: string | null
-  created_at: Date
+  created_at: Timestamp
 }
 
+/**
+ * Represents a poll created by a user.
+ */
 export interface Poll {
   owner: DocumentReference<User>
   title: string
@@ -43,12 +49,16 @@ export interface PromptOption {
   correct: boolean
 }
 
-export type SessionState = "closed" | "in-progress" | "open" | "done"
-/* if a session is closed, then it was ended by the host */
-/* if a session is in-progress, then it was started by the host */
-/* if a session is open, then the host hasn't started the session yet */
-/* if a session is done, then the host finished the session */
-
+export enum SessionState {
+  /* if a session is closed, then it was ended by the host */
+  CLOSED = "closed",
+  /* if a session is in-progress, then it was started by the host */
+  IN_PROGRESS = "in-progress",
+  /* if a session is open, then the host hasn't started the session yet */
+  OPEN = "open",
+  /* if a session is done, then the host finished the session */
+  DONE = "done",
+}
 export interface Session {
   host: DocumentReference<User>
   poll: DocumentReference<Poll>
@@ -57,9 +67,25 @@ export interface Session {
   async: boolean
   anonymous: boolean | null
   time: number | null
-  question: DocumentReference<SessionQuestion> | null
+  question: CurrentQuestion | null
+  questions: DocumentReference<SessionQuestion>[]
+  answers: SessionAnswer[]
   state: SessionState
   created_at: Timestamp
+}
+
+export interface CurrentQuestion {
+  prompt_type: PromptType
+  prompt: string
+  prompt_img: string | null
+  options: string[]
+  anonymous: boolean | null
+  time: number | null
+}
+
+export interface SessionAnswer {
+  uid: string
+  option: string
 }
 
 export interface SessionUser {
@@ -86,7 +112,7 @@ export interface SessionQuestion {
   prompt_type: PromptType
   prompt: string
   prompt_img: string | null
-  options: string[]
+  options: PromptOption[]
   points: number
   anonymous: boolean | null
   time: number | null

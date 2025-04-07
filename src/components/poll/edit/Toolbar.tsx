@@ -114,13 +114,12 @@ export default function Toolbar(props: Props) {
   }
 
   const handleHostClick = () => {
-    /* create a poll session and host it */
     if (auth.user) {
       const user = auth.user
-      api.polls.sessions
+      /* create a poll session and host it */
+      api.sessions
         .host(pid, user.uid)
         .then((sessionId) => {
-          /* TODO - host poll */
           void navigate(`/poll/session/${sessionId}/host`)
         })
         .catch((err) => console.debug(err))
@@ -132,9 +131,6 @@ export default function Toolbar(props: Props) {
     <AppBar color='inherit' position='relative'>
       <MUIToolbar>
         <Stack direction={"row"} alignItems={"center"} flexGrow={1}>
-          {/* <IconButton size='large' color='inherit' onClick={handleDocClick}>
-            <Description fontSize='inherit' />
-          </IconButton> */}
           {isEditing ? (
             <TextField
               size='small'
@@ -143,7 +139,6 @@ export default function Toolbar(props: Props) {
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={handleKeyPress}
               fullWidth
-              // sx={{ maxWidth: "48ch" }}
               slotProps={{
                 input: {
                   endAdornment: isEditing && (
@@ -155,7 +150,9 @@ export default function Toolbar(props: Props) {
               }}
             />
           ) : (
-            <Typography onDoubleClick={handleTitleClick}>{title}</Typography>
+            <Typography onDoubleClick={handleTitleClick} textAlign={"left"}>
+              {title}
+            </Typography>
           )}
           {!isEditing && (
             <IconButton size='small' color='primary' onClick={handleClickEdit}>
@@ -163,7 +160,7 @@ export default function Toolbar(props: Props) {
             </IconButton>
           )}
           <Box flex={1} marginInline={2} />
-          {/* <Box sx={{ display: { xs: "none", sm: "none", md: "flex" } }}>
+          {/* <Box display={{ xs: "none", sm: "none", md: "flex" }} gap={1}>
             <FormControlLabel
               label='Anonymous'
               checked={Boolean(anonymous)}
@@ -172,10 +169,15 @@ export default function Toolbar(props: Props) {
               }
             />
             <TimerSwitch pid={pid} time={time} />
-            <Button>Host</Button>
+            <Tooltip title='Host Poll'>
+              <IconButton onClick={handleHostClick}>
+                <ScreenShare />
+              </IconButton>
+            </Tooltip>
           </Box> */}
-
-          <Box>
+          <Box
+          // display={{ md: "none" }}
+          >
             <IconButton onClick={handleOpenPollMenu} color='inherit'>
               <MenuOpen />
             </IconButton>

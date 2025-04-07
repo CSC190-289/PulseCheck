@@ -1,6 +1,12 @@
 import api from "@/core/api/firebase"
 import { mmsston, ntommss, stommss } from "@/utils"
-import { FormControlLabel, Switch, TextField, Tooltip } from "@mui/material"
+import {
+  Box,
+  FormControlLabel,
+  Switch,
+  TextField,
+  Tooltip,
+} from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 interface Props {
@@ -68,7 +74,7 @@ export default function TimerSwitch(props: Props) {
   }
 
   return (
-    <React.Fragment>
+    <Box>
       <FormControlLabel
         labelPlacement='end'
         label='Timed'
@@ -101,6 +107,6 @@ export default function TimerSwitch(props: Props) {
         {formatTimeHelper()}
       </Typography> */}
       {/* )} */}
-    </React.Fragment>
+    </Box>
   )
 }

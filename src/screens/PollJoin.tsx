@@ -49,6 +49,7 @@ export default function PollJoin() {
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
   const { user, loading } = useAuthContext()
+  const [disable, setDisable] = useState(false)
 
   useEffect(() => {
     if (!user && !loading) {
@@ -61,6 +62,7 @@ export default function PollJoin() {
   const handleJoinClick = (e: MouseEvent | FormEvent) => {
     e.preventDefault()
     const aux = async () => {
+      setDisable(true)
       try {
         if (!roomCode.trim()) {
           throw new Error("Room Code cannot be blank!")
@@ -71,8 +73,8 @@ export default function PollJoin() {
         if (!user) {
           throw new Error("How did you do this?")
         }
-        const sref = await api.polls.sessions.getByCode(roomCode)
-        await api.polls.sessions.enqueue(sref.id, user.uid, {
+        const sref = await api.sessions.getByCode(roomCode)
+        await api.sessions.enqueue(sref.id, user.uid, {
           display_name: displayName,
           photo_url: user.photoURL,
         })
@@ -89,6 +91,8 @@ export default function PollJoin() {
             type: "error",
           })
         }
+      } finally {
+        setDisable(false)
       }
     }
     void aux()
@@ -127,7 +131,8 @@ export default function PollJoin() {
                 variant='contained'
                 color='primary'
                 onClick={handleJoinClick}
-                fullWidth>
+                fullWidth
+                disabled={disable}>
                 POLL UP
               </Button>
             </Stack>

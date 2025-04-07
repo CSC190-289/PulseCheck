@@ -31,11 +31,11 @@ export default function GuestJoin() {
           throw new Error("Display Name cannot be blank!")
         }
         /* find session with code */
-        const sref = await api.polls.sessions.getByCode(roomCode)
+        const sref = await api.sessions.getByCode(roomCode)
         /* then sign in as a guest */
         const cred = await api.auth.loginAsGuest()
         /* add yourself to the queue */
-        await api.polls.sessions.enqueue(sref.id, cred.user.uid, {
+        await api.sessions.enqueue(sref.id, cred.user.uid, {
           display_name: displayName,
           photo_url: null,
         })

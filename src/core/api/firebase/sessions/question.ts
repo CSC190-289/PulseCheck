@@ -3,17 +3,24 @@ import BaseStore from "../store"
 import OptionStore from "./option"
 import { clx } from ".."
 import { SessionQuestion } from "@/core/types"
+import ResponseStore from "./responses"
 
 export default class QuestionStore extends BaseStore {
   private readonly _options: OptionStore
+  private readonly _responses: ResponseStore
 
   constructor(db: Firestore) {
     super(db)
     this._options = new OptionStore(db)
+    this._responses = new ResponseStore(db)
   }
 
   public get options() {
     return this._options
+  }
+
+  public get responses() {
+    return this._responses
   }
 
   public doc(sid: string, qid: string) {

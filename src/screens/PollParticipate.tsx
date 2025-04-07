@@ -1,8 +1,9 @@
 import LeaveButton from "@/components/poll/session/LeaveButton"
+import ResponseDialog from "@/components/poll/session/participate/ResponseDialog"
 import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
-import { SessionQuestion } from "@/core/types"
+import { SessionState } from "@/core/types"
 import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
@@ -16,7 +17,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material"
-import { deleteDoc, doc, getDoc } from "firebase/firestore"
+import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
@@ -29,41 +30,22 @@ export function PollParticipate() {
   const { user, loading } = useAuthContext()
   const navigate = useNavigate()
   const snackbar = useSnackbar()
-  const [session, sessionLoading] = useDocumentData(api.polls.sessions.doc(sid))
-  const [users] = useCollection(api.polls.sessions.users.collect(sid))
+  const sref = api.sessions.doc(sid)
+  const [session, sessionLoading] = useDocumentData(sref)
+  const [users] = useCollection(api.sessions.users.collect(sid))
   const [gettingstated, setGettingStated] = useState(false)
-  const [question, setQuestion] = useState<SessionQuestion | null>(null)
-
-  console.debug("question", question)
-
-  useEffect(() => {
-    async function aux() {
-      if (!(session && !sessionLoading && session.question)) {
-        return
-      }
-      try {
-        const ss = await getDoc(session?.question)
-        if (!ss.exists()) {
-          throw new Error(`question(${ss.id}) does not exist!`)
-        }
-        const q = ss.data()
-        setQuestion(q)
-      } catch (err) {
-        console.debug(err)
-      }
-    }
-    void aux()
-  }, [session, sessionLoading, session?.question])
+  /** the current questiont to be shown */
+  const question = session?.question
 
   useEffect(() => {
     if (session && !sessionLoading) {
-      if (session.state === "closed") {
+      if (session.state === SessionState.CLOSED) {
         snackbar.show({
           message: "Host Ended Session",
           type: "info",
         })
         void navigate("/poll/join")
-      } else if (session.state === "in-progress") {
+      } else if (session.state === SessionState.IN_PROGRESS) {
         setGettingStated(true)
       }
     }
@@ -79,7 +61,7 @@ export function PollParticipate() {
           return
         }
         const uid = user.uid
-        const hasJoined = await api.polls.sessions.hasJoined(sid, uid)
+        const hasJoined = await api.sessions.hasJoined(sid, uid)
         if (!hasJoined) {
           if (user.isAnonymous) {
             await user.delete()
@@ -88,7 +70,7 @@ export function PollParticipate() {
             await navigate("/poll/join")
           }
         } else {
-          const wuref = api.polls.sessions.waiting_users.collect(sid)
+          const wuref = api.sessions.waiting_users.collect(sid)
           void deleteDoc(doc(wuref, user.uid))
         }
       }
@@ -107,8 +89,7 @@ export function PollParticipate() {
       }
       try {
         const uid = user.uid
-        await api.polls.sessions.leaveSession(sid, uid)
-        /* TODO - confirm to leave, because this will affect their results */
+        await api.sessions.leaveSession(sid, uid)
         snackbar.show({
           message: "You left the session",
           type: "info",
@@ -153,6 +134,11 @@ export function PollParticipate() {
             Waiting for Host...
           </Typography>
         )}
+        {/* @tdhillion113 If you're reading this, then you're on the track.
+            I need you to implement this component below.
+        */}
+        <ResponseDialog session={session} sref={sref} />
+        {/* render the current question here */}
         {question && (
           <Box mb={3}>
             {question.prompt_img && (
@@ -171,6 +157,7 @@ export function PollParticipate() {
             </Stack>
           </Box>
         )}
+        {/* render the users who are in the poll session */}
         <Grid2 container spacing={2}>
           {users?.docs.map((x) => (
             <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
@@ -181,18 +168,6 @@ export function PollParticipate() {
           ))}
         </Grid2>
       </Container>
-      {/* <Dialog open={showDialog}>
-        <DialogTitle>Are you sure you want to leave?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            All of your answers you submitted so far will be saved.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowDialog(false)}>No</Button>
-          <Button onClick={handleLeave}>Yes</Button>
-        </DialogActions>
-      </Dialog> */}
     </React.Fragment>
   )
 }

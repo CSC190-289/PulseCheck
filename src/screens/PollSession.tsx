@@ -23,11 +23,11 @@ export default function PollSession() {
       }
       try {
         const uid = user.uid
-        const hasJoined = await api.polls.sessions.hasJoined(sid, uid)
+        const hasJoined = await api.sessions.hasJoined(sid, uid)
         if (hasJoined) {
           void navigate(`/poll/session/${sid}/participate`)
         }
-        const isWaiting = await api.polls.sessions.isWaitingForEntry(sid, uid)
+        const isWaiting = await api.sessions.isWaitingForEntry(sid, uid)
         if (!isWaiting) {
           setStatus("Access Denied!")
           if (user.isAnonymous) {
@@ -61,10 +61,10 @@ export default function PollSession() {
       }
       try {
         const uid = user.uid
-        if (await api.polls.sessions.isWaitingForEntry(sid, uid)) {
-          await api.polls.sessions.leaveQueue(sid, uid)
-        } else if (await api.polls.sessions.hasJoined(sid, uid)) {
-          await api.polls.sessions.leaveSession(sid, uid)
+        if (await api.sessions.isWaitingForEntry(sid, uid)) {
+          await api.sessions.leaveQueue(sid, uid)
+        } else if (await api.sessions.hasJoined(sid, uid)) {
+          await api.sessions.leaveSession(sid, uid)
         }
         snackbar.show({
           message: `You left the session`,

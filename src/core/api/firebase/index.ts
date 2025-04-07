@@ -6,6 +6,8 @@ import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
 import AuthStore from "./auth"
+import SessionStore from "./sessions/sessions"
+import SubmissionStore from "./submissions"
 
 const config: FirebaseOptions = {
   apiKey: "AIzaSyBAGd9DDTtn8aAeab4Ydq65yErWAzO7mPg",
@@ -45,20 +47,30 @@ export enum clx {
   waiting_users = "waiting_users",
   /* Collection for storing responses for poll session questions */
   responses = "responses",
+  /* Collection for storing user submissions for poll sessions */
+  submissions = "submissions",
 }
 
 /**
  * Serves as a central interface for managing Firestore.
  */
-class API {
+class APIStore {
+  private readonly _auth: AuthStore
   private readonly _users: UserStore
   private readonly _polls: PollStore
-  private readonly _auth: AuthStore
+  private readonly _sessions: SessionStore
+  private readonly _submissions: SubmissionStore
 
   constructor(db: Firestore) {
+    this._auth = new AuthStore()
     this._users = new UserStore(db)
     this._polls = new PollStore(db)
-    this._auth = new AuthStore()
+    this._sessions = new SessionStore(db)
+    this._submissions = new SubmissionStore(db)
+  }
+
+  public get auth(): AuthStore {
+    return this._auth
   }
 
   public get users(): UserStore {
@@ -69,11 +81,15 @@ class API {
     return this._polls
   }
 
-  public get auth(): AuthStore {
-    return this._auth
+  public get sessions(): SessionStore {
+    return this._sessions
+  }
+
+  public get submissions(): SubmissionStore {
+    return this._submissions
   }
 }
 
-const api = new API(firestore)
+const api = new APIStore(firestore)
 
 export default api
