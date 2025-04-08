@@ -1,5 +1,5 @@
 import { Session } from "@/core/types"
-import { Dialog, Typography } from "@mui/material"
+import { Dialog, Toolbar, Typography, AppBar } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React from "react"
 
@@ -11,6 +11,7 @@ interface ResponseDialogProps {
 export default function ResponseDialog(props: ResponseDialogProps) {
   // const [open, setOpen] = useState(false)
   console.debug("Props:", props)
+  const currentQuestion = props.session?.question
   /**
    * @TODO
    * @tdhillon113
@@ -31,8 +32,13 @@ export default function ResponseDialog(props: ResponseDialogProps) {
    */
   return (
     <React.Fragment>
-      <Dialog open={true}>
-        <Typography>Hello</Typography>
+      <Dialog fullScreen open={currentQuestion !== null}>
+        <AppBar position='relative'>
+          <Toolbar>
+            <Typography>{currentQuestion?.prompt}</Typography>
+          </Toolbar>
+        </AppBar>
+        <Typography> Question Content Goes Here </Typography>
       </Dialog>
     </React.Fragment>
   )
