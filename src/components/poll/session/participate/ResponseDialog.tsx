@@ -7,9 +7,15 @@ import {
   Box,
   Stack,
   Button,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material"
+
 import { DocumentReference } from "firebase/firestore"
-import React from "react"
+import React, {useState} from "react"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>
@@ -20,6 +26,11 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   // const [open, setOpen] = useState(false)
   console.debug("Props:", props)
   const currentQuestion = props.session?.question
+
+  //for state hooks : singselect, multiselect
+  const [value, setValue] = useState("null")
+
+  // const
   /**
    * @TODO
    * @tdhillon113
@@ -54,12 +65,21 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                 src={currentQuestion.prompt_img}
               />
             )}
-            <Stack spacing={3} mt={3} direction={"column"}>
-              {currentQuestion.options.map((x) => (
-                <Button key={x} variant='outlined'>
-                  {x}
-                </Button>
-              ))}
+            <Stack  sx={{ alignItems:'cen'}}spacing={3} mt={3} direction={"column"}>
+                    <FormControl>
+                    {/* <FormLabel id="demo-radio-buttons-group-label"></FormLabel> */}
+                    <RadioGroup
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      defaultValue="female"
+                      name="radio-buttons-group"
+                      >
+                      
+                      {currentQuestion.options.map((x) => (
+                      <FormControlLabel value={x} control={<Radio />} label={x} />
+                      
+                  ))}
+                    </RadioGroup>
+                  </FormControl>
             </Stack>
           </Box>
         )}
