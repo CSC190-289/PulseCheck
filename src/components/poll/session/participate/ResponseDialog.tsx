@@ -1,4 +1,5 @@
 import { Session } from "@/core/types"
+import { Dialog, Typography } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React from "react"
 
@@ -9,7 +10,7 @@ interface ResponseDialogProps {
 
 export default function ResponseDialog(props: ResponseDialogProps) {
   // const [open, setOpen] = useState(false)
-  console.debug(props)
+  console.debug("Props:", props)
   /**
    * @TODO
    * @tdhillon113
@@ -28,5 +29,11 @@ export default function ResponseDialog(props: ResponseDialogProps) {
    *
    * If you can get this done by Tuesday's meeting, I'll be extremely impressed.
    */
-  return <React.Fragment></React.Fragment>
+  return (
+    <React.Fragment>
+      <Dialog open={true}>
+        <Typography>Hello</Typography>
+      </Dialog>
+    </React.Fragment>
+  )
 }
