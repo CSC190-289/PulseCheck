@@ -2,9 +2,9 @@ import { Container, Typography, Box, Stack, Divider } from "@mui/material"
 //import { useSnackbar } from "@/core/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/core/api/firebase"
-import subAnswerCard from "@/components/poll/submission/subAnswerCard"
-import scoreDetails from "@/components/poll/submission/scoreDetails"
-import subChart from "@/components/poll/submission/subchart"
+import subAnswerCard from "@/components/poll/submission/SubAnswerCard"
+import scoreDetails from "@/components/poll/submission/ScoreDetails"
+import subChart from "@/components/poll/submission/Subchart"
 import { useParams } from "react-router-dom"
 
 /**

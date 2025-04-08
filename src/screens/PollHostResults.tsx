@@ -1,6 +1,6 @@
 import { Container, Typography, Box, Stack, Divider } from "@mui/material"
-import subChart from "@/components/poll/submission/subchart"
-import scoreDetails from "@/components/poll/submission/scoreDetails"
+import subChart from "@/components/poll/submission/Subchart"
+import scoreDetails from "@/components/poll/submission/ScoreDetails"
 
 /**
  * Allows Host to see the poll results.
