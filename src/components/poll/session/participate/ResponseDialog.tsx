@@ -1,5 +1,13 @@
 import { Session } from "@/core/types"
-import { Dialog, Toolbar, Typography, AppBar } from "@mui/material"
+import {
+  Dialog,
+  Toolbar,
+  Typography,
+  AppBar,
+  Box,
+  Stack,
+  Button,
+} from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React from "react"
 
@@ -35,10 +43,26 @@ export default function ResponseDialog(props: ResponseDialogProps) {
       <Dialog fullScreen open={currentQuestion !== null}>
         <AppBar position='relative'>
           <Toolbar>
-            <Typography>{currentQuestion?.prompt}</Typography>
+            <Typography variant='h6'>{currentQuestion?.prompt}</Typography>
           </Toolbar>
         </AppBar>
-        <Typography> Question Content Goes Here </Typography>
+        {currentQuestion && (
+          <Box mb={3}>
+            {currentQuestion.prompt_img && (
+              <img
+                style={{ width: 700, height: 300, objectFit: "contain" }}
+                src={currentQuestion.prompt_img}
+              />
+            )}
+            <Stack spacing={3} mt={3} direction={"column"}>
+              {currentQuestion.options.map((x) => (
+                <Button key={x} variant='outlined'>
+                  {x}
+                </Button>
+              ))}
+            </Stack>
+          </Box>
+        )}
       </Dialog>
     </React.Fragment>
   )
