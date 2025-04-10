@@ -5,7 +5,7 @@ import {
   MenuItemProps as MUIMenuItemProps,
 } from "@mui/material"
 import { MouseEvent } from "react"
-import { Link, NavigateOptions, To, useNavigate } from "react-router-dom"
+import { NavigateOptions, To, useNavigate } from "react-router-dom"
 
 type MenuItemProps = {
   icon?: SvgIconComponent
@@ -14,7 +14,7 @@ type MenuItemProps = {
 } & MUIMenuItemProps
 
 export default function MenuItem(props: MenuItemProps) {
-  const { icon: Icon, to, opts: options, onClick, children, ...etc } = props
+  const { icon: Icon, to, opts, onClick, children, ...etc } = props
   const navigate = useNavigate()
 
   const handleClick = (e: MouseEvent<HTMLLIElement>) => {
@@ -22,15 +22,19 @@ export default function MenuItem(props: MenuItemProps) {
       onClick(e)
     }
     if (to) {
-      void navigate(to, options)
+      if (opts) {
+        void navigate(to, opts)
+      } else {
+        void navigate(to)
+      }
     }
   }
 
   return (
     <MUIMenuItem
       {...etc}
-      component={to ? Link : "li"}
-      to={to}
+      // component={to ? Link : "li"}
+      // to={to}
       sx={{
         "&:hover": {
           color: "inherit",
