@@ -7,6 +7,7 @@ import {
   Box,
   Stack,
   Button,
+  Slide,
 } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React from "react"
@@ -20,6 +21,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   // const [open, setOpen] = useState(false)
   console.debug("Props:", props)
   const currentQuestion = props.session?.question
+
   /**
    * @TODO
    * @tdhillon113
@@ -40,15 +42,19 @@ export default function ResponseDialog(props: ResponseDialogProps) {
    */
   return (
     <React.Fragment>
-      <Dialog fullScreen open={currentQuestion !== null}>
-        <AppBar position='relative'>
+      <Dialog
+        fullScreen
+        open={currentQuestion !== null}
+        TransitionComponent={Slide}
+        TransitionProps={{ direction: "up" }}>
+        <AppBar position='sticky'>
           <Toolbar>
             <Typography variant='h4'>
               Question: {currentQuestion?.prompt}
             </Typography>
           </Toolbar>
         </AppBar>
-        <Box>
+        <Box padding={10}>
           {currentQuestion && (
             <Box mb={3}>
               {currentQuestion.prompt_img && (
