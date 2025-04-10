@@ -27,10 +27,20 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   console.debug("Props:", props)
   const currentQuestion = props.session?.question
 
-  //for state hooks : singselect, multiselect
-  const [value, setValue] = useState("null")
+  //for state hooks : singselect, multiselect: useState keeps track of the choices selected 
+  const [option, setOption] = useState([])
 
-  // const
+  const handleChange = (e) =>{
+    const selectValues = Array.from(e.target.option, )
+  }
+
+
+
+
+  // eventually use prompt type:
+  //  to display type of question + indicates what type of question can be selected
+  //being dealt with in typography 
+
   /**
    * @TODO
    * @tdhillon113
@@ -55,7 +65,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
         <AppBar position='relative'>
           <Toolbar>
             <Typography variant='h4'>
-              Question: {currentQuestion?.prompt}
+              {currentQuestion?.prompt}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -77,25 +87,14 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                   />
                 </Stack>
               )}
-              <Stack spacing={3} mt={3} direction={"column"}>
+              {/* <Stack spacing={3} mt={3} direction={"column"}>
                 {currentQuestion.options.map((x) => (
                   <Button key={x} variant='outlined'>
                     {x}
                   </Button>
                 ))}
-              </Stack>
-            </Box>
-          )}
-        </Box>
-        {currentQuestion && (
-          <Box mb={3}>
-            {currentQuestion.prompt_img && (
-              <img
-                style={{ width: 700, height: 300, objectFit: "contain" }}
-                src={currentQuestion.prompt_img}
-              />
-            )}
-            <Stack  sx={{ alignItems:'cen'}}spacing={3} mt={3} direction={"column"}>
+              </Stack> */}
+              <Stack sx={{ alignItems:'center'}}spacing={3} mt={3} direction={"column"}>
                     <FormControl>
                     {/* <FormLabel id="demo-radio-buttons-group-label"></FormLabel> */}
                     <RadioGroup
@@ -111,8 +110,9 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                     </RadioGroup>
                   </FormControl>
             </Stack>
-          </Box>
-        )}
+            </Box>
+          )}
+        </Box>
       </Dialog>
     </React.Fragment>
   )
