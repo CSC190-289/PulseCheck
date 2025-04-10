@@ -96,6 +96,9 @@ export function ntops(n: number) {
   return `${n} Participant${n !== 1 ? "s" : ""}`
 }
 
+/**
+ * Converts number to Question(s) {N} format.
+ */
 export function ntoq(n: number) {
   return `${n} Question${n !== 1 ? "s" : ""}`
 }
@@ -132,6 +135,9 @@ export function tstos(timestamp: Timestamp) {
   return `${timeAgo}`
 }
 
+/**
+ * Generates a random room code.
+ */
 export function generateRoomCode() {
   const MAX = 6
   const characters = "ABCDEFGHJKLMNPRTUVWXY0123456789"
