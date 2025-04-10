@@ -44,6 +44,11 @@ export interface Question {
 
 export type PromptType = "multiple-choice" | "multi-select" | "ranking-poll"
 
+export const MULTIPLE_CHOICE: PromptType = "multiple-choice"
+export const MULTI_SELECT: PromptType = "multi-select"
+export const RANKING_POLL: PromptType = "ranking-poll"
+
+
 export interface PromptOption {
   text: string
   correct: boolean

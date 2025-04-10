@@ -14,6 +14,7 @@ import {
   RadioGroup,
   Radio,
 } from "@mui/material"
+import Choice from "./Choice"
 
 import { DocumentReference } from "firebase/firestore"
 import React, { useState } from "react"
@@ -28,12 +29,17 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   console.debug("Props:", props)
   const currentQuestion = props.session?.question
 
-  //for state hooks : singselect, multiselect: useState keeps track of the choices selected
-  const [option, setOption] = useState([])
 
-  const handleChange = (e) => {
-    const selectValues = Array.from(e.target.option)
-  }
+  //for state hooks : singselect, multiselect: useState keeps track of the choices selected
+  const [option, setOption] = useState<string[]>([])
+
+  // const handleChange
+  // const handleChange = (e) => {
+  // const selectValues = Array.from(e.target.option)
+  // if (e.isChecked)
+  //   option.push(x)
+  // setOption(option)
+  //Bollocks : ball
 
   // eventually use prompt type:
   //  to display type of question + indicates what type of question can be selected
@@ -63,7 +69,8 @@ export default function ResponseDialog(props: ResponseDialogProps) {
         fullScreen
         open={currentQuestion !== null}
         TransitionComponent={Slide}
-        TransitionProps={{ direction: "up" }}>
+        // TransitionProps={{  "up" }}>
+      >
         <AppBar position='sticky'>
           <Toolbar>
             <Typography variant='h4'>{currentQuestion?.prompt}</Typography>
@@ -87,13 +94,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                   />
                 </Stack>
               )}
-              {/* <Stack spacing={3} mt={3} direction={"column"}>
-                {currentQuestion.options.map((x) => (
-                  <Button key={x} variant='outlined'>
-                    {x}
-                  </Button>
-                ))}
-              </Stack> */}
+
               <Stack
                 sx={{ alignItems: "center" }}
                 spacing={3}
@@ -106,10 +107,12 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                     defaultValue='female'
                     name='radio-buttons-group'>
                     {currentQuestion.options.map((x) => (
-                      <FormControlLabel
-                        value={x}
-                        control={<Radio />}
-                        label={x}
+                      //<FormControlLabel value={x} control={<Radio />} label={x} />
+                      <Choice
+                        text={x}
+                        promptType={currentQuestion.prompt_type}
+                        theChosenOnes={option}
+                        setTheChosenOnes={setOption}
                       />
                     ))}
                   </RadioGroup>
