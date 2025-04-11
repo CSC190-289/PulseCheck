@@ -4,9 +4,10 @@ import {
   ThemeProvider as MuiThemeProvider,
   PaletteMode,
 } from "@mui/material/styles"
-import { CssBaseline } from "@mui/material"
+import { CssBaseline, useMediaQuery } from "@mui/material"
 import { createCustomTheme } from "@/styles/theme"
 import { ThemeContext } from "@/core/contexts/ThemeContext"
+import { ThemeType } from "../types"
 
 /**
  * `ThemeProvider` is a context provider that manages the theme mode (light or dark)
@@ -27,12 +28,12 @@ import { ThemeContext } from "@/core/contexts/ThemeContext"
  */
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   /* detect system preference */
-  // const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-  const prefersDarkMode = false
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)")
+  // const prefersDarkMode = false
 
   /* state for theme mode, defaulting to system preference */
   const [mode, setMode] = useState<PaletteMode>(
-    prefersDarkMode ? "dark" : "light"
+    prefersDarkMode ? ThemeType.DARK : ThemeType.LIGHT
   )
 
   useEffect(() => {
@@ -43,10 +44,20 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"))
   }
 
+  const setTheme = (type: ThemeType) => {
+    if (type === ThemeType.SYSTEM_THEME) {
+      const newMode = prefersDarkMode ? ThemeType.DARK : ThemeType.LIGHT
+      setMode(newMode)
+    } else {
+      setMode(type)
+    }
+    localStorage.setItem("theme", type)
+  }
+
   const theme = useMemo(() => createCustomTheme(mode), [mode])
 
   return (
-    <ThemeContext.Provider value={{ toggleTheme, mode }}>
+    <ThemeContext.Provider value={{ toggleTheme, mode, setTheme }}>
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
         {children}
