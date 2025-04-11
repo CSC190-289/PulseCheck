@@ -1,19 +1,15 @@
 import LeaveButton from "@/components/poll/session/LeaveButton"
 import ResponseDialog from "@/components/poll/session/participate/ResponseDialog"
-import UserSessionCard from "@/components/poll/session/UserSessionCard"
+import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
 import { SessionState } from "@/core/types"
-import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
   AppBar,
   Box,
-  Button,
   Container,
-  Grid2,
   LinearProgress,
-  Stack,
   Toolbar,
   Typography,
 } from "@mui/material"
@@ -35,7 +31,7 @@ export function PollParticipate() {
   const [users] = useCollection(api.sessions.users.collect(sid))
   const [gettingstated, setGettingStated] = useState(false)
   /** the current questiont to be shown */
-  const question = session?.question
+  // const question = session?.question
 
   useEffect(() => {
     if (session && !sessionLoading) {
@@ -109,6 +105,10 @@ export function PollParticipate() {
 
   return (
     <React.Fragment>
+      {/* @tdhillion113 If you're reading this, then you're on the track.
+            I need you to implement this component below.
+      */}
+      <ResponseDialog session={session} sref={sref} />
       <AppBar color='inherit' position='relative'>
         <Toolbar>
           <LeaveButton
@@ -134,16 +134,12 @@ export function PollParticipate() {
             Waiting for Host...
           </Typography>
         )}
-        {/* @tdhillion113 If you're reading this, then you're on the track.
-            I need you to implement this component below.
-        */}
-        <ResponseDialog session={session} sref={sref} />
         {/* render the current question here */}
-        {question && (
+        {/* {question && (
           <Box mb={3}>
             {question.prompt_img && (
               <img
-                style={{ width: 700, height: 300, objectFit: "contain" }}
+                style={{ width: 300, objectFit: "contain" }}
                 src={question.prompt_img}
               />
             )}
@@ -156,17 +152,9 @@ export function PollParticipate() {
               ))}
             </Stack>
           </Box>
-        )}
+        )} */}
         {/* render the users who are in the poll session */}
-        <Grid2 container spacing={2}>
-          {users?.docs.map((x) => (
-            <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
-              <RA.Zoom triggerOnce>
-                <UserSessionCard user={x.data()} />
-              </RA.Zoom>
-            </Grid2>
-          ))}
-        </Grid2>
+        <UserSessionGrid users={users} />
       </Container>
     </React.Fragment>
   )

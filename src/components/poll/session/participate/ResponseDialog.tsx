@@ -6,13 +6,11 @@ import {
   AppBar,
   Box,
   Stack,
-  Button,
   Slide,
-  FormControlLabel,
   FormControl,
-  FormLabel,
-  RadioGroup,
-  Radio,
+  DialogContent,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material"
 import Choice from "./Choice"
 
@@ -29,10 +27,10 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   console.debug("Props:", props)
   const currentQuestion = props.session?.question
 
-
   //for state hooks : singselect, multiselect: useState keeps track of the choices selected
   const [option, setOption] = useState<string[]>([])
-
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"))
   // const handleChange
   // const handleChange = (e) => {
   // const selectValues = Array.from(e.target.option)
@@ -61,33 +59,39 @@ export default function ResponseDialog(props: ResponseDialogProps) {
    * For now, just treat it as multiple choice.
    * @see https://mui.com/material-ui/react-radio-button/
    *
-   * If you can get this done by Tuesday's meeting, I'll be extremely impressed.
    */
   return (
-    <React.Fragment>
-      <Dialog
-        fullScreen
-        open={currentQuestion !== null}
-        TransitionComponent={Slide}
-        // TransitionProps={{  "up" }}>
-      >
-        <AppBar position='sticky'>
-          <Toolbar>
-            <Typography variant='h4'>{currentQuestion?.prompt}</Typography>
-          </Toolbar>
-        </AppBar>
-        <Box padding={10}>
+    // <React.Fragment>
+    <Dialog
+      fullScreen={fullScreen}
+      open={currentQuestion !== null}
+      disablePortal={false}
+      slots={{
+        transition: Slide,
+      }}
+      slot={""}
+      slotProps={{
+        transition: {
+          direction: "up",
+        },
+      }}>
+      <AppBar position='relative'>
+        <Toolbar>
+          <Typography>{currentQuestion?.prompt}</Typography>
+        </Toolbar>
+      </AppBar>
+      <DialogContent>
+        <Box>
           {currentQuestion && (
-            <Box mb={3}>
+            <Box mb={1}>
               {currentQuestion.prompt_img && (
                 <Stack
                   sx={{ justifyContent: "center", alignItems: "center" }}
                   direction={"row"}
-                  mb={5}>
+                  mb={1}>
                   <img
                     style={{
-                      width: 700,
-                      height: 300,
+                      width: 400,
                       objectFit: "contain",
                     }}
                     src={currentQuestion.prompt_img}
@@ -102,26 +106,27 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                 direction={"column"}>
                 <FormControl>
                   {/* <FormLabel id="demo-radio-buttons-group-label"></FormLabel> */}
-                  <RadioGroup
+                  {/* <RadioGroup
                     aria-labelledby='demo-radio-buttons-group-label'
                     defaultValue='female'
-                    name='radio-buttons-group'>
-                    {currentQuestion.options.map((x) => (
-                      //<FormControlLabel value={x} control={<Radio />} label={x} />
-                      <Choice
-                        text={x}
-                        promptType={currentQuestion.prompt_type}
-                        theChosenOnes={option}
-                        setTheChosenOnes={setOption}
-                      />
-                    ))}
-                  </RadioGroup>
+                    name='radio-buttons-group'> */}
+                  {currentQuestion.options.map((x) => (
+                    //<FormControlLabel value={x} control={<Radio />} label={x} />
+                    <Choice
+                      text={x}
+                      promptType={currentQuestion.prompt_type}
+                      theChosenOnes={option}
+                      setTheChosenOnes={setOption}
+                    />
+                  ))}
+                  {/* </RadioGroup> */}
                 </FormControl>
               </Stack>
             </Box>
           )}
         </Box>
-      </Dialog>
-    </React.Fragment>
+      </DialogContent>
+    </Dialog>
+    // </React.Fragment>
   )
 }

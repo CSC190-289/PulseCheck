@@ -1,6 +1,6 @@
 import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
-import { MULTI_SELECT, MULTIPLE_CHOICE, PromptType, RANKING_POLL } from "@/core/types"
+import { PROMPT_TYPE_CHOICES, PromptType } from "@/core/types"
 import { MenuItem, TextField } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
@@ -49,9 +49,11 @@ export default function PromptTypeField(props: Props) {
         select
         value={promptType}
         onChange={(e) => setPromptType(e.target.value as PromptType)}>
-        <MenuItem value={MULTIPLE_CHOICE}>Multiple Choice</MenuItem>
-        <MenuItem value={MULTI_SELECT}>Multiple Select</MenuItem>
-        <MenuItem value={RANKING_POLL}>Ranking Poll</MenuItem>
+        {PROMPT_TYPE_CHOICES.map((x) => (
+          <MenuItem key={x.name} value={x.value}>
+            {x.name}
+          </MenuItem>
+        ))}
       </TextField>
     </React.Fragment>
   )

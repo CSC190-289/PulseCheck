@@ -44,10 +44,25 @@ export interface Question {
 
 export type PromptType = "multiple-choice" | "multi-select" | "ranking-poll"
 
-export const MULTIPLE_CHOICE: PromptType = "multiple-choice"
-export const MULTI_SELECT: PromptType = "multi-select"
-export const RANKING_POLL: PromptType = "ranking-poll"
+export interface PromptTypeChoice {
+  name: string
+  value: PromptType
+}
 
+export const PROMPT_TYPE_CHOICES = [
+  {
+    name: "Multiple Choice",
+    value: "multiple-choice",
+  },
+  {
+    name: "Multi-Select",
+    value: "multi-select",
+  },
+  {
+    name: "Ranking Poll",
+    value: "ranking-poll",
+  },
+] as PromptTypeChoice[]
 
 export interface PromptOption {
   text: string
