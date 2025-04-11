@@ -75,6 +75,10 @@ export default class SessionStore extends BaseStore {
     return collection(this.db, clx.sessions) as CollectionReference<Session>
   }
 
+  /**
+   * Tries to find a session with room code.
+   * @throws Error if session with passed code does not exist.
+   */
   public async getByCode(code: string): Promise<DocumentReference<Session>> {
     const ref = this.collect()
     /* find the first session that matches */
@@ -186,6 +190,9 @@ export default class SessionStore extends BaseStore {
     await updateDoc(ref, payload)
   }
 
+  /**
+   * @brief Host starts the session.
+   */
   public async start(ref: DocumentReference<Session>) {
     /* fetch session doc by {ref} */
     const session_ss = await getDoc(ref)
@@ -235,6 +242,11 @@ export default class SessionStore extends BaseStore {
     })
   }
 
+  /**
+   * @brief Host moves to the next question
+   * @throws Error if the session does not exist
+   * @throws Error if the next question of the session does not exist.
+   */
   public async nextQuestion(ref: DocumentReference<Session>) {
     const ss = await getDoc(ref)
     if (!ss.exists()) {
@@ -281,6 +293,7 @@ export default class SessionStore extends BaseStore {
   }
 
   /**
+   * @deprecated Implement this in responses store
    * Records a user's answer to the current question in session doc.
    */
   public async recordAnswer(
