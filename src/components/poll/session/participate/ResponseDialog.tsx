@@ -9,8 +9,6 @@ import {
   Slide,
   FormControl,
   DialogContent,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material"
 import Choice from "./Choice"
 
@@ -29,8 +27,8 @@ export default function ResponseDialog(props: ResponseDialogProps) {
 
   //for state hooks : singselect, multiselect: useState keeps track of the choices selected
   const [option, setOption] = useState<string[]>([])
-  const theme = useTheme()
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"))
+  // const theme = useTheme()
+  // const fullScreen = useMediaQuery(theme.breakpoints.down("md"))
   // const handleChange
   // const handleChange = (e) => {
   // const selectValues = Array.from(e.target.option)
@@ -63,7 +61,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   return (
     // <React.Fragment>
     <Dialog
-      fullScreen={fullScreen}
+      fullScreen
       open={currentQuestion !== null}
       disablePortal={false}
       slots={{
