@@ -24,27 +24,18 @@ export default function scoreDetails() {
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
-          Lowest Score: {lowestScore}
+          Lowest Score: {lowestScore} | Mean Score: {meanScore}
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
-          Mean Score: {meanScore}
+          Highest Score: {highestScore} | Median Score: {medianScore}
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
-          Highest Score: {highestScore}
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
-          Median Score: {medianScore}
-        </Typography>{" "}
-        <Typography variant='subtitle2' textAlign='left'>
-          {" "}
-          Lowest Quartile: {lowestquartile}
-        </Typography>{" "}
-        <Typography variant='subtitle2' textAlign='left'>
-          {" "}
-          Upper Quartile: {upperquartile}
+          Lowest Quartile: {lowestquartile} | Upper Quartile: {upperquartile}
         </Typography>{" "}
       </Stack>
       <Stack sx={{ m: 1 }} spacing={3}>

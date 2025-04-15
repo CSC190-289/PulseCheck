@@ -2,10 +2,12 @@ import { Container, Typography, Box, Stack, Divider } from "@mui/material"
 //import { useSnackbar } from "@/core/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/core/api/firebase"
-import subAnswerCard from "@/components/poll/submission/SubAnswerCard"
-import scoreDetails from "@/components/poll/submission/ScoreDetails"
-import subChart from "@/components/poll/submission/Subchart"
+import subAnswerCard from "@/components/poll/submission/subAnswerCard"
+import scoreDetails from "@/components/poll/submission/scoreDetails"
+import subChart from "@/components/poll/submission/subchart"
 import { useParams } from "react-router-dom"
+import { useAuthContext } from "@/core/hooks"
+import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 
 /**
  * Allows users to set the settings for a question of a poll.
@@ -22,6 +24,8 @@ export default function PollResults() {
   const id = params.id ?? ""
   const ref = api.submissions.doc(id)
   const [sub] = useDocumentDataOnce(ref)
+  const [users] = useCollection(api.sessions.users.collect(id))
+
   //  const snackbar = useSnackbar()
   //  const user = sub?.user
   const display_name = sub?.display_name
