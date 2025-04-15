@@ -209,7 +209,7 @@ export default class SessionStore extends BaseStore {
     const question_refs: DocumentReference<SessionQuestion>[] = []
     /* iterate all of the poll's questions */
     for (const q of poll.questions) {
-      const opts: PromptOption[] = []
+      // const opts: PromptOption[] = []
       /* fetch the question's data */
       const pq_ss = await getDoc(q)
       if (!pq_ss.exists()) {
@@ -223,7 +223,9 @@ export default class SessionStore extends BaseStore {
           throw new Error(`opt(${opt_ss.id}) does not exist!`)
         }
         const opt = opt_ss.data()
-        opts.push(opt)
+        
+        // TODO - create optiosn doc in /sessions/:sid/questions/:qid/options
+        // opts.push(opt)
       }
       const sqref = (await this.questions.create(ref.id, {
         anonymous: pq.anonymous,
@@ -232,7 +234,7 @@ export default class SessionStore extends BaseStore {
         prompt_img: pq.prompt_img,
         prompt_type: pq.prompt_type,
         time: pq.time,
-        options: opts,
+        // options: opts,
       })) as DocumentReference<SessionQuestion>
       question_refs.push(sqref)
     }
