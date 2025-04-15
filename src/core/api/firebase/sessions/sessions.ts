@@ -216,17 +216,8 @@ export default class SessionStore extends BaseStore {
         throw new Error(`question(${pq_ss.id}) does not exist!`)
       }
       const pq = pq_ss.data()
+
       /* iterate the question's options */
-      for (const oref of pq.options) {
-        const opt_ss = await getDoc(oref)
-        if (!opt_ss.exists()) {
-          throw new Error(`opt(${opt_ss.id}) does not exist!`)
-        }
-        const opt = opt_ss.data()
-        
-        // TODO - create optiosn doc in /sessions/:sid/questions/:qid/options
-        // opts.push(opt)
-      }
       const sqref = (await this.questions.create(ref.id, {
         anonymous: pq.anonymous,
         points: pq.points,
@@ -237,6 +228,18 @@ export default class SessionStore extends BaseStore {
         // options: opts,
       })) as DocumentReference<SessionQuestion>
       question_refs.push(sqref)
+      const optionsPath = `/sessions/${ref.id}/questions/${sqref.id}/options` // Note: the variable passed for qid is wrong here
+      const optionsRef = collection(this.db, optionsPath)
+      for (const oref of pq.options) {
+        const opt_ss = await getDoc(oref)
+        if (!opt_ss.exists()) {
+          throw new Error(`opt(${opt_ss.id}) does not exist!`)
+        }
+        const optData = opt_ss.data()
+        // TODO - create optiosn doc in /sessions/:sid/questions/:qid/options
+        await addDoc(optionsRef, optData)
+        // opts.push(opt)
+      }
     }
     await this.updateByRef(ref, {
       state: SessionState.IN_PROGRESS,
