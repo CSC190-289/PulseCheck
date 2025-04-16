@@ -1,6 +1,12 @@
-import { addDoc, collection, doc, Firestore } from "firebase/firestore"
+import {
+  addDoc,
+  collection,
+  doc,
+  DocumentReference,
+  Firestore,
+} from "firebase/firestore"
 import BaseStore from "../store"
-import OptionStore from "./option"
+import OptionStore from "./options"
 import { clx } from ".."
 import { SessionQuestion } from "@/core/types"
 import ResponseStore from "./responses"
@@ -33,6 +39,6 @@ export default class QuestionStore extends BaseStore {
 
   public async create(sid: string, payload: SessionQuestion) {
     const qref = await addDoc(this.collect(sid), payload)
-    return qref
+    return qref as DocumentReference<SessionQuestion>
   }
 }

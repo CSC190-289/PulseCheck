@@ -20,7 +20,6 @@ import {
 import BaseStore from "../store"
 import {
   CurrentQuestion,
-  PromptOption,
   Session,
   SessionAnswer,
   SessionQuestion,
@@ -200,45 +199,43 @@ export default class SessionStore extends BaseStore {
       throw new Error(`session(${ref.id}) does not exist!`)
     }
     const session = session_ss.data()
-    /* fetch session's poll by {session.poll} */
+    /* fetch session's poll by {session.poll} reference */
     const poll_ss = await getDoc(session.poll)
     const poll = poll_ss.data()
     if (!poll) {
       throw new Error(`poll(${poll_ss.id}) does not exist!`)
     }
+    /* init an array of session question refs */
     const question_refs: DocumentReference<SessionQuestion>[] = []
     /* iterate all of the poll's questions */
     for (const q of poll.questions) {
-      // const opts: PromptOption[] = []
       /* fetch the question's data */
       const pq_ss = await getDoc(q)
       if (!pq_ss.exists()) {
         throw new Error(`question(${pq_ss.id}) does not exist!`)
       }
       const pq = pq_ss.data()
-
-      /* iterate the question's options */
-      const sqref = (await this.questions.create(ref.id, {
+      /* create session question doc using poll question data */
+      const sqref = await this.questions.create(ref.id, {
         anonymous: pq.anonymous,
         points: pq.points,
         prompt: pq.prompt,
         prompt_img: pq.prompt_img,
         prompt_type: pq.prompt_type,
         time: pq.time,
-        // options: opts,
-      })) as DocumentReference<SessionQuestion>
+      })
       question_refs.push(sqref)
-      const optionsPath = `/sessions/${ref.id}/questions/${sqref.id}/options` // Note: the variable passed for qid is wrong here
-      const optionsRef = collection(this.db, optionsPath)
+
+      /* iterate the poll question's options */
       for (const oref of pq.options) {
         const opt_ss = await getDoc(oref)
         if (!opt_ss.exists()) {
           throw new Error(`opt(${opt_ss.id}) does not exist!`)
         }
         const optData = opt_ss.data()
-        // TODO - create optiosn doc in /sessions/:sid/questions/:qid/options
-        await addDoc(optionsRef, optData)
-        // opts.push(opt)
+        // await addDoc(optionsRef, optData)
+        /* create options doc for live question */
+        await this.questions.options.create(ref.id, sqref.id, optData)
       }
     }
     await this.updateByRef(ref, {
@@ -266,11 +263,13 @@ export default class SessionStore extends BaseStore {
         throw new Error(`nextQuestion(${nextQuestion.id}) does nto exist!`)
       }
       const q = q_ss.data()
+      const opts = await this.questions.options.getAll(ref.id, q_ss.id)
       const payload: CurrentQuestion = {
         prompt_type: q.prompt_type,
         prompt: q.prompt,
         prompt_img: q.prompt_img,
-        options: q.options.map((x) => x.text),
+        // options: q.options.map((x) => x.text),
+        options: opts.docs.map((x) => ({ ref: x.ref, text: x.data().text })),
         anonymous: q.anonymous,
         time: q.time,
       }

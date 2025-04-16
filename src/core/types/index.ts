@@ -98,9 +98,14 @@ export interface CurrentQuestion {
   prompt_type: PromptType
   prompt: string
   prompt_img: string | null
-  options: string[]
+  options: SessionChoice[]
   anonymous: boolean | null
   time: number | null
+}
+
+export interface SessionChoice {
+  ref: DocumentReference<SessionOption>
+  text: string
 }
 
 export interface SessionAnswer {
@@ -132,10 +137,15 @@ export interface SessionQuestion {
   prompt_type: PromptType
   prompt: string
   prompt_img: string | null
-  options: PromptOption[]
+  // options: PromptOption[] delete this later
   points: number
   anonymous: boolean | null
   time: number | null
+}
+
+export interface SessionOption {
+  correct: boolean
+  text: string
 }
 
 export interface SessionResponse {

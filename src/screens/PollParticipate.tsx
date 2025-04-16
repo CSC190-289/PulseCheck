@@ -134,25 +134,6 @@ export function PollParticipate() {
             Waiting for Host...
           </Typography>
         )}
-        {/* render the current question here */}
-        {/* {question && (
-          <Box mb={3}>
-            {question.prompt_img && (
-              <img
-                style={{ width: 300, objectFit: "contain" }}
-                src={question.prompt_img}
-              />
-            )}
-            <Typography variant='h6'>{question.prompt}</Typography>
-            <Stack spacing={3} mt={3} direction={"column"}>
-              {question.options.map((x) => (
-                <Button key={x} variant='outlined'>
-                  {x}
-                </Button>
-              ))}
-            </Stack>
-          </Box>
-        )} */}
         {/* render the users who are in the poll session */}
         <UserSessionGrid users={users} />
       </Container>

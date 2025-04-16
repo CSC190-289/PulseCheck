@@ -6,14 +6,15 @@ import {
   AppBar,
   Box,
   Stack,
-  Slide,
   FormControl,
   DialogContent,
+  Slide,
 } from "@mui/material"
 import Choice from "./Choice"
 
 import { DocumentReference } from "firebase/firestore"
 import React, { useState } from "react"
+import { TransitionProps } from "@mui/material/transitions"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>
@@ -59,19 +60,12 @@ export default function ResponseDialog(props: ResponseDialogProps) {
    *
    */
   return (
-    // <React.Fragment>
     <Dialog
       fullScreen
       open={currentQuestion !== null}
       disablePortal={false}
       slots={{
-        transition: Slide,
-      }}
-      slot={""}
-      slotProps={{
-        transition: {
-          direction: "up",
-        },
+        transition: Transition,
       }}>
       <AppBar position='relative'>
         <Toolbar>
@@ -111,7 +105,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                   {currentQuestion.options.map((x) => (
                     //<FormControlLabel value={x} control={<Radio />} label={x} />
                     <Choice
-                      text={x}
+                      text={x.text}
                       promptType={currentQuestion.prompt_type}
                       theChosenOnes={option}
                       setTheChosenOnes={setOption}
@@ -125,6 +119,14 @@ export default function ResponseDialog(props: ResponseDialogProps) {
         </Box>
       </DialogContent>
     </Dialog>
-    // </React.Fragment>
   )
 }
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction='up' ref={ref} {...props} />
+})
