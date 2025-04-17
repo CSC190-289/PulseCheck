@@ -314,7 +314,7 @@ export default class SessionStore extends BaseStore {
     await setDoc(sref, { answers: map }, { merge: true })
   }
 
-  /** @brief Grades the responses for the current question */
+  /** @brief Grades the responses for the given question */
   public async grade(
     sref: DocumentReference<Session>,
     qref: DocumentReference<SessionQuestion>

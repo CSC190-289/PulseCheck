@@ -6,7 +6,6 @@ import {
   AppBar,
   Box,
   Stack,
-  FormControl,
   DialogContent,
   Slide,
 } from "@mui/material"
@@ -23,14 +22,15 @@ interface ResponseDialogProps {
   session?: Session
 }
 
+/**
+ * User answers the current question here.
+ * @author tdhillion113, Bran7tastic, Camputron
+ */
 export default function ResponseDialog(props: ResponseDialogProps) {
-  // const [open, setOpen] = useState(false)
-  console.debug("Props:", props)
   const auth = useAuthContext()
   const { sref } = props
   const currentQuestion = props.session?.question
 
-  //for state hooks : singselect, multiselect: useState keeps track of the choices selected
   const [selectedOptions, setSelectedOptions] = useState<
     DocumentReference<SessionOption>[]
   >([])
@@ -45,37 +45,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
       )
     }
   }, [selectedOptions])
-  // const theme = useTheme()
-  // const fullScreen = useMediaQuery(theme.breakpoints.down("md"))
-  // const handleChange
-  // const handleChange = (e) => {
-  // const selectValues = Array.from(e.target.option)
-  // if (e.isChecked)
-  //   option.push(x)
-  // setOption(option)
-  //Bollocks : ball
 
-  // eventually use prompt type:
-  //  to display type of question + indicates what type of question can be selected
-  //being dealt with in typography
-
-  /**
-   * @TODO
-   * @tdhillon113
-   * This component should only be shown when the session's current question is not null.
-   * Currently, I'm working on a way to record responses.
-   * Simillar to what we have now with display questions, this dialog shows the contents
-   * of the question. However, I want the question's title to be in a title bar of the dialog.
-   * I'd refer to the MUI docs I sent you about Dialogs and refer to
-   * @see {@link src/components/headers/AppBar.tsx} to see how I made an app bar.
-   * After the prompt of the question, below the app bar is the image of question if any,
-   * otherwise render nothing.
-   * Then, render the possible options the user select using radio buttons. I know that
-   * types of questions can either be multiple-choice, multi-select, or a ranking poll.
-   * For now, just treat it as multiple choice.
-   * @see https://mui.com/material-ui/react-radio-button/
-   *
-   */
   return (
     <Dialog
       fullScreen
@@ -108,19 +78,8 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                 </Stack>
               )}
 
-              <Stack
-                // sx={{ alignItems: "center" }}
-                spacing={3}
-                mt={3}
-                direction={"column"}>
-                {/* <FormControl> */}
-                {/* <FormLabel id="demo-radio-buttons-group-label"></FormLabel> */}
-                {/* <RadioGroup
-                    aria-labelledby='demo-radio-buttons-group-label'
-                    defaultValue='female'
-                    name='radio-buttons-group'> */}
+              <Stack spacing={3} mt={3} direction={"column"}>
                 {currentQuestion.options.map((x) => (
-                  //<FormControlLabel value={x} control={<Radio />} label={x} />
                   <Choice
                     ref={x.ref}
                     text={x.text}
@@ -129,8 +88,6 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                     setTheChosenOnes={setSelectedOptions}
                   />
                 ))}
-                {/* </RadioGroup> */}
-                {/* </FormControl> */}
               </Stack>
             </Box>
           )}
