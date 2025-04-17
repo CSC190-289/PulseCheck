@@ -87,7 +87,6 @@ export default class QuestionStore extends BaseStore {
     await deleteDoc(qref)
     /* update poll doc to remove reference to {qref} */
     await setDoc(pref, { questions: arrayRemove(qref) }, { merge: true })
-    /* TODO - fetch all sub-collections and delete (cloud functions?) */
   }
 
   public async appendOption(

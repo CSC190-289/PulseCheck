@@ -99,34 +99,35 @@ export default function PollHost() {
     return <LinearProgress />
   }
 
-  const handleStartSession = () => {
-    async function start() {
-      try {
-        await api.sessions.start(sref)
-      } catch (err) {
-        console.debug(err)
-      }
-    }
-    void start()
-  }
+  // const handleStartSession = () => {
+  //   async function start() {
+  //     try {
+  //       await api.sessions.start(sref)
+  //     } catch (err) {
+  //       console.debug(err)
+  //     }
+  //   }
+  //   void start()
+  // }
 
-  const handleNextQuestion = () => {
-    async function next() {
-      try {
-        await api.sessions.nextQuestion(sref)
-      } catch (err) {
-        console.debug(err)
-      }
-    }
-    void next()
-  }
+  // const handleNextQuestion = () => {
+  //   async function next() {
+  //     if (!session) throw new Error("session is null!")
+  //     try {
+  //       await api.sessions.nextQuestion(sref)
+  //     } catch (err) {
+  //       console.debug(err)
+  //     }
+  //   }
+  //   void next()
+  // }
 
-  const handleDoneSession = () => {
-    /* TOOD - handle when the session is done */
-    console.debug("do something!")
-  }
+  // const handleDoneSession = () => {
+  //   /* TOOD - handle when the session is done */
+  //   console.debug("do something!")
+  // }
 
-  const handleEndSession = () => {
+  const handleKillSession = () => {
     async function kill() {
       try {
         await api.sessions.close(sref)
@@ -143,7 +144,7 @@ export default function PollHost() {
       <AppBar color='inherit' position='relative'>
         <Toolbar>
           <LeaveButton
-            callback={handleEndSession}
+            callback={handleKillSession}
             dialogTitle='Are you sure you want to end the session?'
             dialogContent='All answers submitted will be discarded!'
           />
@@ -157,12 +158,7 @@ export default function PollHost() {
             </Typography>
           </Box>
           <Box flex={1} marginInline={2} />
-          <HostButton
-            state={session?.state}
-            startCallback={handleStartSession}
-            nextCallback={handleNextQuestion}
-            doneCallback={handleDoneSession}
-          />
+          <HostButton sref={sref} session={session} />
         </Toolbar>
       </AppBar>
       <Container sx={{ mt: 2 }}>

@@ -1,7 +1,6 @@
 import {
   addDoc,
   arrayRemove,
-  arrayUnion,
   collection,
   CollectionReference,
   deleteDoc,
@@ -21,7 +20,6 @@ import BaseStore from "../store"
 import {
   CurrentQuestion,
   Session,
-  SessionAnswer,
   SessionQuestion,
   SessionState,
 } from "@/core/types"
@@ -31,9 +29,10 @@ import WaitingUserStore from "./waiting_users"
 import ChatStore from "./chat"
 import { generateRoomCode } from "@/utils"
 import QuestionStore from "./question"
+import AnswerStore from "./answers"
 
 /**
- * Manages /sessions collection in Firestore.
+ * @brief Manages /sessions collection in Firestore.
  */
 export default class SessionStore extends BaseStore {
   private readonly _users: UserStore
@@ -174,8 +173,8 @@ export default class SessionStore extends BaseStore {
       anonymous: poll.anonymous,
       time: poll.time,
       question: null,
+      answers: null,
       questions: [],
-      answers: [],
       state: SessionState.OPEN,
       created_at: serverTimestamp(),
     })
@@ -256,19 +255,22 @@ export default class SessionStore extends BaseStore {
     }
     const session = ss.data()
     const questions = session.questions
+    /* fetch the next question in the session */
     const nextQuestion = questions.shift()
     if (nextQuestion) {
+      /* fetch data of next question */
       const q_ss = await getDoc(nextQuestion)
       if (!q_ss.exists()) {
         throw new Error(`nextQuestion(${nextQuestion.id}) does nto exist!`)
       }
       const q = q_ss.data()
+      /* fetch all options of the next question */
       const opts = await this.questions.options.getAll(ref.id, q_ss.id)
       const payload: CurrentQuestion = {
+        ref: nextQuestion,
         prompt_type: q.prompt_type,
         prompt: q.prompt,
         prompt_img: q.prompt_img,
-        // options: q.options.map((x) => x.text),
         options: opts.docs.map((x) => ({ ref: x.ref, text: x.data().text })),
         anonymous: q.anonymous,
         time: q.time,
@@ -278,17 +280,15 @@ export default class SessionStore extends BaseStore {
         {
           question: payload,
           questions: arrayRemove(nextQuestion),
-          answers: [],
         },
         { merge: true }
       )
     } else {
+      /* otherwise, switch session to DONE state. */
       await setDoc(
         ref,
         {
           question: null,
-          questions: [],
-          answers: [],
           state: SessionState.DONE,
         },
         { merge: true }
@@ -296,25 +296,51 @@ export default class SessionStore extends BaseStore {
     }
   }
 
-  /**
-   * @deprecated Implement this in responses store
-   * Records a user's answer to the current question in session doc.
-   */
-  public async recordAnswer(
-    ref: DocumentReference<Session>,
-    payload: SessionAnswer
-  ) {
-    await setDoc(ref, { answers: arrayUnion(payload) }, { merge: true })
-    // await this.questions.responses.setDoc(sid, qid, uid, {
-    //   answer: payload.answer,
-    //   correct: false,
-    // })
+  public async clearQuestion(ref: DocumentReference<Session>) {
+    await setDoc(
+      ref,
+      {
+        question: null,
+      },
+      { merge: true }
+    )
   }
 
+  public async displayUserResponses(
+    sref: DocumentReference<Session>,
+    qref: DocumentReference<SessionQuestion>
+  ) {
+    const map = await this.questions.responses.getAllAsMap(sref.id, qref.id)
+    console.debug(map)
+    await setDoc(sref, { answers: map }, { merge: true })
+  }
+
+  /** @brief Grades the responses for the current question */
+  public async grade(
+    sref: DocumentReference<Session>,
+    qref: DocumentReference<SessionQuestion>
+  ) {
+    const opts = await this.questions.options.getAll(sref.id, qref.id)
+    const docs = opts.docs
+    const correct_opts = docs.filter((x) => x.data().correct)
+    await this.questions.gradeAll(sref.id, qref.id, correct_opts)
+  }
+
+  /**
+   * @brief Changes session state to CLOSED.
+   */
   public async close(ref: DocumentReference<Session>) {
     await this.updateByRef(ref, {
       room_code: ref.id,
       state: SessionState.CLOSED,
     })
+  }
+
+  /**
+   * @brief Changes session state to {something}.
+   */
+  public async finish(ref: DocumentReference<Session>) {
+    /* TODO - change state to something, then reveal user results */
+    await setDoc(ref, { state: SessionState.CLOSED }, { merge: true })
   }
 }

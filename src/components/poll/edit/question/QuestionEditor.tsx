@@ -9,6 +9,9 @@ import {
   AccordionActions,
   Button,
   Skeleton,
+  Container,
+  LinearProgress,
+  CircularProgress,
 } from "@mui/material"
 import { Add, ExpandMore } from "@mui/icons-material"
 import UploadImageBox from "./UploadImageBox"
@@ -61,7 +64,11 @@ export default function QuestionEditor(props: Props) {
   }
 
   if (error || loading || !data) {
-    return <Skeleton />
+    return (
+      <Box sx={{ width: "90vw" }}>
+        <Skeleton sx={{ width: "100%", height: 60 }} />
+      </Box>
+    )
   }
 
   return (

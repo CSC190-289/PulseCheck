@@ -12,7 +12,7 @@ export default function QuestionList(props: Props) {
   const { pid, questions } = props
 
   return (
-    <Stack textAlign={"initial"} spacing={2}>
+    <Stack textAlign={"initial"} spacing={0}>
       {questions.map((x, i) => (
         <QuestionEditor key={x.id} pid={pid} qid={x.id} index={i} qref={x} />
       ))}

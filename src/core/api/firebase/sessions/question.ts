@@ -4,11 +4,13 @@ import {
   doc,
   DocumentReference,
   Firestore,
+  QueryDocumentSnapshot,
+  QuerySnapshot,
 } from "firebase/firestore"
 import BaseStore from "../store"
 import OptionStore from "./options"
 import { clx } from ".."
-import { SessionQuestion } from "@/core/types"
+import { SessionOption, SessionQuestion } from "@/core/types"
 import ResponseStore from "./responses"
 
 export default class QuestionStore extends BaseStore {
@@ -40,5 +42,17 @@ export default class QuestionStore extends BaseStore {
   public async create(sid: string, payload: SessionQuestion) {
     const qref = await addDoc(this.collect(sid), payload)
     return qref as DocumentReference<SessionQuestion>
+  }
+
+  public async gradeAll(
+    sid: string,
+    qid: string,
+    correct_opts: QueryDocumentSnapshot<SessionOption>[]
+  ) {
+    const responses = await this.responses.getAllAsMap(sid, qid)
+    Object.entries(responses).forEach(([uid, _]) => {
+      const rref = this.responses.doc(sid, qid, uid)
+      this.responses.grade(rref, correct_opts)
+    })
   }
 }
