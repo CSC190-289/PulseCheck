@@ -1,15 +1,12 @@
 import LeaveButton from "@/components/poll/session/LeaveButton"
-import UserSessionCard from "@/components/poll/session/UserSessionCard"
 import api from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
 import { SessionState, WaitingUser } from "@/core/types"
-import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import {
   AppBar,
   Box,
   Container,
-  Grid2,
   LinearProgress,
   Toolbar,
   Typography,
@@ -21,6 +18,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import HostButton from "@/components/poll/session/host/HostButton"
 import RoomTitle from "@/components/poll/session/host/RoomTitle"
 import Image from "mui-image"
+import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 
 export default function PollHost() {
   const params = useParams()
@@ -99,34 +97,6 @@ export default function PollHost() {
     return <LinearProgress />
   }
 
-  // const handleStartSession = () => {
-  //   async function start() {
-  //     try {
-  //       await api.sessions.start(sref)
-  //     } catch (err) {
-  //       console.debug(err)
-  //     }
-  //   }
-  //   void start()
-  // }
-
-  // const handleNextQuestion = () => {
-  //   async function next() {
-  //     if (!session) throw new Error("session is null!")
-  //     try {
-  //       await api.sessions.nextQuestion(sref)
-  //     } catch (err) {
-  //       console.debug(err)
-  //     }
-  //   }
-  //   void next()
-  // }
-
-  // const handleDoneSession = () => {
-  //   /* TOOD - handle when the session is done */
-  //   console.debug("do something!")
-  // }
-
   const handleKillSession = () => {
     async function kill() {
       try {
@@ -176,15 +146,16 @@ export default function PollHost() {
           </Box>
         )}
         {/* render users currently in the poll session */}
-        <Grid2 container spacing={2}>
+        <UserSessionGrid users={users} />
+        {/* <Grid2 container spacing={2}>
           {users?.docs.map((x) => (
             <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
               <RA.Zoom triggerOnce>
-                <UserSessionCard user={x.data()} />
+                <UserSessionCard ss={x} />
               </RA.Zoom>
             </Grid2>
           ))}
-        </Grid2>
+        </Grid2> */}
       </Container>
     </React.Fragment>
   )

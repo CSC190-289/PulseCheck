@@ -25,7 +25,7 @@ export default function UserSessionGrid(props: UserSessionListProps) {
         {users.docs.map((x) => (
           <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
             <RA.Zoom triggerOnce>
-              <UserSessionCard user={x.data()} />
+              <UserSessionCard ss={x} />
             </RA.Zoom>
           </Grid2>
         ))}
