@@ -7,12 +7,11 @@ import {
   getDocs,
   query,
   QueryDocumentSnapshot,
-  QuerySnapshot,
   refEqual,
   serverTimestamp,
   setDoc,
 } from "firebase/firestore"
-import api, { clx } from ".."
+import { clx } from ".."
 import { SessionOption, SessionResponse } from "@/core/types"
 import BaseStore from "../store"
 
@@ -113,6 +112,9 @@ export default class ResponseStore extends BaseStore {
     const r_ss = await getDoc(rref)
     if (!r_ss.exists()) throw new Error(`${rref.path} does not exist!`)
     const choices = r_ss.data().choices
-    correct_opts.every((x) => choices.some((y) => refEqual(x.ref, y)))
+    const correct = correct_opts.every((x) =>
+      choices.some((y) => refEqual(x.ref, y))
+    )
+    await setDoc(rref, { correct }, { merge: true })
   }
 }
