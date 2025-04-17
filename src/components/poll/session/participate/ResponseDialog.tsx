@@ -37,7 +37,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
 
   useEffect(() => {
     if (auth.user && currentQuestion) {
-      api.sessions.questions.responses.answer(
+      void api.sessions.questions.responses.answer(
         sref.id,
         currentQuestion.ref.id,
         auth.user.uid,
