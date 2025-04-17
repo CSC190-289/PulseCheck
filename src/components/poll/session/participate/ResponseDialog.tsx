@@ -45,6 +45,12 @@ export default function ResponseDialog(props: ResponseDialogProps) {
       )
     }
   }, [selectedOptions])
+
+  useEffect(() => {
+    console.debug("Clearing question...")
+    setSelectedOptions([])
+  }, [currentQuestion])
+
   // const theme = useTheme()
   // const fullScreen = useMediaQuery(theme.breakpoints.down("md"))
   // const handleChange
