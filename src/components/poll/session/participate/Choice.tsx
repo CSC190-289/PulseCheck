@@ -1,71 +1,83 @@
 import { PromptType } from "@/core/types"
-import { FormControlLabel, Radio } from "@mui/material"
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  FormControlLabel,
+  Radio,
+} from "@mui/material"
 import { Dispatch, SetStateAction } from "react"
-import { DocumentReference } from "firebase/firestore"
+import { DocumentReference, refEqual } from "firebase/firestore"
 import { SessionOption } from "@/core/types"
 
-
-//chosenones changes to specify what type it is 
+//chosenones changes to specify what type it is
 //string of objects in array
-interface OptionProps {
+interface ChoiceProps {
   text: string
-//added in ref to specify what type it is
-  ref: DocumentReference<SessionOption> 
+  //added in ref to specify what type it is
+  ref: DocumentReference<SessionOption>
   promptType: PromptType
-  theChosenOnes: {ref:DocumentReference<SessionOption>, text:string} []
-  setTheChosenOnes: Dispatch<SetStateAction<{ref:DocumentReference<SessionOption>, text:string} []>>
+  theChosenOnes: DocumentReference<SessionOption>[]
+  setTheChosenOnes: Dispatch<SetStateAction<DocumentReference<SessionOption>[]>>
 }
 
 // const handleChange  = () => void
 
-export default function Option(props: OptionProps) {
+export default function Option(props: ChoiceProps) {
   const { text, ref, promptType, theChosenOnes, setTheChosenOnes } = props
   console.debug(theChosenOnes)
   const check = () => {
     console.debug(props.promptType)
 
     //option object creation
-    const option = {ref,text}
+    // const option = { ref, text }
 
-    switch (props.promptType) {
+    switch (promptType) {
       case "multiple-choice": {
-        setTheChosenOnes([option])
+        setTheChosenOnes([ref])
         break
       }
       case "multi-select": {
+        if (theChosenOnes.find((x) => refEqual(x, ref))) {
+          const newChosenOnes = theChosenOnes.filter((x) => !refEqual(x, ref))
+          setTheChosenOnes(newChosenOnes)
+        } else {
+          setTheChosenOnes([...theChosenOnes, ref])
+        }
         // if (theChosenOnes.includes(text)) {
-          const idx = theChosenOnes.findIndex((x) => x.ref.id === ref.id)
-          if (idx >= 0) {
-            const newChosenOnes = [
-              ...theChosenOnes.slice(0, idx),
-              ...theChosenOnes.slice(idx + 1),
-            ]
-            setTheChosenOnes(newChosenOnes)
-          }
+        // const idx = theChosenOnes.findIndex((x) => x.ref.id === ref.id)
+        // if (idx >= 0) {
+        //   const newChosenOnes = [
+        //     ...theChosenOnes.slice(0, idx),
+        //     ...theChosenOnes.slice(idx + 1),
+        //   ]
+        //   setTheChosenOnes(newChosenOnes)
+        // }
         // }
         break
       }
       case "ranking-poll": {
-        setTheChosenOnes([option])
+        setTheChosenOnes([ref])
         break
       }
       default: {
-        console.debug("what the sigma")
+        throw new Error("what the figma")
       }
     }
-    if (props.promptType === "multi-select") {
-      if (props.theChosenOnes.indexOf((x) => x.ref.id === props.ref.id) >= 0){
-      // if (props.theChosenOnes.includes(props.text)) {
-        props.theChosenOnes = props.theChosenOnes.filter(
-          // (x) => x !== props.text
-          (x) => x !== props.ref.id
-        )
-        props.setTheChosenOnes(props.theChosenOnes)
-      } else {
-        props.theChosenOnes.push(option)
-        props.setTheChosenOnes(props.theChosenOnes)
-      }
-    }
+    // if (props.promptType === "multi-select") {
+    //   if (props.theChosenOnes.indexOf((x) => x.ref.id === props.ref.id) >= 0) {
+    //     // if (props.theChosenOnes.includes(props.text)) {
+    //     props.theChosenOnes = props.theChosenOnes.filter(
+    //       // (x) => x !== props.text
+    //       (x) => x !== props.ref.id
+    //     )
+    //     props.setTheChosenOnes(props.theChosenOnes)
+    //   } else {
+    //     props.theChosenOnes.push(option)
+    //     props.setTheChosenOnes(props.theChosenOnes)
+    //   }
+    // }
   }
   return (
     // <FormControlLabel
@@ -75,12 +87,20 @@ export default function Option(props: OptionProps) {
     //   //onChange={handleChange}
     //   />
     // <FormControlLabel/>
-
-    <FormControlLabel
-      value={props.text}
-      control={<Radio checked={theChosenOnes.includes(text)} />}
-      label={props.text}
-      onClick={check}
-    />
+    <Card>
+      <CardActionArea onClick={check}>
+        <FormControlLabel
+          value={props.text}
+          sx={{ m: 1 }}
+          control={
+            <Radio
+              checked={Boolean(theChosenOnes.find((x) => refEqual(x, ref)))}
+            />
+          }
+          label={text}
+          onClick={check}
+        />
+      </CardActionArea>
+    </Card>
   )
 }

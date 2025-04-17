@@ -5,7 +5,6 @@ import {
   DocumentReference,
   Firestore,
   QueryDocumentSnapshot,
-  QuerySnapshot,
 } from "firebase/firestore"
 import BaseStore from "../store"
 import OptionStore from "./options"
@@ -50,9 +49,13 @@ export default class QuestionStore extends BaseStore {
     correct_opts: QueryDocumentSnapshot<SessionOption>[]
   ) {
     const responses = await this.responses.getAllAsMap(sid, qid)
-    Object.entries(responses).forEach(([uid, _]) => {
+    const promises: Promise<void>[] = []
+    Object.entries(responses).forEach((x) => {
+      const uid = x[0]
       const rref = this.responses.doc(sid, qid, uid)
-      this.responses.grade(rref, correct_opts)
+      const p = this.responses.grade(rref, correct_opts)
+      promises.push(p)
     })
+    await Promise.all(promises)
   }
 }

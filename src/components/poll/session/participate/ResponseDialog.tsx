@@ -1,4 +1,4 @@
-import { Session } from "@/core/types"
+import { Session, SessionOption } from "@/core/types"
 import {
   Dialog,
   Toolbar,
@@ -13,8 +13,10 @@ import {
 import Choice from "./Choice"
 
 import { DocumentReference } from "firebase/firestore"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { TransitionProps } from "@mui/material/transitions"
+import api from "@/core/api/firebase"
+import { useAuthContext } from "@/core/hooks"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>
@@ -24,10 +26,25 @@ interface ResponseDialogProps {
 export default function ResponseDialog(props: ResponseDialogProps) {
   // const [open, setOpen] = useState(false)
   console.debug("Props:", props)
+  const auth = useAuthContext()
+  const { sref } = props
   const currentQuestion = props.session?.question
 
   //for state hooks : singselect, multiselect: useState keeps track of the choices selected
-  const [option, setOption] = useState<string[]>([])
+  const [selectedOptions, setSelectedOptions] = useState<
+    DocumentReference<SessionOption>[]
+  >([])
+
+  useEffect(() => {
+    if (auth.user && currentQuestion) {
+      api.sessions.questions.responses.answer(
+        sref.id,
+        currentQuestion.ref.id,
+        auth.user.uid,
+        selectedOptions
+      )
+    }
+  }, [selectedOptions])
   // const theme = useTheme()
   // const fullScreen = useMediaQuery(theme.breakpoints.down("md"))
   // const handleChange
@@ -92,27 +109,28 @@ export default function ResponseDialog(props: ResponseDialogProps) {
               )}
 
               <Stack
-                sx={{ alignItems: "center" }}
+                // sx={{ alignItems: "center" }}
                 spacing={3}
                 mt={3}
                 direction={"column"}>
-                <FormControl>
-                  {/* <FormLabel id="demo-radio-buttons-group-label"></FormLabel> */}
-                  {/* <RadioGroup
+                {/* <FormControl> */}
+                {/* <FormLabel id="demo-radio-buttons-group-label"></FormLabel> */}
+                {/* <RadioGroup
                     aria-labelledby='demo-radio-buttons-group-label'
                     defaultValue='female'
                     name='radio-buttons-group'> */}
-                  {currentQuestion.options.map((x) => (
-                    //<FormControlLabel value={x} control={<Radio />} label={x} />
-                    <Choice
-                      text={x.text}
-                      promptType={currentQuestion.prompt_type}
-                      theChosenOnes={option}
-                      setTheChosenOnes={setOption}
-                    />
-                  ))}
-                  {/* </RadioGroup> */}
-                </FormControl>
+                {currentQuestion.options.map((x) => (
+                  //<FormControlLabel value={x} control={<Radio />} label={x} />
+                  <Choice
+                    ref={x.ref}
+                    text={x.text}
+                    promptType={currentQuestion.prompt_type}
+                    theChosenOnes={selectedOptions}
+                    setTheChosenOnes={setSelectedOptions}
+                  />
+                ))}
+                {/* </RadioGroup> */}
+                {/* </FormControl> */}
               </Stack>
             </Box>
           )}

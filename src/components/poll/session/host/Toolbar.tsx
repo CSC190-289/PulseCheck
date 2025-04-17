@@ -1,29 +1,21 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Toolbar as MUIToolbar,
-  Typography,
-} from "@mui/material"
-import LeaveButton from "../LeaveButton"
-import { Session, SessionUser } from "@/core/types"
-import { ntops } from "@/utils"
-import { QuerySnapshot } from "firebase/firestore"
-import StartButton from "./StartButton"
+import { AppBar, Toolbar as MUIToolbar } from "@mui/material"
 
-interface Props {
-  session?: Session
-  users?: QuerySnapshot<SessionUser>
-  gettingstated: boolean
-  startCallback: () => void
-  leaveCallback: () => void
-}
+// interface Props {
+//   session?: Session
+//   users?: QuerySnapshot<SessionUser>
+//   gettingstated: boolean
+//   startCallback: () => void
+//   leaveCallback: () => void
+// }
 
-export default function Toolbar(props: Props) {
+/**
+ * @deprecated
+ */
+export default function Toolbar() {
   return (
     <AppBar color='inherit' position='relative'>
       <MUIToolbar>
-        <LeaveButton
+        {/* <LeaveButton
           callback={props.leaveCallback}
           dialogTitle='Are you sure you want to end the session?'
           dialogContent='All answers submitted will eb discarded!'
@@ -39,7 +31,7 @@ export default function Toolbar(props: Props) {
           <Button>Next</Button>
         ) : (
           <StartButton callback={props.startCallback} />
-        )}
+        )} */}
       </MUIToolbar>
     </AppBar>
   )

@@ -9,9 +9,6 @@ import {
   AccordionActions,
   Button,
   Skeleton,
-  Container,
-  LinearProgress,
-  CircularProgress,
 } from "@mui/material"
 import { Add, ExpandMore } from "@mui/icons-material"
 import UploadImageBox from "./UploadImageBox"

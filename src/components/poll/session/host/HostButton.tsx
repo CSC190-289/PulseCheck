@@ -5,7 +5,7 @@ import NextButton from "./NextButton"
 import FinishButton from "./FinishButton"
 import { CircularProgress } from "@mui/material"
 
-type HostButtonProps = {
+interface HostButtonProps {
   sref: DocumentReference<Session>
   session?: Session
 }

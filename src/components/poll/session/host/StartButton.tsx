@@ -3,7 +3,7 @@ import api from "@/core/api/firebase"
 import { Session } from "@/core/types"
 import { DocumentReference } from "firebase/firestore"
 
-type StartButtonProps = {
+interface StartButtonProps {
   sref: DocumentReference<Session>
 }
 

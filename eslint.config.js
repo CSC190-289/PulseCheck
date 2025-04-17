@@ -43,7 +43,6 @@ export default tseslint.config(
       "no-multi-str": "error", // Avoid multiline strings using backslashes
       "consistent-return": "error", // Ensure functions always return something or nothing
       "default-case": "error", // Require `default` case in `switch` statements
-      curly: ["error", "multiline"],
 
       "no-eval": "error", // `eval()` is a major security risk
       "no-implied-eval": "error", // Avoid indirect `eval()` calls

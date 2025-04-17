@@ -81,6 +81,7 @@ export default class ResponseStore extends BaseStore {
     uid: string,
     choices: DocumentReference<SessionOption>[]
   ) {
+    /* init path to response doc */
     const ref = this.doc(sid, qid, uid)
     const ss = await getDoc(ref)
     if (ss.exists()) {
