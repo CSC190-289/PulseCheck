@@ -18,6 +18,8 @@ import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 
+import ResultsChart from "@/components/poll/session/ResultsChart"
+
 const CHECK_INTERVAL_MS = 2000
 
 export function PollParticipate() {

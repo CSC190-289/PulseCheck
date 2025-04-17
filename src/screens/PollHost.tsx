@@ -19,6 +19,7 @@ import HostButton from "@/components/poll/session/host/HostButton"
 import RoomTitle from "@/components/poll/session/host/RoomTitle"
 import Image from "mui-image"
 import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
+import ResultsChart from "@/components/poll/session/ResultsChart"
 
 export default function PollHost() {
   const params = useParams()
@@ -146,6 +147,8 @@ export default function PollHost() {
           </Box>
         )}
         {/* render users currently in the poll session */}
+        {session?.answers && 
+        <ResultsChart answers={session?.answers}/>}
         <UserSessionGrid users={users} />
         {/* <Grid2 container spacing={2}>
           {users?.docs.map((x) => (

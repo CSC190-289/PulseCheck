@@ -92,7 +92,10 @@ export interface Session {
   time: number | null
   /* the current question to display */
   question: CurrentQuestion | null
-  answers: Map<string, SessionResponse> | null
+  answers: { 
+    qref: DocumentReference<SessionQuestion>,
+    map: Map<string, SessionResponse>
+  } | null
   /* list of questions to display */
   questions: DocumentReference<SessionQuestion>[]
   /* current state of the session */

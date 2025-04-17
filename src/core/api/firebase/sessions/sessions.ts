@@ -278,6 +278,7 @@ export default class SessionStore extends BaseStore {
         ref,
         {
           question: payload,
+          answers:null,
           questions: arrayRemove(nextQuestion),
         },
         { merge: true }
@@ -288,6 +289,7 @@ export default class SessionStore extends BaseStore {
         ref,
         {
           question: null,
+          answers: null,
           state: SessionState.DONE,
         },
         { merge: true }
@@ -311,7 +313,7 @@ export default class SessionStore extends BaseStore {
   ) {
     const map = await this.questions.responses.getAllAsMap(sref.id, qref.id)
     console.debug(map)
-    await setDoc(sref, { answers: map }, { merge: true })
+    await setDoc(sref, { answers: {qref, map} }, { merge: true })
   }
 
   /** @brief Grades the responses for the given question */
