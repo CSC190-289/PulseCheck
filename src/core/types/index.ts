@@ -44,21 +44,44 @@ export interface Question {
 
 export type PromptType = "multiple-choice" | "multi-select" | "ranking-poll"
 
+export interface PromptTypeChoice {
+  name: string
+  value: PromptType
+}
+
+export const PROMPT_TYPE_CHOICES = [
+  {
+    name: "Multiple Choice",
+    value: "multiple-choice",
+  },
+  {
+    name: "Multi-Select",
+    value: "multi-select",
+  },
+  {
+    name: "Ranking Poll",
+    value: "ranking-poll",
+  },
+] as PromptTypeChoice[]
+
 export interface PromptOption {
   text: string
   correct: boolean
 }
 
+/** states for a poll session */
 export enum SessionState {
-  /* if a session is closed, then it was ended by the host */
+  /* if a session is closed, then the session was ended by the host */
   CLOSED = "closed",
   /* if a session is in-progress, then it was started by the host */
   IN_PROGRESS = "in-progress",
   /* if a session is open, then the host hasn't started the session yet */
   OPEN = "open",
-  /* if a session is done, then the host finished the session */
+  /* if a session is done, then the host showed all questions in the session */
   DONE = "done",
 }
+
+/** data model of a poll session document */
 export interface Session {
   host: DocumentReference<User>
   poll: DocumentReference<Poll>
@@ -67,26 +90,37 @@ export interface Session {
   async: boolean
   anonymous: boolean | null
   time: number | null
+  /* the current question to display */
   question: CurrentQuestion | null
+  answers: Map<string, SessionResponse> | null
+  /* list of questions to display */
   questions: DocumentReference<SessionQuestion>[]
-  answers: SessionAnswer[]
+  /* current state of the session */
   state: SessionState
   created_at: Timestamp
 }
 
+/** data model of the current question to display to all users in a session */
 export interface CurrentQuestion {
+  ref: DocumentReference<SessionQuestion>
   prompt_type: PromptType
   prompt: string
   prompt_img: string | null
-  options: string[]
+  options: SessionChoice[]
   anonymous: boolean | null
   time: number | null
 }
 
-export interface SessionAnswer {
-  uid: string
-  option: string
+/** data model of the possible choices for the current question  */
+export interface SessionChoice {
+  ref: DocumentReference<SessionOption>
+  text: string
 }
+
+// export interface SessionAnswer {
+//   choices: DocumentReference<SessionOption>
+//   created_at: Timestamp
+// }
 
 export interface SessionUser {
   photo_url: string | null
@@ -112,15 +146,20 @@ export interface SessionQuestion {
   prompt_type: PromptType
   prompt: string
   prompt_img: string | null
-  options: PromptOption[]
+  // options: PromptOption[] delete this later
   points: number
   anonymous: boolean | null
   time: number | null
 }
 
+export interface SessionOption {
+  correct: boolean
+  text: string
+}
+
 export interface SessionResponse {
   user: DocumentReference<User>
-  answer: string
+  choices: DocumentReference<SessionOption>[]
   correct: boolean
   created_at: Timestamp
 }

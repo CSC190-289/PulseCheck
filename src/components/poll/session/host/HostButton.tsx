@@ -1,32 +1,26 @@
-import { SessionState } from "@/core/types"
+import { Session, SessionState } from "@/core/types"
 import StartButton from "./StartButton"
-import { Button, ButtonProps } from "@mui/material"
+import { DocumentReference } from "firebase/firestore"
+import NextButton from "./NextButton"
+import FinishButton from "./FinishButton"
+import { CircularProgress } from "@mui/material"
 
-type HostButtonProps = {
-  state?: SessionState
-  startCallback: () => void
-  nextCallback: () => void
-  doneCallback: () => void
-} & ButtonProps
+interface HostButtonProps {
+  sref: DocumentReference<Session>
+  session?: Session
+}
 
 export default function HostButton(props: HostButtonProps) {
-  const { state, startCallback, nextCallback, doneCallback, ...etc } = props
-  if (state === SessionState.OPEN) {
-    return <StartButton callback={startCallback} {...etc} />
+  const { sref, session } = props
+  if (!session) return <CircularProgress />
+  if (session?.state === SessionState.OPEN) {
+    return <StartButton sref={sref} />
   }
-  if (state === SessionState.IN_PROGRESS) {
-    return (
-      <Button onClick={nextCallback} {...etc}>
-        Next
-      </Button>
-    )
+  if (session?.state === SessionState.IN_PROGRESS) {
+    return <NextButton sref={sref} session={session} />
   }
-  if (state === SessionState.DONE) {
-    return (
-      <Button onClick={doneCallback} {...etc}>
-        Done
-      </Button>
-    )
+  if (session?.state === SessionState.DONE) {
+    return <FinishButton sref={sref} />
   }
   return <></>
 }

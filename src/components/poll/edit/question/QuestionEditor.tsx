@@ -61,7 +61,11 @@ export default function QuestionEditor(props: Props) {
   }
 
   if (error || loading || !data) {
-    return <Skeleton />
+    return (
+      <Box sx={{ width: "90vw" }}>
+        <Skeleton sx={{ width: "100%", height: 60 }} />
+      </Box>
+    )
   }
 
   return (

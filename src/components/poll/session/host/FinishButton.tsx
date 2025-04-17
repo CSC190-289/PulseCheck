@@ -3,19 +3,14 @@ import api from "@/core/api/firebase"
 import { Session } from "@/core/types"
 import { DocumentReference } from "firebase/firestore"
 
-interface StartButtonProps {
+interface FinishButtonProps {
   sref: DocumentReference<Session>
 }
 
-/**
- * @brief Starts the session for everyone.
- */
-export default function StartButton(props: StartButtonProps) {
+export default function FinishButton(props: FinishButtonProps) {
   const { sref } = props
-
   const callback = async () => {
-    await api.sessions.start(sref)
+    await api.sessions.finish(sref)
   }
-
-  return <AsyncButton callback={callback}>Start</AsyncButton>
+  return <AsyncButton callback={callback}>Finish</AsyncButton>
 }
