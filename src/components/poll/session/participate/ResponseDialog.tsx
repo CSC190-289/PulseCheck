@@ -44,7 +44,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
         selectedOptions
       )
     }
-  }, [selectedOptions])
+  }, [auth.user, currentQuestion, sref.id, selectedOptions])
 
   return (
     <Dialog
