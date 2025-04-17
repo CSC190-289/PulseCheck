@@ -2,8 +2,8 @@ import { PromptType } from "@/core/types"
 import {
   Card,
   CardActionArea,
-  CardActions,
-  CardContent,
+  // CardActions,
+  // CardContent,
   FormControlLabel,
   Radio,
 } from "@mui/material"
