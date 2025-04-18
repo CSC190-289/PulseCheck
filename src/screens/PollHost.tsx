@@ -1,5 +1,5 @@
 import LeaveButton from "@/components/poll/session/LeaveButton"
-import api from "@/core/api/firebase"
+import api, { DEPLOY_URL } from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
 import { SessionState, WaitingUser } from "@/core/types"
 import { ntops } from "@/utils"
@@ -19,6 +19,7 @@ import HostButton from "@/components/poll/session/host/HostButton"
 import RoomTitle from "@/components/poll/session/host/RoomTitle"
 import Image from "mui-image"
 import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
+import { QRCodeSVG } from "qrcode.react"
 
 export default function PollHost() {
   const params = useParams()
@@ -133,6 +134,13 @@ export default function PollHost() {
       </AppBar>
       <Container sx={{ mt: 2 }}>
         <RoomTitle session={session} />
+        {session?.state === SessionState.OPEN && (
+          <QRCodeSVG
+            value={`${DEPLOY_URL}/get-started?code=${session.room_code}`}
+            width={256}
+            height={256}
+          />
+        )}
         {/* render the current question here */}
         {question && (
           <Box mb={3}>
@@ -147,15 +155,6 @@ export default function PollHost() {
         )}
         {/* render users currently in the poll session */}
         <UserSessionGrid users={users} />
-        {/* <Grid2 container spacing={2}>
-          {users?.docs.map((x) => (
-            <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
-              <RA.Zoom triggerOnce>
-                <UserSessionCard ss={x} />
-              </RA.Zoom>
-            </Grid2>
-          ))}
-        </Grid2> */}
       </Container>
     </React.Fragment>
   )

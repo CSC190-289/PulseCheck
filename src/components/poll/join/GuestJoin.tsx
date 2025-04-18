@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import api from "@/core/api/firebase"
 import { FormEvent, useState } from "react"
 import useSnackbar from "@/core/hooks/useSnackbar"
@@ -16,7 +16,8 @@ import { RA } from "@/styles"
 
 export default function GuestJoin() {
   const navigate = useNavigate()
-  const [roomCode, setRoomCode] = useState<string>("")
+  const [query] = useSearchParams()
+  const [roomCode, setRoomCode] = useState<string>(query.get("code") ?? "")
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
 
@@ -86,6 +87,7 @@ export default function GuestJoin() {
                 label='Room Code'
                 variant='outlined'
                 fullWidth
+                value={roomCode}
                 onChange={(e) => setRoomCode(e.target.value)}
               />
               <TextField

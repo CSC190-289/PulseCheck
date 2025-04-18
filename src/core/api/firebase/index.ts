@@ -9,6 +9,8 @@ import AuthStore from "./auth"
 import SessionStore from "./sessions/sessions"
 import SubmissionStore from "./submissions"
 
+export const DEPLOY_URL = "https://pulsecheck-7cf2b.web.app"
+
 const config: FirebaseOptions = {
   apiKey: "AIzaSyBAGd9DDTtn8aAeab4Ydq65yErWAzO7mPg",
   appId: "1:262073852184:web:b7097acec54647a2f5fe6d",

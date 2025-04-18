@@ -19,6 +19,7 @@
 		"@mui/material": "^6.4.4",
 		"firebase": "^11.3.1",
 		"mui-image": "^1.0.7",
+		"qrcode.react": "^4.2.0",
 		"react": "^19.0.0",
 		"react-awesome-reveal": "^4.3.1",
 		"react-dom": "^19.0.0",
