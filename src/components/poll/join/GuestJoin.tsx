@@ -88,7 +88,7 @@ export default function GuestJoin() {
                 variant='outlined'
                 fullWidth
                 value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value)}
+                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
               />
               <TextField
                 id='guest-name'

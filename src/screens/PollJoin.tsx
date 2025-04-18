@@ -52,13 +52,15 @@ export default function PollJoin() {
   const snackbar = useSnackbar()
   const { user, loading } = useAuthContext()
   const [disable, setDisable] = useState(false)
+  const [fire, setFire] = useState(true)
 
   useEffect(() => {
     const code = query.get("code")
-    if (code && ref.current) {
+    if (code && ref.current && user && displayName && fire) {
       ref.current.click()
+      setFire(false)
     }
-  }, [query])
+  }, [query, user, displayName, fire])
 
   useEffect(() => {
     /* check authentication */
@@ -128,7 +130,7 @@ export default function PollJoin() {
                 variant='outlined'
                 fullWidth
                 value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value)}
+                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
               />
               {user && (
                 <DisplayNameField
