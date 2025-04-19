@@ -1,4 +1,6 @@
 import { Toolbar as MUIToolbar, Typography, Stack, AppBar } from "@mui/material"
+import { Timestamp } from "firebase/firestore"
+import { tstos } from "@/utils"
 
 /**
  * A toolbar component that allows users to edit the title of a poll.
@@ -7,16 +9,20 @@ import { Toolbar as MUIToolbar, Typography, Stack, AppBar } from "@mui/material"
  * @author VerySirias
  * @returns {JSX.Element}
  */
-const title = "U da Best?"
-const submitted_at = "somedate"
-export default function Toolbar() {
+interface Props {
+  title: string | undefined
+  create_at: Timestamp
+}
+
+export default function Toolbar(props: Props) {
+  const { title, create_at } = props
   return (
     <AppBar color='inherit' position='relative'>
       <MUIToolbar>
         <Stack alignItems={"center"} flexGrow={1}>
           <Typography variant='h6'>{title}</Typography>
           <Typography variant='subtitle2'>
-            Submitted at {submitted_at}
+            Submitted at {tstos(create_at)}
           </Typography>
         </Stack>
       </MUIToolbar>

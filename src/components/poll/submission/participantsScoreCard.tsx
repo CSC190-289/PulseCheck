@@ -1,12 +1,13 @@
 import { Avatar, Typography, Box, Card } from "@mui/material"
 import { Submission } from "@/core/types"
+import { stoc } from "@/utils"
 
 interface Props {
-  user: Submission
+  sub: Submission
 }
 
-export default function participantsScoreCard(props: Props) {
-  const { user } = props
+export default function ParticipantsScoreCard(props: Props) {
+  const { sub } = props
 
   return (
     <Card
@@ -15,14 +16,20 @@ export default function participantsScoreCard(props: Props) {
     //   borderColor: "error.main",
     // }}
     >
-      <Box m={1} display={"flex"} alignItems={"center"}>
-        {/* {user.photo_url ? (
-          <Avatar src={user.photo_url} />
-        ) : (
-          <Avatar color={stoc(user.display_name)} />
-        )} */}
-        <Typography ml={1}>{user.display_name}</Typography>
-        <Typography> {user.total_score} </Typography>
+      <Box m={1}>
+        <Box m={1} display={"flex"} alignItems={"center"}>
+          {sub.photo_url ? (
+            <Avatar src={sub.photo_url} />
+          ) : (
+            <Avatar color={stoc(sub.display_name)} />
+          )}
+          <Typography ml={1}>
+            {sub.display_name} | Score: {sub.total_score}
+          </Typography>
+        </Box>
+        <Typography variant='subtitle2' ml={1} align='left'>
+          Email: Somebody@gmail.com{sub.email}
+        </Typography>
       </Box>
     </Card>
   )
