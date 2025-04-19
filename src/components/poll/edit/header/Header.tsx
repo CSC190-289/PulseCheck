@@ -18,38 +18,41 @@ import React, { useEffect, useState } from "react"
 import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { Done, Edit, MenuOpen, ScreenShare } from "@mui/icons-material"
-import TimerSwitch from "./TimerSwitch"
+import TimerSwitch from "../TimerSwitch"
 import { useAuthContext } from "@/core/hooks"
 import { useNavigate } from "react-router-dom"
+import { Poll } from "@/core/types"
+import DeleteMenuItem from "./DeleteMenuItem"
 
-interface Props {
+interface HeaderProps {
   pid: string /* poll id */
-  title: string /* poll title from firestore */
-  anonymous: boolean | null
-  time: number | null
+  poll: Poll
+  // title: string /* poll title from firestore */
+  // anonymous: boolean | null
+  // time: number | null
 }
 
 /**
- * A toolbar component that allows users to edit the title of a poll.
+ * Allows users to edit the title of a poll.
  * Users can click on the edit icon next to the title to edit it inline and save changes with the Done icon.
  * Below the title it will display the last time the poll was updated.
  * @author VerySirias
  * @returns {JSX.Element}
  */
-export default function Toolbar(props: Props) {
-  const { pid, time } = props
+export default function Header(props: HeaderProps) {
+  const { pid, poll } = props
   const auth = useAuthContext()
-  const [title, setTitle] = useState(props.title)
+  const [title, setTitle] = useState(poll.title)
   const [isEditing, setIsEditing] = useState(false)
   const snackbar = useSnackbar()
-  const [anonymous, setAnonymous] = useState(props.anonymous)
+  const [anonymous, setAnonymous] = useState(poll.anonymous)
   const [anchorElPoll, setAnchorElPoll] = useState<HTMLElement | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
     async function saveAnonymous(bool: boolean | null) {
       try {
-        if (bool === props.anonymous) {
+        if (bool === poll.anonymous) {
           return
         }
         const ref = api.polls.doc(pid)
@@ -64,13 +67,13 @@ export default function Toolbar(props: Props) {
       }
     }
     void saveAnonymous(anonymous)
-  }, [pid, props.anonymous, anonymous, snackbar])
+  }, [pid, poll, anonymous, snackbar])
 
-  const handleOpenPollMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElPoll(event.currentTarget)
   }
 
-  const handleClosePollMenu = () => {
+  const handleClose = () => {
     setAnchorElPoll(null)
   }
 
@@ -124,7 +127,7 @@ export default function Toolbar(props: Props) {
         })
         .catch((err) => console.debug(err))
     }
-    handleClosePollMenu()
+    handleClose()
   }
 
   return (
@@ -135,7 +138,7 @@ export default function Toolbar(props: Props) {
             <TextField
               size='small'
               placeholder='Poll Title'
-              defaultValue={props.title}
+              value={title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={handleKeyPress}
               fullWidth
@@ -160,25 +163,8 @@ export default function Toolbar(props: Props) {
             </IconButton>
           )}
           <Box flex={1} marginInline={2} />
-          {/* <Box display={{ xs: "none", sm: "none", md: "flex" }} gap={1}>
-            <FormControlLabel
-              label='Anonymous'
-              checked={Boolean(anonymous)}
-              control={
-                <Switch onChange={(e) => setAnonymous(e.target.checked)} />
-              }
-            />
-            <TimerSwitch pid={pid} time={time} />
-            <Tooltip title='Host Poll'>
-              <IconButton onClick={handleHostClick}>
-                <ScreenShare />
-              </IconButton>
-            </Tooltip>
-          </Box> */}
-          <Box
-          // display={{ md: "none" }}
-          >
-            <IconButton onClick={handleOpenPollMenu} color='inherit'>
+          <Box>
+            <IconButton onClick={handleOpen} color='inherit'>
               <MenuOpen />
             </IconButton>
             <Menu
@@ -189,7 +175,7 @@ export default function Toolbar(props: Props) {
               }}
               keepMounted
               open={Boolean(anchorElPoll)}
-              onClose={handleClosePollMenu}>
+              onClose={handleClose}>
               <MenuItem>
                 <FormControlLabel
                   label='Anonymous'
@@ -200,8 +186,10 @@ export default function Toolbar(props: Props) {
                 />
               </MenuItem>
               <MenuItem>
-                <TimerSwitch pid={pid} time={time} />
+                <TimerSwitch pid={pid} time={poll.time} />
               </MenuItem>
+              <Divider />
+              <DeleteMenuItem pid={pid} onClick={handleClose} />
               <Divider />
               <MenuItem onClick={handleHostClick}>
                 <ListItemIcon>

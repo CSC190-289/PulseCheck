@@ -91,7 +91,7 @@ export default function UploadImageBox(props: Props) {
   }, [props.url])
 
   useEffect(() => {
-    console.debug("Image URL: ", imageURL)
+    // console.debug("Image URL: ", imageURL)
   }, [imageURL])
   // Asynchronously uploads file to cloud firestore and sets image url
   const fileUpload = async (fileToUpload: File, storagePath: string) => {
@@ -119,7 +119,7 @@ export default function UploadImageBox(props: Props) {
   }
 
   const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.debug("File Uploading")
+    // console.debug("File Uploading")
     const processFile = async () => {
       const selectedFile = event.target.files?.[0]
       if (selectedFile) {
@@ -170,18 +170,18 @@ export default function UploadImageBox(props: Props) {
       <Card
         variant='outlined'
         sx={{
-          padding: 5,
-          borderStyle: "dashed",
+          // padding: 5,
+          borderStyle: imageURL ? "none" : "dashed",
           borderWidth: 2,
-          borderRadius: 5,
+          borderRadius: 3,
         }}>
         {imageURL && (
           <CardMedia
             sx={{ objectFit: "contain" }}
             component='img'
             alt='img'
-            height='200'
-            width='113'
+            // height='200'
+            // width='113'
             image={imageURL}
           />
         )}
@@ -194,7 +194,11 @@ export default function UploadImageBox(props: Props) {
             <Tooltip title='Upload Image'>
               <IconButton component='label' color='primary' size='large'>
                 <CloudUpload fontSize='inherit' />
-                <VisuallyHiddenInput type='file' onChange={handleFile} />
+                <VisuallyHiddenInput
+                  type='file'
+                  accept='image/*'
+                  onChange={handleFile}
+                />
               </IconButton>
             </Tooltip>
           )}

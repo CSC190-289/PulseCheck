@@ -41,7 +41,7 @@ export default function PollSession() {
         } else {
           setStatus("Waiting to Join Session...")
         }
-      } catch (err: unknown) {
+      } catch (err) {
         console.debug(err)
       }
     }

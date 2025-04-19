@@ -113,9 +113,9 @@ export default class ResponseStore extends BaseStore {
     const r_ss = await getDoc(rref)
     if (!r_ss.exists()) throw new Error(`${rref.path} does not exist!`)
     const choices = r_ss.data().choices
-    const correct = correct_opts.every((x) =>
-      choices.some((y) => refEqual(x.ref, y))
-    )
+    const correct =
+      correct_opts.every((x) => choices.some((y) => refEqual(x.ref, y))) &&
+      correct_opts.length === choices.length
     await setDoc(rref, { correct }, { merge: true })
   }
 }

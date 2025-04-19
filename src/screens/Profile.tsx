@@ -404,12 +404,12 @@ export default function Profile() {
                   borderRadius: 1,
                   p: 2,
                 }}>
-                <Box sx={{ textAlign: "center", mb: 2 }}>
+                <Box sx={{ mb: 2 }}>
                   <Typography variant='body2' color='textSecondary'>
                     Theme Appearance
                   </Typography>
                 </Box>
-                <Box>
+                <Box textAlign={"initial"}>
                   <ThemeSelect fullWidth />
                 </Box>
               </Box>

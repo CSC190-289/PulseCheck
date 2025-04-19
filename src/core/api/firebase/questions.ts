@@ -54,7 +54,7 @@ export default class QuestionStore extends BaseStore {
       throw new Error("Questions collection needs a parent document(polls).")
     }
     const qref = await addDoc(ref, {
-      prompt: "Untitled Prompt",
+      prompt: "Untitled Question",
       prompt_img: null,
       prompt_type: "multiple-choice",
       options: [],

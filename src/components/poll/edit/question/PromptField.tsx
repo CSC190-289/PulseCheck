@@ -47,6 +47,7 @@ export default function PromptField(props: Props) {
         label='Type Your Question Here'
         hiddenLabel
         defaultValue={prompt}
+        multiline
         onChange={(e) => setPrompt(e.target.value)}
       />
     </React.Fragment>

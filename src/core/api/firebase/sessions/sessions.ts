@@ -16,10 +16,12 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore"
 import BaseStore from "../store"
 import {
   CurrentQuestion,
+  Poll,
   Session,
   SessionQuestion,
   SessionState,
@@ -333,6 +335,7 @@ export default class SessionStore extends BaseStore {
       }
     }
     /* init series */
+    /* Record<string(id of opt), { text: string(option's name); data: number[] (frequency of occurance)} */
     const series: Record<string, { text: string; data: number[] }> = {}
     /* iterate all options of question */
     for (const opt of question.options) {
@@ -353,7 +356,7 @@ export default class SessionStore extends BaseStore {
   }
 
   /** @brief Grades the responses for the given question */
-  public async grade(
+  public async gradeQuestion(
     sref: DocumentReference<Session>,
     qref: DocumentReference<SessionQuestion>
   ) {
@@ -379,5 +382,28 @@ export default class SessionStore extends BaseStore {
   public async finish(ref: DocumentReference<Session>) {
     /* TODO - change state to something, then reveal user results */
     await setDoc(ref, { state: SessionState.CLOSED }, { merge: true })
+  }
+
+  public async deleteAllByPREF(pref: DocumentReference<Poll>) {
+    const q = query(
+      collection(this.db, clx.sessions),
+      where("poll", "==", pref)
+    )
+    const batchSize = 500
+    let batch = writeBatch(this.db)
+    let count = 0
+    const ss = await getDocs(q)
+    ss.docs.forEach((x) => {
+      batch.delete(x.ref)
+      count++
+      if (count % batchSize === 0) {
+        void batch.commit()
+        batch = writeBatch(this.db)
+      }
+    })
+    if (count % batchSize !== 0) {
+      await batch.commit()
+    }
+    console.debug(`Deleted ${count} document(s) from ${clx.sessions}`)
   }
 }

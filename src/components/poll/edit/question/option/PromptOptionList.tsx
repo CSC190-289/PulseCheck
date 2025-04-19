@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function PromptOptionList(props: Props) {
-  const { options } = props
+  const { options, promptType } = props
 
   return (
     <React.Fragment>
@@ -25,7 +25,12 @@ export default function PromptOptionList(props: Props) {
             // draggable
             style={{ display: "flex", alignItems: "center" }}>
             {/* <DragIndicator color='action' /> */}
-            <PromptOptionEditor key={x.id} ref={x} index={i} />
+            <PromptOptionEditor
+              key={x.id}
+              ref={x}
+              index={i}
+              promptType={promptType}
+            />
           </Box>
         ))}
       </Stack>

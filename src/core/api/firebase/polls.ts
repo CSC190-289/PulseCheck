@@ -5,6 +5,7 @@ import {
   addDoc,
   collection,
   CollectionReference,
+  deleteDoc,
   doc,
   DocumentData,
   DocumentReference,
@@ -83,5 +84,10 @@ export default class PollStore extends BaseStore {
       ...payload,
       updated_at: serverTimestamp(),
     })
+  }
+
+  public async delete(pref: DocumentReference<Poll>) {
+    await deleteDoc(pref)
+    await api.sessions.deleteAllByPREF(pref)
   }
 }

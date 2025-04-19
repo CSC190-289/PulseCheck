@@ -63,7 +63,7 @@ export default function QuestionEditor(props: Props) {
   if (error || loading || !data) {
     return (
       <Box sx={{ width: "90vw" }}>
-        <Skeleton sx={{ width: "100%", height: 60 }} />
+        <Skeleton sx={{ height: 60 }} />
       </Box>
     )
   }
@@ -84,8 +84,8 @@ export default function QuestionEditor(props: Props) {
         <Grid2 spacing={2}>
           <Grid2 size={{ xl: 12, lg: 12, md: 12, sm: 12, xs: 12 }}>
             <Stack spacing={2}>
-              <PromptField pid={pid} qid={qid} prompt={data.prompt} />
               <UploadImageBox pid={pid} qid={qid} url={data.prompt_img} />
+              <PromptField pid={pid} qid={qid} prompt={data.prompt} />
               <PromptTypeField
                 pid={pid}
                 qid={qid}

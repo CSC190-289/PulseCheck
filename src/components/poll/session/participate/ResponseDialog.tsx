@@ -81,6 +81,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
               <Stack spacing={3} mt={3} direction={"column"}>
                 {currentQuestion.options.map((x) => (
                   <Choice
+                    key={x.ref.path}
                     ref={x.ref}
                     text={x.text}
                     promptType={currentQuestion.prompt_type}

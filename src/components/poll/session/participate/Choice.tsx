@@ -58,7 +58,7 @@ export default function Choice(props: ChoiceProps) {
           checked={Boolean(theChosenOnes.find((x) => refEqual(x, ref)))}
           control={promptType === "multi-select" ? <Checkbox /> : <Radio />}
           label={text}
-          onClick={check}
+          // onClick={check}
         />
       </CardActionArea>
     </Card>

@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material"
 import React, { useEffect } from "react"
-import Toolbar from "@/components/poll/edit/Toolbar"
+import Header from "@/components/poll/edit/header/Header"
 import { useNavigate, useParams } from "react-router-dom"
 import { useDocumentData } from "react-firebase-hooks/firestore"
 import QuestionList from "@/components/poll/edit/question/QuestionList"
@@ -58,19 +58,9 @@ export default function PollEditor() {
 
   return (
     <React.Fragment>
-      {poll && (
-        <Toolbar
-          pid={id}
-          title={poll.title}
-          anonymous={poll.anonymous}
-          time={poll.time}
-        />
-      )}
+      {poll && <Header pid={id} poll={poll} />}
       <Container sx={{ marginBlock: 2 }} maxWidth='xl'>
         <Stack spacing={2} alignItems={"center"}>
-          {/* {poll && (
-            <Settings pid={id} time={poll.time} anonymous={poll.anonymous} />
-          )} */}
           <QuestionList pid={id} questions={poll?.questions ?? []} />
           <RA.Roll triggerOnce>
             <Tooltip title='New Question'>

@@ -1,4 +1,4 @@
-import { PromptOption } from "@/core/types"
+import { PromptOption, PromptType } from "@/core/types"
 import { Box, Skeleton, TextField, Typography } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
@@ -10,6 +10,7 @@ import api from "@/core/api/firebase"
 interface Props {
   ref: DocumentReference<PromptOption>
   index: number
+  promptType: PromptType
 }
 
 const SAVE_DELAY = 1000
@@ -19,7 +20,7 @@ const SAVE_DELAY = 1000
  * @author Camputron, VerySirias
  */
 export default function PromptOptionEditor(props: Props) {
-  const { ref, index } = props
+  const { ref, index, promptType } = props
   const [opt, loading, error] = useDocumentData(ref)
   const [text, setText] = useState("")
 
@@ -76,11 +77,17 @@ export default function PromptOptionEditor(props: Props) {
         placeholder={`Option ${index + 1}`}
         value={text}
         fullWidth
+        // multiline
+        // size='small'
         onChange={handleTextChange}
         slotProps={{
           input: {
             startAdornment: opt && (
-              <CorrectToggleButton ref={ref} correct={opt.correct} />
+              <CorrectToggleButton
+                ref={ref}
+                correct={opt.correct}
+                promptType={promptType}
+              />
             ),
             endAdornment: <RemoveButton ref={ref} />,
           },
