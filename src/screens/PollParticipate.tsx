@@ -1,24 +1,15 @@
-import LeaveButton from "@/components/poll/session/LeaveButton"
+import Header from "@/components/poll/session/participate/Header"
 import ResponseDialog from "@/components/poll/session/participate/ResponseDialog"
+import ResultsChart from "@/components/poll/session/ResultsChart"
 import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
 import { SessionState } from "@/core/types"
-import { ntops } from "@/utils"
-import {
-  AppBar,
-  Box,
-  Container,
-  LinearProgress,
-  Toolbar,
-  Typography,
-} from "@mui/material"
+import { Container, LinearProgress, Typography } from "@mui/material"
 import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
-
-import ResultsChart from "@/components/poll/session/ResultsChart"
 
 const CHECK_INTERVAL_MS = 2000
 
@@ -32,8 +23,6 @@ export function PollParticipate() {
   const [session, sessionLoading] = useDocumentData(sref)
   const [users] = useCollection(api.sessions.users.collect(sid))
   const [gettingstated, setGettingStated] = useState(false)
-  /** the current questiont to be shown */
-  // const question = session?.question
 
   useEffect(() => {
     if (session && !sessionLoading) {
@@ -80,55 +69,11 @@ export function PollParticipate() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function leaveSession() {
-    async function aux() {
-      if (!user) {
-        return
-      }
-      try {
-        const uid = user.uid
-        await api.sessions.leaveSession(sid, uid)
-        snackbar.show({
-          message: "You left the session",
-          type: "info",
-        })
-        if (user.isAnonymous) {
-          await user.delete()
-          void navigate("/get-started", { replace: true })
-        } else {
-          void navigate("/poll/join", { replace: true })
-        }
-      } catch (err: unknown) {
-        console.error(err)
-      }
-    }
-    void aux()
-  }
-
   return (
     <React.Fragment>
-      {/* @tdhillion113 If you're reading this, then you're on the track.
-            I need you to implement this component below.
-      */}
       <ResponseDialog session={session} sref={sref} />
-      <AppBar color='inherit' position='relative'>
-        <Toolbar>
-          <LeaveButton
-            callback={leaveSession}
-            dialogTitle='Are you sure you want to leave?'
-            dialogContent='All answers you submitted will be discarded.'
-          />
-          <Box textAlign={"initial"}>
-            <Typography>{session?.title}</Typography>
-            <Typography
-              variant='caption'
-              component={"div"}
-              color='textSecondary'>
-              {ntops(users?.docs.length ?? 0)}
-            </Typography>
-          </Box>
-        </Toolbar>
-      </AppBar>
+      <Header sid={sid} session={session} users={users} />
+      {session?.results && <ResultsChart results={session.results} />}
       {!gettingstated && <LinearProgress />}
       <Container sx={{ mt: 2 }}>
         {!gettingstated && (

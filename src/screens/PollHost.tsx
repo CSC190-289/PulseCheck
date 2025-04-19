@@ -1,25 +1,16 @@
-import LeaveButton from "@/components/poll/session/LeaveButton"
 import api from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
 import { SessionState, WaitingUser } from "@/core/types"
-import { ntops } from "@/utils"
-import {
-  AppBar,
-  Box,
-  Container,
-  LinearProgress,
-  Toolbar,
-  Typography,
-} from "@mui/material"
+import { Box, Container, LinearProgress } from "@mui/material"
 import { onSnapshot } from "firebase/firestore"
 import React, { useEffect } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
-import HostButton from "@/components/poll/session/host/HostButton"
-import RoomTitle from "@/components/poll/session/host/RoomTitle"
-import Image from "mui-image"
+import RoomCodeTitle from "@/components/poll/session/host/RoomCodeTitle"
 import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 import ResultsChart from "@/components/poll/session/ResultsChart"
+import Header from "@/components/poll/session/host/Header"
+import QuestionBox from "@/components/poll/session/host/QuestionBox"
 
 export default function PollHost() {
   const params = useParams()
@@ -98,66 +89,20 @@ export default function PollHost() {
     return <LinearProgress />
   }
 
-  const handleKillSession = () => {
-    async function kill() {
-      try {
-        await api.sessions.close(sref)
-        await navigate("/dashboard", { replace: true })
-      } catch (err) {
-        console.debug(err)
-      }
-    }
-    void kill()
-  }
-
   return (
     <React.Fragment>
-      <AppBar color='inherit' position='relative'>
-        <Toolbar>
-          <LeaveButton
-            callback={handleKillSession}
-            dialogTitle='Are you sure you want to end the session?'
-            dialogContent='All answers submitted will be discarded!'
-          />
-          <Box textAlign={"initial"}>
-            <Typography>{session?.title}</Typography>
-            <Typography
-              variant='caption'
-              component={"div"}
-              color='textSecondary'>
-              {ntops(users?.docs.length ?? 0)}
-            </Typography>
-          </Box>
-          <Box flex={1} marginInline={2} />
-          <HostButton sref={sref} session={session} />
-        </Toolbar>
-      </AppBar>
+      <Header sref={sref} session={session} users={users} />
       <Container sx={{ mt: 2 }}>
-        <RoomTitle session={session} />
-        {/* render the current question here */}
+        <RoomCodeTitle session={session} />
+        {/* render the current question */}
         {question && (
-          <Box mb={3}>
-            {question.prompt_img && (
-              <Image
-                style={{ width: 700, height: 300, objectFit: "contain" }}
-                src={question.prompt_img}
-              />
-            )}
-            <Typography variant='h6'>{question.prompt}</Typography>
+          <Box mb={2}>
+            <QuestionBox question={question} />
           </Box>
         )}
-        {/* render users currently in the poll session */}
         {session?.results && <ResultsChart results={session.results} />}
+        {/* render users currently in the poll session */}
         <UserSessionGrid users={users} />
-        {/* <Grid2 container spacing={2}>
-          {users?.docs.map((x) => (
-            <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
-              <RA.Zoom triggerOnce>
-                <UserSessionCard ss={x} />
-              </RA.Zoom>
-            </Grid2>
-          ))}
-        </Grid2> */}
       </Container>
     </React.Fragment>
   )

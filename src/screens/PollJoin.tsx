@@ -99,7 +99,7 @@ export default function PollJoin() {
   }
   return (
     <Container maxWidth='xs'>
-      <RA.Bounce>
+      <RA.Bounce triggerOnce>
         <Card raised sx={{ mt: 8, pb: 2 }}>
           <CardContent>
             <Typography variant='h5' textAlign='center' marginBlock={4}>

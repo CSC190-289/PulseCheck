@@ -1,14 +1,14 @@
 import { Session, SessionState } from "@/core/types"
 import { Typography } from "@mui/material"
 
-interface RoomTitleProps {
+interface RoomCodeTitleProps {
   session?: Session
 }
 
 /**
  * Displays the room code the session if session is open.
  */
-export default function RoomTitle(props: RoomTitleProps) {
+export default function RoomCodeTitle(props: RoomCodeTitleProps) {
   const { session } = props
   if (session && session.state === SessionState.OPEN) {
     return (

@@ -25,13 +25,7 @@ interface ChoiceProps {
 
 export default function Choice(props: ChoiceProps) {
   const { text, ref, promptType, theChosenOnes, setTheChosenOnes } = props
-  console.debug(theChosenOnes)
   const check = () => {
-    console.debug(props.promptType)
-
-    //option object creation
-    // const option = { ref, text }
-
     switch (promptType) {
       case "multiple-choice": {
         setTheChosenOnes([ref])
