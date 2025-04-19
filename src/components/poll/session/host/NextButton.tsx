@@ -13,14 +13,13 @@ export default function NextButton(props: NextButtonProps) {
   const { sref, session } = props
   const [text, setText] = useState("Next")
   const callback = async () => {
-    /* TODO - display answers if not anonymous */
     if (!session) throw new Error("session is null!")
     const currentQuestion = session.question
     if (currentQuestion) {
       await api.sessions.grade(sref, currentQuestion.ref)
       await api.sessions.clearQuestion(sref)
       if (!currentQuestion.anonymous) {
-        await api.sessions.displayUserResponses(sref, currentQuestion.ref)
+        await api.sessions.displayUserResponses(sref, currentQuestion)
       }
       setText("Next")
     } else {

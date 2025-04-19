@@ -147,8 +147,7 @@ export default function PollHost() {
           </Box>
         )}
         {/* render users currently in the poll session */}
-        {session?.answers && 
-        <ResultsChart answers={session?.answers}/>}
+        {session?.results && <ResultsChart results={session.results} />}
         <UserSessionGrid users={users} />
         {/* <Grid2 container spacing={2}>
           {users?.docs.map((x) => (

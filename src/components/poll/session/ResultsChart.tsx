@@ -1,37 +1,29 @@
-import {BarChart} from '@mui/x-charts/BarChart'
+import { BarChart } from "@mui/x-charts/BarChart"
 
-import { DocumentReference } from "firebase/firestore";
-import { SessionQuestion } from "@/core/types";
-import { getDoc } from 'firebase/firestore';
-import { useEffect } from 'react';
-
-import api from '@/core/api/firebase';
+import { SessionQuestionResults } from "@/core/types"
 
 interface Props {
-    answers: {qref: DocumentReference<SessionQuestion>, map: Map<string, Object>}
+  results: SessionQuestionResults
 }
 
 export default function ResultsChart(props: Props) {
-    
-    const fetchOptions = async () => {
-        const responseFreq = new Map()
-        
-        const qsnap = await api.sessions.questions.options.getAllByRef(props.answers.qref)
-        qsnap.docs.forEach(x => console.debug(x.data()))
-    }
-    
-    useEffect(()=> {void fetchOptions()}, [props.answers.qref])
-
-    return(
+  const { results } = props
+  const series = Object.values(results.series).map((x) => ({ data: x.data }))
+  console.debug("series", series)
+  const xAxisData = Object.values(results.series).map((x) => x.text)
+  console.debug("xAxisData", xAxisData)
+  /* TODO - figure out how to render the data */
+  return (
     <BarChart
-        series={[
-            { data: [35, 44, 24, 34] },
-            { data: [51, 6, 49, 30] },
-            { data: [15, 25, 30, 50] },
-            { data: [60, 50, 15, 25] },
-          ]}
-          height={290}
-          xAxis={[{ data: ['Q1', 'Q2', 'Q3', 'Q4'], scaleType: 'band' }]}
-        />
-      );
+      //   series={series}
+      series={[
+        { data: [35, 44, 24] },
+        { data: [51, 6, 49] },
+        { data: [15, 25, 30] },
+      ]}
+      //   layout='horizontal'
+      xAxis={[{ data: xAxisData, scaleType: "band" }]}
+      height={300}
+    />
+  )
 }

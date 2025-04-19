@@ -11,6 +11,7 @@ import {
   getDocs,
   limit,
   query,
+  refEqual,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -29,6 +30,7 @@ import WaitingUserStore from "./waiting_users"
 import ChatStore from "./chat"
 import { generateRoomCode } from "@/utils"
 import QuestionStore from "./question"
+import ResponseStore from "./responses"
 
 /**
  * @brief Manages /sessions collection in Firestore.
@@ -164,6 +166,7 @@ export default class SessionStore extends BaseStore {
       throw new Error(`Unauthorized access to poll!`)
     }
     const session = await addDoc(this.collect(), {
+      summary: null,
       host: uref,
       poll: pref,
       room_code: generateRoomCode(),
@@ -172,7 +175,7 @@ export default class SessionStore extends BaseStore {
       anonymous: poll.anonymous,
       time: poll.time,
       question: null,
-      answers: null,
+      results: null,
       questions: [],
       state: SessionState.OPEN,
       created_at: serverTimestamp(),
@@ -278,7 +281,7 @@ export default class SessionStore extends BaseStore {
         ref,
         {
           question: payload,
-          answers:null,
+          results: null,
           questions: arrayRemove(nextQuestion),
         },
         { merge: true }
@@ -289,7 +292,7 @@ export default class SessionStore extends BaseStore {
         ref,
         {
           question: null,
-          answers: null,
+          results: null,
           state: SessionState.DONE,
         },
         { merge: true }
@@ -309,11 +312,44 @@ export default class SessionStore extends BaseStore {
 
   public async displayUserResponses(
     sref: DocumentReference<Session>,
-    qref: DocumentReference<SessionQuestion>
+    question: CurrentQuestion
   ) {
-    const map = await this.questions.responses.getAllAsMap(sref.id, qref.id)
-    console.debug(map)
-    await setDoc(sref, { answers: {qref, map} }, { merge: true })
+    /* fetch all user responses as a Map<string(uid), SessionResponse>  */
+    const responses = await this.questions.responses.getAllAsMap(
+      sref.id,
+      question.ref.id
+    )
+    /* init frequency table */
+    const table: Record<string, number> = {}
+    /* iterate all options of question */
+    for (const opt of question.options) {
+      table[opt.ref.id] = 0
+    }
+    /* iterate all user responses */
+    for (const [, res] of Object.entries(responses)) {
+      /* count!  */
+      for (const opt of res.choices) {
+        table[opt.id]++
+      }
+    }
+    /* init series */
+    const series: Record<string, { text: string; data: number[] }> = {}
+    /* iterate all options of question */
+    for (const opt of question.options) {
+      const key = opt.ref.id
+      series[key] = { text: opt.text, data: [table[key]] }
+    }
+    await setDoc(
+      sref,
+      {
+        results: {
+          qref: question.ref,
+          series: series,
+          responses: responses,
+        },
+      },
+      { merge: true }
+    )
   }
 
   /** @brief Grades the responses for the given question */

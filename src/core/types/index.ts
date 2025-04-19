@@ -81,8 +81,17 @@ export enum SessionState {
   DONE = "done",
 }
 
+export interface SessionSummary {
+  total_participants: number
+  median: number
+  average: number
+  low: number
+  high: number
+}
+
 /** data model of a poll session document */
 export interface Session {
+  summary: SessionSummary | null
   host: DocumentReference<User>
   poll: DocumentReference<Poll>
   room_code: string
@@ -92,11 +101,9 @@ export interface Session {
   time: number | null
   /* the current question to display */
   question: CurrentQuestion | null
-  answers: { 
-    qref: DocumentReference<SessionQuestion>,
-    map: Map<string, SessionResponse>
-  } | null
-  /* list of questions to display */
+  /* results of user responses for a question */
+  results: SessionQuestionResults | null
+  /* list of questions to display in the session */
   questions: DocumentReference<SessionQuestion>[]
   /* current state of the session */
   state: SessionState
@@ -112,6 +119,13 @@ export interface CurrentQuestion {
   options: SessionChoice[]
   anonymous: boolean | null
   time: number | null
+}
+
+/** data model to display question results of user responses  */
+export interface SessionQuestionResults {
+  qref: DocumentReference<SessionQuestion>
+  series: Record<string, { text: string; data: number[] }>
+  responses: Map<string, SessionResponse>
 }
 
 /** data model of the possible choices for the current question  */
