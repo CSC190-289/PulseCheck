@@ -7,6 +7,8 @@ import {
   query,
   updateDoc,
   where,
+  orderBy,
+  limit,
 } from "firebase/firestore"
 import BaseStore from "./store"
 import { Submission } from "@/core/types"
@@ -38,6 +40,18 @@ export default class SubmissionStore extends BaseStore {
     const userRef = doc(this.db, clx.users, uid)
     const subsRef = collection(this.db, clx.submissions)
     const q = query(subsRef, where("user", "==", userRef))
+    return getDocs(q)
+  }
+
+  public findLatestSub(uid: string) {
+    const userRef = doc(this.db, clx.users, uid)
+    const subsRef = collection(this.db, clx.submissions)
+    const q = query(
+      subsRef,
+      where("user", "==", userRef),
+      orderBy("submitted_at", "desc"),
+      limit(1)
+    )
     return getDocs(q)
   }
 
