@@ -131,4 +131,6 @@ export interface Submission {
   display_name: string
   total_score: number
   submitted_at: Timestamp
+  photo_url: string | null
+  email: string | null
 }
