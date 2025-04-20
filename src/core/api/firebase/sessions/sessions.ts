@@ -11,7 +11,6 @@ import {
   getDocs,
   limit,
   query,
-  refEqual,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -25,12 +24,13 @@ import {
   Session,
   SessionQuestion,
   SessionState,
+  SessionSummary,
 } from "@/core/types"
 import api, { clx } from ".."
 import UserStore from "./users"
 import WaitingUserStore from "./waiting_users"
 import ChatStore from "./chat"
-import { generateRoomCode } from "@/utils"
+import { generateRoomCode, getMedian } from "@/utils"
 import QuestionStore from "./question"
 
 /**
@@ -177,6 +177,7 @@ export default class SessionStore extends BaseStore {
       time: poll.time,
       question: null,
       results: null,
+      questions_left: [],
       questions: [],
       state: SessionState.OPEN,
       created_at: serverTimestamp(),
@@ -210,6 +211,7 @@ export default class SessionStore extends BaseStore {
     /* init an array of session question refs */
     const question_refs: DocumentReference<SessionQuestion>[] = []
     /* iterate all of the poll's questions */
+    let maxScore = 0
     for (const q of poll.questions) {
       /* fetch the question's data */
       const pq_ss = await getDoc(q)
@@ -228,6 +230,10 @@ export default class SessionStore extends BaseStore {
       })
       question_refs.push(sqref)
 
+      if (pq.prompt_type !== "ranking-poll") {
+        maxScore += pq.points
+      }
+
       /* iterate the poll question's options */
       for (const oref of pq.options) {
         const opt_ss = await getDoc(oref)
@@ -242,7 +248,18 @@ export default class SessionStore extends BaseStore {
     }
     await this.updateByRef(ref, {
       state: SessionState.IN_PROGRESS,
+      questions_left: question_refs,
       questions: question_refs,
+      summary: {
+        total_participants: NaN,
+        average: NaN,
+        high: NaN,
+        low: NaN,
+        lower_quartile: NaN,
+        median: NaN,
+        upper_quartile: NaN,
+        max_score: maxScore,
+      },
     })
   }
 
@@ -257,7 +274,7 @@ export default class SessionStore extends BaseStore {
       throw new Error(`session(${ref.id}) does not exist!`)
     }
     const session = ss.data()
-    const questions = session.questions
+    const questions = session.questions_left
     /* fetch the next question in the session */
     const nextQuestion = questions.shift()
     if (nextQuestion) {
@@ -283,7 +300,7 @@ export default class SessionStore extends BaseStore {
         {
           question: payload,
           results: null,
-          questions: arrayRemove(nextQuestion),
+          questions_left: arrayRemove(nextQuestion),
         },
         { merge: true }
       )
@@ -384,9 +401,88 @@ export default class SessionStore extends BaseStore {
   /**
    * @brief Changes session state to {something}.
    */
-  public async finish(ref: DocumentReference<Session>) {
+  public async finish(sref: DocumentReference<Session>) {
     /* TODO - change state to something, then reveal user results */
-    await setDoc(ref, { state: SessionState.FINISHED }, { merge: true })
+    console.debug("create submission docs!")
+    const sid = sref.id
+    const s_ss = await getDoc(sref)
+    if (!s_ss.exists()) {
+      throw new Error(`Failed to get sessions/${sid}`)
+    }
+    const session = s_ss.data()
+    const users = await this.users.getAll(sref)
+    const numbers: number[] = []
+
+    for (const user of users.docs) {
+      let score = 0
+      console.debug(`Grading user(${user.id})`)
+      const uid = user.id
+      for (const qref of session.questions) {
+        const qid = qref.id
+        const q_ss = await getDoc(qref)
+        if (!q_ss.exists()) {
+          throw new Error(`Failed to get sessions/${sid}/questions/${qid}`)
+        }
+        const rref = this.questions.responses.doc(sid, qid, uid)
+        const r_ss = await getDoc(rref)
+        const question = q_ss.data()
+        if (!r_ss.exists()) {
+          console.debug(`user(${uid}) did not answer this question(${qid})`)
+          await this.questions.responses.answer(sid, qid, uid, [])
+        } else {
+          if (question.prompt_type !== "ranking-poll") {
+            const res = r_ss.data()
+            if (res.correct) {
+              score += question.points
+            }
+          }
+        }
+      }
+      numbers.push(score)
+      await api.submissions.create({
+        user: api.users.doc(uid),
+        display_name: user.data().display_name,
+        session: sref,
+        total_score: score,
+        max_score: session.summary!.max_score,
+      })
+    }
+    const sorted = [...numbers].sort((a, b) => a - b)
+    const sum = numbers.reduce((acc, val) => acc + val, 0)
+    const average = sum / numbers.length
+
+    const median = getMedian(sorted)
+
+    let lower_quartile = 0
+    let upper_quartile = 0
+    if (sorted.length === 1) {
+      lower_quartile = sorted[0]
+      upper_quartile = sorted[0]
+    } else {
+      const mid = Math.floor(sorted.length / 2)
+      const lowerHalf = sorted.slice(0, mid)
+      const upperHalf =
+        sorted.length % 2 === 0 ? sorted.slice(mid) : sorted.slice(mid + 1)
+      lower_quartile = getMedian(lowerHalf)
+      upper_quartile = getMedian(upperHalf)
+    }
+
+    await setDoc(
+      sref,
+      {
+        summary: {
+          average,
+          low: sorted[0],
+          high: sorted[sorted.length - 1],
+          median,
+          lower_quartile,
+          upper_quartile,
+          total_participants: users.size,
+        },
+        state: SessionState.FINISHED,
+      },
+      { merge: true }
+    )
   }
 
   public async deleteAllByPREF(pref: DocumentReference<Poll>) {

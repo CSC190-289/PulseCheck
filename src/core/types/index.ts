@@ -90,6 +90,9 @@ export interface SessionSummary {
   average: number
   low: number
   high: number
+  lower_quartile: number
+  upper_quartile: number
+  max_score: number
 }
 
 /** data model of a poll session document */
@@ -106,7 +109,9 @@ export interface Session {
   question: CurrentQuestion | null
   /* results of user responses for a question */
   results: SessionQuestionResults | null
-  /* list of questions to display in the session */
+  /* list of questions left to display in the session */
+  questions_left: DocumentReference<SessionQuestion>[]
+  /* list of questions */
   questions: DocumentReference<SessionQuestion>[]
   /* current state of the session */
   state: SessionState
@@ -195,5 +200,6 @@ export interface Submission {
   user: DocumentReference<User>
   display_name: string
   total_score: number
+  max_score: number
   submitted_at: Timestamp
 }

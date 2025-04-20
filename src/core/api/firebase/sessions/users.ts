@@ -3,11 +3,13 @@ import {
   CollectionReference,
   doc,
   DocumentReference,
+  getDocs,
+  query,
   setDoc,
 } from "firebase/firestore"
 import BaseStore from "../store"
 import { clx } from ".."
-import { SessionUser } from "@/core/types"
+import { Session, SessionUser } from "@/core/types"
 
 export default class UserStore extends BaseStore {
   public doc(sid: string, uid: string): DocumentReference<SessionUser> {
@@ -32,5 +34,11 @@ export default class UserStore extends BaseStore {
   public async set(sid: string, uid: string, payload: Partial<SessionUser>) {
     const suref = this.doc(sid, uid)
     await setDoc(suref, payload, { merge: false })
+  }
+
+  public async getAll(sref: DocumentReference<Session>) {
+    const ref = this.collect(sref.id)
+    const q = query(ref)
+    return getDocs(q)
   }
 }
