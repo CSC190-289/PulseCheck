@@ -28,6 +28,9 @@ export default function PollHost() {
     if (session && !sessionLoading) {
       if (session.state === SessionState.CLOSED) {
         void navigate("/dashboard")
+      } else if (session.state === SessionState.FINISHED) {
+        /* session finished successfully! */
+        void navigate("/dashboard")
       }
     }
   }, [session, sessionLoading, navigate])

@@ -32,7 +32,6 @@ import WaitingUserStore from "./waiting_users"
 import ChatStore from "./chat"
 import { generateRoomCode } from "@/utils"
 import QuestionStore from "./question"
-import ResponseStore from "./responses"
 
 /**
  * @brief Manages /sessions collection in Firestore.
@@ -322,32 +321,38 @@ export default class SessionStore extends BaseStore {
       question.ref.id
     )
     /* init frequency table */
-    const table: Record<string, number> = {}
+    const table: Record<string, { text: string; count: number }> = {}
     /* iterate all options of question */
     for (const opt of question.options) {
-      table[opt.ref.id] = 0
+      table[opt.ref.id] = {
+        text: opt.text,
+        count: 0,
+      }
     }
     /* iterate all user responses */
     for (const [, res] of Object.entries(responses)) {
       /* count!  */
       for (const opt of res.choices) {
-        table[opt.id]++
+        table[opt.id].count++
       }
     }
     /* init series */
-    /* Record<string(id of opt), { text: string(option's name); data: number[] (frequency of occurance)} */
-    const series: Record<string, { text: string; data: number[] }> = {}
-    /* iterate all options of question */
-    for (const opt of question.options) {
-      const key = opt.ref.id
-      series[key] = { text: opt.text, data: [table[key]] }
+    const series = {
+      labels: Object.values(table).map((x) => x.text),
+      data: Object.values(table).map((x) => x.count),
     }
+    const data = Object.entries(table).map(([key, val]) => ({
+      id: key,
+      value: val.count,
+      label: val.text,
+    }))
     await setDoc(
       sref,
       {
         results: {
-          qref: question.ref,
-          series: series,
+          question: question,
+          barchart: series,
+          piechart: data,
           responses: responses,
         },
       },
@@ -381,7 +386,7 @@ export default class SessionStore extends BaseStore {
    */
   public async finish(ref: DocumentReference<Session>) {
     /* TODO - change state to something, then reveal user results */
-    await setDoc(ref, { state: SessionState.CLOSED }, { merge: true })
+    await setDoc(ref, { state: SessionState.FINISHED }, { merge: true })
   }
 
   public async deleteAllByPREF(pref: DocumentReference<Poll>) {

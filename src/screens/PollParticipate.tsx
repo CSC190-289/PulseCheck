@@ -34,6 +34,12 @@ export function PollParticipate() {
         void navigate("/poll/join")
       } else if (session.state === SessionState.IN_PROGRESS) {
         setGettingStated(true)
+      } else if (session.state === SessionState.FINISHED) {
+        snackbar.show({
+          message: "Poll Session Finished!",
+          type: "success",
+        })
+        void navigate("/poll/join")
       }
     }
   }, [session, sessionLoading, snackbar, navigate])

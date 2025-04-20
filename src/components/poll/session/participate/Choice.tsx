@@ -25,7 +25,8 @@ interface ChoiceProps {
 
 export default function Choice(props: ChoiceProps) {
   const { text, ref, promptType, theChosenOnes, setTheChosenOnes } = props
-  const check = () => {
+  const handleCheck = (event: React.SyntheticEvent) => {
+    event.preventDefault()
     switch (promptType) {
       case "multiple-choice": {
         setTheChosenOnes([ref])
@@ -51,8 +52,9 @@ export default function Choice(props: ChoiceProps) {
   }
   return (
     <Card>
-      <CardActionArea onClick={check}>
+      <CardActionArea onClick={handleCheck}>
         <FormControlLabel
+          onChange={handleCheck}
           value={props.text}
           sx={{ m: 1 }}
           checked={Boolean(theChosenOnes.find((x) => refEqual(x, ref)))}

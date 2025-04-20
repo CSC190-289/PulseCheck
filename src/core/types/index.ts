@@ -1,3 +1,4 @@
+import { PieItemId } from "@mui/x-charts"
 import { DocumentReference, Timestamp } from "firebase/firestore"
 
 /**
@@ -77,8 +78,10 @@ export enum SessionState {
   IN_PROGRESS = "in-progress",
   /* if a session is open, then the host hasn't started the session yet */
   OPEN = "open",
-  /* if a session is done, then the host showed all questions in the session */
+  /* if a session is done, the host showed all questions in the session */
   DONE = "done",
+  /* the session was able to ask all questions, session is closed without issue  */
+  FINISHED = "finished",
 }
 
 export interface SessionSummary {
@@ -123,8 +126,14 @@ export interface CurrentQuestion {
 
 /** data model to display question results of user responses  */
 export interface SessionQuestionResults {
-  qref: DocumentReference<SessionQuestion>
-  series: Record<string, { text: string; data: number[] }>
+  question: CurrentQuestion
+  barchart: {
+    labels: string[]
+    data: number[]
+  }
+  /* series model for PieChart */
+  piechart: { id: PieItemId; value: number; label: string }[]
+  // series: Record<string, { text: string; data: number[] }>
   responses: Map<string, SessionResponse>
 }
 
