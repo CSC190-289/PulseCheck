@@ -77,11 +77,12 @@ export default function PromptOptionEditor(props: Props) {
         placeholder={`Option ${index + 1}`}
         value={text}
         fullWidth
-        // multiline
-        // size='small'
+        multiline
+        // variant='standard'
         onChange={handleTextChange}
         slotProps={{
           input: {
+            size: "small",
             startAdornment: opt && (
               <CorrectToggleButton
                 ref={ref}

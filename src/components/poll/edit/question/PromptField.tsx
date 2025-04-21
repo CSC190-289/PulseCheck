@@ -48,6 +48,7 @@ export default function PromptField(props: Props) {
         hiddenLabel
         defaultValue={prompt}
         multiline
+        // variant='standard'
         onChange={(e) => setPrompt(e.target.value)}
       />
     </React.Fragment>

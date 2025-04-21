@@ -139,7 +139,7 @@ export interface SessionQuestionResults {
   /* series model for PieChart */
   piechart: { id: PieItemId; value: number; label: string }[]
   // series: Record<string, { text: string; data: number[] }>
-  responses: Map<string, SessionResponse>
+  responses: Record<string, SessionResponse>
 }
 
 /** data model of the possible choices for the current question  */

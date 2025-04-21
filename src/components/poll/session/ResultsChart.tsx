@@ -1,5 +1,5 @@
 import { SessionQuestionResults } from "@/core/types"
-import { Stack, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import { PieChart } from "@mui/x-charts"
 import React from "react"
 
@@ -9,8 +9,8 @@ interface Props {
 
 export default function ResultsChart(props: Props) {
   const { results } = props
-  const barchart = results.barchart
-  console.debug("series", results.barchart)
+  // const barchart = results.barchart
+  // console.debug("series", results.barchart)
   // const series = Object.values(results.series).map((x) => ({
   //   data: x.data,
   //   label: x.text,
@@ -24,9 +24,8 @@ export default function ResultsChart(props: Props) {
 
   return (
     <React.Fragment>
-      <Stack spacing={1} mt={2}>
-        <Typography>{results.question.prompt}</Typography>
-        {/* <BarChart
+      <Typography>{results.question.prompt}</Typography>
+      {/* <BarChart
         series={[{ data: barchart.data }]}
         xAxis={[{ tickMinStep: 1 }]}
         yAxis={[
@@ -39,14 +38,23 @@ export default function ResultsChart(props: Props) {
             layout='horizontal'
             height={300}
             /> */}
-        <PieChart
-          series={[{ data: results.piechart }]}
-          slotProps={{
-            legend: {},
-          }}
-          height={300}
-        />
-      </Stack>
+      <PieChart
+        series={[{ data: results.piechart }]}
+        slotProps={{
+          legend: {
+            sx: {
+              blockOverflow: "clip",
+            },
+            markType: "square",
+            direction: "horizontal",
+            position: {
+              horizontal: "center",
+              vertical: "bottom",
+            },
+          },
+        }}
+        height={256}
+      />
     </React.Fragment>
   )
 }

@@ -5,7 +5,7 @@ import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 import api from "@/core/api/firebase"
 import { useAuthContext, useSnackbar } from "@/core/hooks"
 import { SessionState } from "@/core/types"
-import { Container, LinearProgress, Typography } from "@mui/material"
+import { Box, Container, LinearProgress, Typography } from "@mui/material"
 import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
@@ -79,7 +79,6 @@ export function PollParticipate() {
     <React.Fragment>
       <ResponseDialog session={session} sref={sref} />
       <Header sid={sid} session={session} users={users} />
-      {session?.results && <ResultsChart results={session.results} />}
       {!gettingstated && <LinearProgress />}
       <Container sx={{ mt: 2 }}>
         {!gettingstated && (
@@ -87,8 +86,13 @@ export function PollParticipate() {
             Waiting for Host...
           </Typography>
         )}
+        {session?.results && (
+          <Box marginBlock={2}>
+            <ResultsChart results={session.results} />
+          </Box>
+        )}
         {/* render the users who are in the poll session */}
-        <UserSessionGrid users={users} />
+        <UserSessionGrid users={users} results={session?.results} />
       </Container>
     </React.Fragment>
   )

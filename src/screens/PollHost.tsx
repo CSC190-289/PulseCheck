@@ -95,6 +95,7 @@ export default function PollHost() {
   return (
     <React.Fragment>
       <Header sref={sref} session={session} users={users} />
+      {session?.question && <LinearProgress />}
       <Container sx={{ mt: 2 }}>
         <RoomCodeTitle session={session} />
         {/* render the current question */}
@@ -103,9 +104,13 @@ export default function PollHost() {
             <QuestionBox question={question} />
           </Box>
         )}
-        {session?.results && <ResultsChart results={session.results} />}
+        {session?.results && (
+          <Box marginBlock={2}>
+            <ResultsChart results={session.results} />
+          </Box>
+        )}
         {/* render users currently in the poll session */}
-        <UserSessionGrid users={users} />
+        <UserSessionGrid users={users} results={session?.results} />
       </Container>
     </React.Fragment>
   )

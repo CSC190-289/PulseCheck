@@ -54,9 +54,11 @@ export default function ResponseDialog(props: ResponseDialogProps) {
       slots={{
         transition: Transition,
       }}>
-      <AppBar position='relative'>
-        <Toolbar>
-          <Typography>{currentQuestion?.prompt}</Typography>
+      <AppBar position='relative' enableColorOnDark>
+        <Toolbar sx={{ paddingBlock: 1, display: "block" }}>
+          {currentQuestion?.prompt
+            .split(/\r\n|\r|\n/)
+            .map((x, i) => <Typography key={i}>{x}</Typography>)}
         </Toolbar>
       </AppBar>
       <DialogContent>
