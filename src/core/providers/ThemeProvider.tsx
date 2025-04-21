@@ -40,18 +40,31 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     setMode(prefersDarkMode ? "dark" : "light")
   }, [prefersDarkMode]) // update when system theme changes
 
+  useEffect(() => {
+    /* load user's preferred theme */
+    const theme = localStorage.getItem("theme") as ThemeType
+    if (!theme) return
+    if (theme === ThemeType.SYSTEM_THEME) {
+      const newMode = prefersDarkMode ? ThemeType.DARK : ThemeType.LIGHT
+      setMode(newMode)
+    } else {
+      setMode(theme)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const toggleTheme = () => {
     setMode((prevMode) => (prevMode === "light" ? "dark" : "light"))
   }
 
-  const setTheme = (type: ThemeType) => {
-    if (type === ThemeType.SYSTEM_THEME) {
+  const setTheme = (theme: ThemeType) => {
+    if (theme === ThemeType.SYSTEM_THEME) {
       const newMode = prefersDarkMode ? ThemeType.DARK : ThemeType.LIGHT
       setMode(newMode)
     } else {
-      setMode(type)
+      setMode(theme)
     }
-    localStorage.setItem("theme", type)
+    localStorage.setItem("theme", theme)
   }
 
   const theme = useMemo(() => createCustomTheme(mode), [mode])

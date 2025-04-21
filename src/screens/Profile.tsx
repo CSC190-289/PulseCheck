@@ -63,9 +63,11 @@ export default function Profile() {
   const [tempVal, setTempVal] = useState("")
   // const [notif, setNotif] = useState({ show: false, message: "", type: "" })
 
-  console.debug("originalEmail", originalEmail)
-  console.debug("name", name)
-  console.debug("originalName", originalName)
+  useEffect(() => {
+    console.debug("originalEmail", originalEmail)
+    console.debug("name", name)
+    console.debug("originalName", originalName)
+  }, [originalEmail, name, originalName])
 
   useEffect(() => {
     // Load user data on component mount
