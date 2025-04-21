@@ -196,6 +196,7 @@ export interface SessionResponse {
 }
 
 export interface Submission {
+  title: string
   session: DocumentReference<Session>
   user: DocumentReference<User>
   display_name: string

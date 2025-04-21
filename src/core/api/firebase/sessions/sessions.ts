@@ -440,6 +440,7 @@ export default class SessionStore extends BaseStore {
       }
       numbers.push(score)
       await api.submissions.create({
+        title: session.title,
         user: api.users.doc(uid),
         display_name: user.data().display_name,
         session: sref,
