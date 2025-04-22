@@ -60,12 +60,14 @@ export default function PollHostResults() {
           <Stack> {subChart()} </Stack>
           <Stack> {scoreDetails()} </Stack>
           <Grid2 container spacing={2}>
-            <Typography>
-              {" "}
-              Total Participant: {submissions?.length ?? 0}
-            </Typography>
+            <Container>
+              <Typography>
+                {" "}
+                Total Participant: {submissions?.length ?? 0}
+              </Typography>
+            </Container>
             {submissions?.map((x) => (
-              <Grid2 key={x.ref.path} size={{ xl: 3, lg: 3, md: 3, xs: 12 }}>
+              <Grid2 key={x.ref.path} size={{ xl: 20, lg: 3, md: 3, xs: 12 }}>
                 <RA.Zoom triggerOnce>
                   <ParticipantsScoreCard sub={x.data()} />
                   {/* <Stack>{participantsScoreCard(x.data)} </Stack> */}
