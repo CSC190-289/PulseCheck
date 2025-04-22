@@ -1,4 +1,4 @@
-import api from "@/core/api/firebase"
+import api, { DEPLOY_URL } from "@/core/api/firebase"
 import { useAuthContext } from "@/core/hooks"
 import { SessionState, WaitingUser } from "@/core/types"
 import { Box, Container, LinearProgress } from "@mui/material"
@@ -11,6 +11,7 @@ import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 import ResultsChart from "@/components/poll/session/ResultsChart"
 import Header from "@/components/poll/session/host/Header"
 import QuestionBox from "@/components/poll/session/host/QuestionBox"
+import { QRCodeSVG } from "qrcode.react"
 
 export default function PollHost() {
   const params = useParams()
@@ -98,7 +99,14 @@ export default function PollHost() {
       {session?.question && <LinearProgress />}
       <Container sx={{ mt: 2 }}>
         <RoomCodeTitle session={session} />
-        {/* render the current question */}
+        {session?.state === SessionState.OPEN && (
+          <QRCodeSVG
+            value={`${DEPLOY_URL}/get-started?code=${session.room_code}`}
+            width={256}
+            height={256}
+          />
+        )}
+        {/* render the current question here */}
         {question && (
           <Box mb={2}>
             <QuestionBox question={question} />

@@ -7,8 +7,8 @@ import {
   Card,
   CardContent,
 } from "@mui/material"
-import { useNavigate } from "react-router-dom"
-import React, { useEffect, useState } from "react"
+import { useNavigate, useSearchParams } from "react-router-dom"
+import React, { useEffect, useRef, useState } from "react"
 import api from "@/core/api/firebase"
 import useSnackbar from "@/core/hooks/useSnackbar"
 import { FormEvent } from "react"
@@ -45,13 +45,25 @@ function DisplayNameField(props: {
 
 export default function PollJoin() {
   const navigate = useNavigate()
-  const [roomCode, setRoomCode] = useState<string>("")
+  const ref = useRef<HTMLButtonElement>(null)
+  const [query] = useSearchParams()
+  const [roomCode, setRoomCode] = useState<string>(query.get("code") ?? "")
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
   const { user, loading } = useAuthContext()
   const [disable, setDisable] = useState(false)
+  const [fire, setFire] = useState(true)
 
   useEffect(() => {
+    const code = query.get("code")
+    if (code && ref.current && user && displayName && fire) {
+      ref.current.click()
+      setFire(false)
+    }
+  }, [query, user, displayName, fire])
+
+  useEffect(() => {
+    /* check authentication */
     if (!user && !loading) {
       void navigate("/get-started")
     } else if (user?.isAnonymous) {
@@ -117,7 +129,8 @@ export default function PollJoin() {
                 label='Room Code'
                 variant='outlined'
                 fullWidth
-                onChange={(e) => setRoomCode(e.target.value)}
+                value={roomCode}
+                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
               />
               {user && (
                 <DisplayNameField
@@ -127,6 +140,7 @@ export default function PollJoin() {
                 />
               )}
               <Button
+                ref={ref}
                 type='submit'
                 variant='contained'
                 color='primary'
