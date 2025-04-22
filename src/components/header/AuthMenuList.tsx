@@ -53,7 +53,7 @@ export default function AuthMenuList(props: AuthMenuListProps) {
         Join Poll
       </MenuItem>
       <MenuItem icon={BarChart} to='/poll/history' onClick={handleClose}>
-        Results
+        History
       </MenuItem>
       <MenuItem icon={AccountCircle} to={"/profile"} onClick={handleClose}>
         Profile

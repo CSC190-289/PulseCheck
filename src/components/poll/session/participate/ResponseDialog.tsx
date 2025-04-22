@@ -80,7 +80,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
                 </Stack>
               )}
 
-              <Stack spacing={3} mt={3} direction={"column"}>
+              <Stack spacing={2} mt={2} direction={"column"}>
                 {currentQuestion.options.map((x) => (
                   <Choice
                     key={x.ref.path}
