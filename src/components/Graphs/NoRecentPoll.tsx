@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Typography } from "@mui/material"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 import { useEffect } from "react"
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 import { useState } from "react"
 import Image from "mui-image"
 

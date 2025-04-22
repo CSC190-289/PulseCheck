@@ -1,4 +1,4 @@
-import { PromptOption, PromptType } from "@/core/types"
+import { PromptOption, PromptType } from "@/lib/types"
 import { Box, Divider, Stack, Typography } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import React from "react"

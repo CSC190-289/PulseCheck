@@ -15,13 +15,13 @@ import {
   Divider,
 } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import api from "@/core/api/firebase"
-import useSnackbar from "@/core/hooks/useSnackbar"
+import api from "@/lib/api/firebase"
+import useSnackbar from "@/lib/hooks/useSnackbar"
 import { Done, Edit, MenuOpen, ScreenShare } from "@mui/icons-material"
 import TimerSwitch from "../TimerSwitch"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"
-import { Poll } from "@/core/types"
+import { Poll } from "@/lib/types"
 import DeleteMenuItem from "./DeleteMenuItem"
 
 interface HeaderProps {

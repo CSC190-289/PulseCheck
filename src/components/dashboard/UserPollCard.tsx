@@ -1,4 +1,4 @@
-import { Poll } from "@/core/types"
+import { Poll } from "@/lib/types"
 import { ntoq, tstos } from "@/utils"
 import { Card, CardActionArea, CardContent, Typography } from "@mui/material"
 import { useNavigate } from "react-router-dom"

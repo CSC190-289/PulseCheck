@@ -7,7 +7,7 @@ import FooterLink from "../components/splash/FooterLink"
 import { useRef, useEffect } from "react"
 import { RA } from "@/styles"
 import { ExpandCircleDown } from "@mui/icons-material"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 
 interface LocationState {
   scrollTo?: string

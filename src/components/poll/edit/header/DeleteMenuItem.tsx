@@ -1,5 +1,5 @@
 import MenuItem from "@/components/header/MenuItem"
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 import { Delete } from "@mui/icons-material"
 import {
   Button,

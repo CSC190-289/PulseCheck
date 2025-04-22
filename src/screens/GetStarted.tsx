@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import GuestJoin from "@/components/poll/join/GuestJoin"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 

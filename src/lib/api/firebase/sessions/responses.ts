@@ -12,7 +12,7 @@ import {
   setDoc,
 } from "firebase/firestore"
 import { clx } from ".."
-import { SessionOption, SessionResponse } from "@/core/types"
+import { SessionOption, SessionResponse } from "@/lib/types"
 import BaseStore from "../store"
 
 export default class ResponseStore extends BaseStore {

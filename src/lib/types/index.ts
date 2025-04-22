@@ -200,8 +200,9 @@ export interface Submission {
   session: DocumentReference<Session>
   user: DocumentReference<User>
   display_name: string
-  total_score: number
+  score: number
   max_score: number
+  score_100: number
   submitted_at: Timestamp
   photo_url: string | null
   email: string | null

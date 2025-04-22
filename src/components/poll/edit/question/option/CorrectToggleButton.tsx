@@ -1,9 +1,9 @@
 import { Checkbox, IconButton, Radio } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import useSnackbar from "@/core/hooks/useSnackbar"
-import api from "@/core/api/firebase"
+import useSnackbar from "@/lib/hooks/useSnackbar"
+import api from "@/lib/api/firebase"
 import { DocumentReference } from "firebase/firestore"
-import { PromptOption, PromptType } from "@/core/types"
+import { PromptOption, PromptType } from "@/lib/types"
 
 interface Props {
   ref: DocumentReference<PromptOption>

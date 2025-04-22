@@ -32,7 +32,7 @@ import {
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "@/core/api/firebase"
+import { auth } from "@/lib/api/firebase"
 import ProfileIcon from "./ProfileIcon"
 
 /**

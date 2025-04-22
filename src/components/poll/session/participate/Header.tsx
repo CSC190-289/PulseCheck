@@ -1,9 +1,9 @@
 import { AppBar, Box, Toolbar, Typography } from "@mui/material"
 import LeaveButton from "../LeaveButton"
-import { Session, SessionUser } from "@/core/types"
+import { Session, SessionUser } from "@/lib/types"
 import { QuerySnapshot } from "firebase/firestore"
-import { useAuthContext, useSnackbar } from "@/core/hooks"
-import api from "@/core/api/firebase"
+import { useAuthContext, useSnackbar } from "@/lib/hooks"
+import api from "@/lib/api/firebase"
 import { useNavigate } from "react-router-dom"
 import { ntops } from "@/utils"
 

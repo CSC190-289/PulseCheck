@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { ThemeContext } from "@/core/contexts/ThemeContext"
+import { ThemeContext } from "@/lib/contexts/ThemeContext"
 
 /**
  * `useThemeContext` is a custom hook that provides access to the `ThemeContext`'s

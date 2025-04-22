@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import BaseStore from "../store"
 import { clx } from ".."
-import { Session, SessionUser } from "@/core/types"
+import { Session, SessionUser } from "@/lib/types"
 
 export default class UserStore extends BaseStore {
   public doc(sid: string, uid: string): DocumentReference<SessionUser> {

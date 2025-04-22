@@ -25,7 +25,7 @@ import {
   SessionQuestion,
   SessionState,
   SessionSummary,
-} from "@/core/types"
+} from "@/lib/types"
 import api, { clx } from ".."
 import UserStore from "./users"
 import WaitingUserStore from "./waiting_users"
@@ -443,9 +443,11 @@ export default class SessionStore extends BaseStore {
         title: session.title,
         user: api.users.doc(uid),
         display_name: user.data().display_name,
+        photo_url: user.data().photo_url,
         session: sref,
-        total_score: score,
+        score: score,
         max_score: session.summary!.max_score,
+        score_100: (score / session.summary!.max_score) * 100,
       })
     }
     const sorted = [...numbers].sort((a, b) => a - b)

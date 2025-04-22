@@ -1,12 +1,12 @@
 import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
-//import { useSnackbar } from "@/core/hooks"
+//import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 import subAnswerCard from "@/components/poll/submission/subAnswerCard"
 import scoreDetails from "@/components/poll/submission/scoreDetails"
 import subChart from "@/components/poll/submission/subchart"
 import { useParams } from "react-router-dom"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import ToolbarParticpant from "@/components/poll/submission/ToolbarParticpant"
 import React, { useEffect, useState } from "react"
@@ -49,7 +49,7 @@ export default function PollResults() {
               {submitted_at ? submitted_at.toDate().toLocaleDateString() : ""}
             </Typography> */}
             <Typography variant='subtitle2' textAlign='center'>
-              Your Total Sorce Is {sub?.total_score}
+              Your Total Sorce Is {sub?.score}
             </Typography>
 
             {subChart()}

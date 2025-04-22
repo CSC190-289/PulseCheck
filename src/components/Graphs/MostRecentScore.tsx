@@ -1,12 +1,12 @@
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge"
 import { Card, CardContent, Typography } from "@mui/material"
 import { DocumentData, getDoc } from "firebase/firestore"
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 import { DocumentReference } from "firebase/firestore"
 import { getAuth } from "firebase/auth"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import { useEffect, useState } from "react"
-import { Session, Submission } from "@/core/types"
+import { Session, Submission } from "@/lib/types"
 
 export default function MostRecentScores() {
   const auth = getAuth()
@@ -30,7 +30,7 @@ export default function MostRecentScores() {
   }, [auth])
 
   const [sub] = useDocumentDataOnce(ref)
-  const total_score = sub?.total_score
+  const total_score = sub?.score
   const submitted_at = sub?.submitted_at
 
   const [session, setSession] = useState<Session>()

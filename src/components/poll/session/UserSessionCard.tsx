@@ -1,4 +1,4 @@
-import { SessionResponse, SessionUser } from "@/core/types"
+import { SessionResponse, SessionUser } from "@/lib/types"
 import { stoc } from "@/utils"
 import { Check, Clear } from "@mui/icons-material"
 import { Avatar, Box, Card, Chip, Typography } from "@mui/material"

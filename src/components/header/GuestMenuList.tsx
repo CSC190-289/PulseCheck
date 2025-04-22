@@ -10,7 +10,7 @@ import {
   Security,
   Star,
 } from "@mui/icons-material"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 
 interface GuestMenuListProps {
   handleClose?: () => void

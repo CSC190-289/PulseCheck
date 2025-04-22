@@ -1,6 +1,6 @@
-import api from "@/core/api/firebase"
-import useSnackbar from "@/core/hooks/useSnackbar"
-import { PROMPT_TYPE_CHOICES, PromptType } from "@/core/types"
+import api from "@/lib/api/firebase"
+import useSnackbar from "@/lib/hooks/useSnackbar"
+import { PROMPT_TYPE_CHOICES, PromptType } from "@/lib/types"
 import { MenuItem, TextField } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
