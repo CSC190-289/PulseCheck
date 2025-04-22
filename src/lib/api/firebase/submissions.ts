@@ -19,7 +19,7 @@ import {
   SessionQuestion,
   SessionResponse,
   Submission,
-} from "@/core/types"
+} from "@/lib/types"
 import api, { clx } from "."
 
 interface UserResponse {

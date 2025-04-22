@@ -1,4 +1,4 @@
-import { SnackbarContext } from "@/core/contexts/SnackbarContext"
+import { SnackbarContext } from "@/lib/contexts/SnackbarContext"
 import { useContext } from "react"
 
 /**

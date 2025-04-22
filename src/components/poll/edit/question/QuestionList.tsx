@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
 import QuestionEditor from "./QuestionEditor"
-import { Question } from "@/core/types"
+import { Question } from "@/lib/types"
 
 interface Props {
   pid: string

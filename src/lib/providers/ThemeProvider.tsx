@@ -6,7 +6,7 @@ import {
 } from "@mui/material/styles"
 import { CssBaseline, useMediaQuery } from "@mui/material"
 import { createCustomTheme } from "@/styles/theme"
-import { ThemeContext } from "@/core/contexts/ThemeContext"
+import { ThemeContext } from "@/lib/contexts/ThemeContext"
 import { ThemeType } from "../types"
 
 /**

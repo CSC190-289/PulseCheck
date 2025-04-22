@@ -7,9 +7,9 @@ import {
   ExitToApp,
   HowToVote,
 } from "@mui/icons-material"
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 import { useNavigate } from "react-router-dom"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 
 interface AuthMenuListProps {
   handleClose: () => void

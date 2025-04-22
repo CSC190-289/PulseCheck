@@ -25,7 +25,7 @@ import {
   SessionQuestion,
   SessionState,
   SessionSummary,
-} from "@/core/types"
+} from "@/lib/types"
 import api, { clx } from ".."
 import UserStore from "./users"
 import WaitingUserStore from "./waiting_users"

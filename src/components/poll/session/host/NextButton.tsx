@@ -1,6 +1,6 @@
 import AsyncButton from "@/components/AsyncButton"
-import api from "@/core/api/firebase"
-import { Session } from "@/core/types"
+import api from "@/lib/api/firebase"
+import { Session } from "@/lib/types"
 import { DocumentReference } from "firebase/firestore"
 import { useState } from "react"
 

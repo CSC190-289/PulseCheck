@@ -7,7 +7,7 @@ import {
   SessionQuestionResults,
   SessionResponse,
   SessionUser,
-} from "@/core/types"
+} from "@/lib/types"
 
 interface UserSessionListProps {
   users?: QuerySnapshot<SessionUser, DocumentData>
@@ -28,7 +28,7 @@ export default function UserSessionGrid(props: UserSessionListProps) {
     <React.Fragment>
       <Grid2 container spacing={2}>
         {users.docs.map((x) => (
-          <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4, xs: 12 }}>
+          <Grid2 key={x.id} size={{ xl: 3, lg: 3, md: 3, sm: 4 }}>
             <RA.Zoom triggerOnce>
               <UserSessionCard u_ss={x} res={results?.responses[x.id]} />
             </RA.Zoom>

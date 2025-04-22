@@ -9,7 +9,7 @@ import {
 import BaseStore from "../store"
 import OptionStore from "./options"
 import { clx } from ".."
-import { SessionOption, SessionQuestion } from "@/core/types"
+import { SessionOption, SessionQuestion } from "@/lib/types"
 import ResponseStore from "./responses"
 
 export default class QuestionStore extends BaseStore {

@@ -1,4 +1,4 @@
-import { Session, SessionOption } from "@/core/types"
+import { Session, SessionOption } from "@/lib/types"
 import {
   Dialog,
   Toolbar,
@@ -8,14 +8,17 @@ import {
   Stack,
   DialogContent,
   Slide,
+  Card,
+  CardContent,
 } from "@mui/material"
 import Choice from "./Choice"
 
 import { DocumentReference } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { TransitionProps } from "@mui/material/transitions"
-import api from "@/core/api/firebase"
-import { useAuthContext } from "@/core/hooks"
+import api from "@/lib/api/firebase"
+import { useAuthContext } from "@/lib/hooks"
+import Image from "mui-image"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>
@@ -55,31 +58,30 @@ export default function ResponseDialog(props: ResponseDialogProps) {
         transition: Transition,
       }}>
       <AppBar position='relative' enableColorOnDark>
-        <Toolbar sx={{ paddingBlock: 1, display: "block" }}>
-          {currentQuestion?.prompt
-            .split(/\r\n|\r|\n/)
-            .map((x, i) => <Typography key={i}>{x}</Typography>)}
+        <Toolbar>
+          <Typography fontWeight={"bold"}>
+            {`Question (${currentQuestion?.prompt_type})`}
+          </Typography>
         </Toolbar>
       </AppBar>
       <DialogContent>
+        <Card sx={{ mb: 1 }}>
+          <CardContent>
+            {/* <Typography gutterBottom variant='body2' color='textSecondary'>
+              Question
+            </Typography> */}
+            {currentQuestion?.prompt
+              .split(/\r\n|\r|\n/)
+              .map((x, i) => <Typography key={i}>{x}</Typography>)}
+          </CardContent>
+        </Card>
+        {currentQuestion?.prompt_img && (
+          <Image src={currentQuestion.prompt_img} />
+        )}
         <Box>
           {currentQuestion && (
             <Box mb={1}>
-              {currentQuestion.prompt_img && (
-                <Stack
-                  sx={{ justifyContent: "center", alignItems: "center" }}
-                  direction={"row"}
-                  mb={1}>
-                  <img
-                    style={{
-                      width: 400,
-                      objectFit: "contain",
-                    }}
-                    src={currentQuestion.prompt_img}
-                  />
-                </Stack>
-              )}
-
+              {/* render question choices */}
               <Stack spacing={2} mt={2} direction={"column"}>
                 {currentQuestion.options.map((x) => (
                   <Choice

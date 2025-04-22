@@ -1,5 +1,5 @@
 import UserAvatar from "@/components/poll/submission/UserAvatar"
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 import { Button, Container, Typography } from "@mui/material"
 
 export default function Debug() {

@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore"
 import { clx } from ".."
 import BaseStore from "../store"
-import { SessionOption, SessionQuestion } from "@/core/types"
+import { SessionOption, SessionQuestion } from "@/lib/types"
 
 export default class OptionStore extends BaseStore {
   public doc(sid: string, qid: string, oid: string) {
@@ -26,7 +26,7 @@ export default class OptionStore extends BaseStore {
       clx.options
     )
   }
-   public async getAllByRef(qref: DocumentReference<SessionQuestion>) {
+  public async getAllByRef(qref: DocumentReference<SessionQuestion>) {
     const ref = collection(qref, clx.options)
     const q = query(ref)
     const ss = await getDocs(q)

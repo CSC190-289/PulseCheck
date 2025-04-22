@@ -1,7 +1,7 @@
 import { collection, CollectionReference } from "firebase/firestore"
 import BaseStore from "../store"
 import { clx } from ".."
-import { WaitingUser } from "@/core/types"
+import { WaitingUser } from "@/lib/types"
 
 export default class WaitingUserStore extends BaseStore {
   public collect(sid: string) {

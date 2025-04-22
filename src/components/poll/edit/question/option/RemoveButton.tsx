@@ -1,5 +1,5 @@
-import api from "@/core/api/firebase"
-import { PromptOption } from "@/core/types"
+import api from "@/lib/api/firebase"
+import { PromptOption } from "@/lib/types"
 import { Clear } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"

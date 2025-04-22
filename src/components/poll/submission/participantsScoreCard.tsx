@@ -1,5 +1,5 @@
 import { Avatar, Typography, Box, Card } from "@mui/material"
-import { Submission } from "@/core/types"
+import { Submission } from "@/lib/types"
 import { stoc } from "@/utils"
 
 interface Props {

@@ -9,11 +9,11 @@ import {
 } from "@mui/material"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import React, { useEffect, useRef, useState } from "react"
-import api from "@/core/api/firebase"
-import useSnackbar from "@/core/hooks/useSnackbar"
+import api from "@/lib/api/firebase"
+import useSnackbar from "@/lib/hooks/useSnackbar"
 import { FormEvent } from "react"
 import { RA } from "@/styles"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 
 function DisplayNameField(props: {

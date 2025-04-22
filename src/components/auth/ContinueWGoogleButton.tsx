@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@mui/material"
 import { Google } from "@mui/icons-material"
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 
 export default function ContinueWGoogleButton() {
   const navigate = useNavigate()
