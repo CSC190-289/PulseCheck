@@ -12,6 +12,7 @@ import {
   where,
   orderBy,
   limit,
+  QuerySnapshot,
 } from "firebase/firestore"
 import BaseStore from "./store"
 import {
@@ -21,7 +22,7 @@ import {
   Submission,
 } from "@/lib/types"
 import api, { clx } from "."
-
+import { User } from "firebase/auth"
 interface UserResponse {
   question: SessionQuestion
   response: SessionResponse | null
@@ -56,6 +57,7 @@ export default class SubmissionStore extends BaseStore {
       submitted_at: serverTimestamp(),
     })
   }
+  
 
   public async getUserResponses(
     submission: Submission
@@ -117,4 +119,12 @@ export default class SubmissionStore extends BaseStore {
     const q = query(subsRef, where("session", "==", sessionRef))
     return getDocs(q)
   }
-}
+  public async searchSub(uref: DocumentReference<User>): Promise<QuerySnapshot<Submission>>{
+    const subsRef= collection(this.db, clx.submissions )
+    const q = query(subsRef, where("user", "==", uref))
+    const ss = await getDocs(q)
+  
+  return ss as QuerySnapshot<Submission>
+
+  
+  }}

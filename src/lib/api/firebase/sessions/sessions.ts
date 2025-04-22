@@ -10,6 +10,8 @@ import {
   getDoc,
   getDocs,
   limit,
+  QuerySnapshot,
+  
   query,
   serverTimestamp,
   setDoc,
@@ -18,6 +20,9 @@ import {
   writeBatch,
 } from "firebase/firestore"
 import BaseStore from "../store"
+import {User} from "firebase/auth"
+import {Submission} from "@/lib/types"
+
 import {
   CurrentQuestion,
   Poll,
@@ -98,6 +103,19 @@ export default class SessionStore extends BaseStore {
    * @param uid - User ID
    * @returns {Promise<boolean>} - True if the user is waiting, false otherwise.
    */
+
+  public async searchSub(uref: DocumentReference<User>): Promise<QuerySnapshot<Submission>>{
+    const subsRef = collection(this.db, clx.sessions)
+    const q = query(subsRef, where("host", "==", uref))
+    const ss = await getDocs(q)
+  
+  return ss as QuerySnapshot<Submission>
+  }
+
+  
+
+
+
   public async isWaitingForEntry(sid: string, uid: string): Promise<boolean> {
     const ref = doc(this.doc(sid), clx.waiting_users, uid)
     const data = await getDoc(ref)
