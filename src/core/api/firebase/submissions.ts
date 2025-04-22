@@ -7,6 +7,11 @@ import {
   getDoc,
   serverTimestamp,
   updateDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
 } from "firebase/firestore"
 import BaseStore from "./store"
 import {
@@ -17,6 +22,12 @@ import {
 } from "@/core/types"
 import api, { clx } from "."
 
+interface UserResponse {
+  question: SessionQuestion
+  response: SessionResponse | null
+  options: Map<string, SessionOption>
+}
+
 /**
  * Manages /submissions collection in Firestore.
  */
@@ -25,7 +36,7 @@ export default class SubmissionStore extends BaseStore {
     return doc(this.db, clx.submissions, sid) as DocumentReference<Submission>
   }
 
-  public collect() {
+  public collect(): CollectionReference<Submission> {
     return collection(
       this.db,
       clx.submissions
@@ -80,10 +91,30 @@ export default class SubmissionStore extends BaseStore {
     }
     return arr
   }
-}
 
-interface UserResponse {
-  question: SessionQuestion
-  response: SessionResponse | null
-  options: Map<string, SessionOption>
+  public findAllByUID(uid: string) {
+    const userRef = doc(this.db, clx.users, uid)
+    const subsRef = collection(this.db, clx.submissions)
+    const q = query(subsRef, where("user", "==", userRef))
+    return getDocs(q)
+  }
+
+  public findLatestSub(uid: string) {
+    const userRef = doc(this.db, clx.users, uid)
+    const subsRef = collection(this.db, clx.submissions)
+    const q = query(
+      subsRef,
+      where("user", "==", userRef),
+      orderBy("submitted_at", "desc"),
+      limit(1)
+    )
+    return getDocs(q)
+  }
+
+  public findAllBySID(sid: string) {
+    const sessionRef = doc(this.db, clx.sessions, sid)
+    const subsRef = this.collect()
+    const q = query(subsRef, where("session", "==", sessionRef))
+    return getDocs(q)
+  }
 }

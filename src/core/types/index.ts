@@ -203,4 +203,6 @@ export interface Submission {
   total_score: number
   max_score: number
   submitted_at: Timestamp
+  photo_url: string | null
+  email: string | null
 }
