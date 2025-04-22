@@ -2,7 +2,7 @@ import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
 //import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
-import subAnswerCard from "@/components/poll/submission/subAnswerCard"
+import SubAnswerCard from "@/components/poll/submission/SubAnswerCard"
 import scoreDetails from "@/components/poll/submission/scoreDetails"
 import subChart from "@/components/poll/submission/subchart"
 import { useParams } from "react-router-dom"
@@ -56,7 +56,9 @@ export default function PollResults() {
             <Stack> {scoreDetails()} </Stack>
             <Grid2></Grid2>
             {/* make a Grid with subAnswerCard() */}
-            <Stack> {subAnswerCard()} </Stack>
+            <Stack>
+              <SubAnswerCard submission={ref} />
+            </Stack>
           </Stack>
         </Box>{" "}
         <Box></Box>

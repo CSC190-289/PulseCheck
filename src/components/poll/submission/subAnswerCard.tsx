@@ -1,14 +1,18 @@
+import { Question, Submission } from "@/lib/types"
 import {
   Typography,
   Box,
   Card,
   CardContent,
   CardActionArea,
+  CardMedia,
 } from "@mui/material"
+import { DocumentData, DocumentReference, getDoc } from "firebase/firestore"
+import { useEffect, useState } from "react"
 
-// interface Props {
-//   //submission: submissionProp
-// }
+interface Props {
+  qref: DocumentReference<Question>
+}
 
 /**
  * UI for answer card showing users what was the right answer
@@ -20,14 +24,28 @@ import {
 If IMG SHOW ELSE SHOW NOTHING
 */
 
-const img = "REPLACE WITH IMG"
+const img = "REPLACE WITH IMGGGG"
 const title = "Getting Stated?"
 const userAnswer = "Yes"
 const correctAnswer = "Yes"
 
-export default function subAnswerCard() {
+export default function SubAnswerCard(props: Props) {
   // null for testing
   //const { submission } = props
+
+  const [questionData, setQuestionData] = useState<Question | null>(null)
+
+  const getQuestionData = async () => {
+    const questionSnapshot = await getDoc(props.qref)
+    if (questionSnapshot.exists()) {
+      setQuestionData(questionSnapshot.data())
+    }
+  }
+
+  useEffect(() => {
+    void getQuestionData()
+  })
+
   const handleCorrect = () => {
     if (userAnswer === correctAnswer) {
       return "Correct Answer!"
@@ -44,18 +62,10 @@ export default function subAnswerCard() {
   return (
     <Card sx={{ bgcolor: handlebgColor }}>
       <CardActionArea>
+        <CardMedia
+          sx={{ height: 200, objectFit: "contain" }}
+          image={questionData?.prompt_img || ""}></CardMedia>
         <CardContent>
-          <Box
-            sx={{
-              height: 150,
-              width: 300,
-              bgcolor: "Highlight",
-            }}>
-            <Typography variant='h5' textAlign='center'>
-              {" "}
-              {img}
-            </Typography>
-          </Box>
           <Typography variant='h6' gutterBottom>
             {title}
           </Typography>
