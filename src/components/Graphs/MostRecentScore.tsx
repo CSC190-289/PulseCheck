@@ -30,7 +30,7 @@ export default function MostRecentScores() {
   }, [auth])
 
   const [sub] = useDocumentDataOnce(ref)
-  const total_score = sub?.total_score
+  const total_score = sub?.score
   const submitted_at = sub?.submitted_at
 
   const [session, setSession] = useState<Session>()

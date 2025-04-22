@@ -24,7 +24,7 @@ export default function ParticipantsScoreCard(props: Props) {
             <Avatar color={stoc(sub.display_name)} />
           )}
           <Typography ml={1}>
-            {sub.display_name} | Score: {sub.total_score}
+            {sub.display_name} | Score: {sub.score}
           </Typography>
         </Box>
         <Typography variant='subtitle2' ml={1} align='left'>

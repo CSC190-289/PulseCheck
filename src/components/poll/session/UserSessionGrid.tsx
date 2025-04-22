@@ -3,11 +3,7 @@ import { Grid2 } from "@mui/material"
 import React from "react"
 import UserSessionCard from "./UserSessionCard"
 import { DocumentData, QuerySnapshot } from "firebase/firestore"
-import {
-  SessionQuestionResults,
-  SessionResponse,
-  SessionUser,
-} from "@/lib/types"
+import { SessionQuestionResults, SessionUser } from "@/lib/types"
 
 interface UserSessionListProps {
   users?: QuerySnapshot<SessionUser, DocumentData>
