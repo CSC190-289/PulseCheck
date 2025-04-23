@@ -1,7 +1,7 @@
 import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
-import subChart from "@/components/poll/submission/Subchart"
-import scoreDetails from "@/components/poll/submission/ScoreDetails"
-import Toolbar from "@/components/poll/submission/toolbar"
+import SubChart from "@/components/poll/submission/Subchart"
+import Toolbar from "@/components/poll/submission/Toolbar"
+import ScoreDetails from "@/components/poll/submission/scoreDetails"
 import { useParams } from "react-router-dom"
 import api from "@/lib/api/firebase"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
@@ -57,8 +57,11 @@ export default function PollHostResults() {
       )}
       <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
         <Box mt={2}>
-          <Stack> {subChart()} </Stack>
-          <Stack> {scoreDetails()} </Stack>
+          <Stack> {SubChart()} </Stack>
+          <Stack>
+            {" "}
+            <ScoreDetails sum={session?.summary}></ScoreDetails>{" "}
+          </Stack>
           <Grid2 container spacing={2}>
             <Container>
               <Typography>
@@ -67,7 +70,7 @@ export default function PollHostResults() {
               </Typography>
             </Container>
             {submissions?.map((x) => (
-              <Grid2 key={x.ref.path} size={{ xl: 20, lg: 3, md: 3, xs: 12 }}>
+              <Grid2 key={x.ref.path} size={{ xl: 30, lg: 30, md: 30, xs: 30 }}>
                 <RA.Zoom triggerOnce>
                   <ParticipantsScoreCard sub={x.data()} />
                   {/* <Stack>{participantsScoreCard(x.data)} </Stack> */}

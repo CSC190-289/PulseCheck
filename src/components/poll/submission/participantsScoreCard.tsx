@@ -17,7 +17,7 @@ export default function ParticipantsScoreCard(props: Props) {
     // }}
     >
       <Box m={1}>
-        <Box m={1} display={"block"} alignItems={"center"}>
+        <Box m={1} display={"flex"} alignItems={"center"}>
           {sub.photo_url ? (
             <Avatar src={sub.photo_url} />
           ) : (

@@ -1,3 +1,4 @@
+import { SessionSummary } from "@/lib/types"
 import { Box, Stack, Typography } from "@mui/material"
 
 /**
@@ -6,14 +7,12 @@ import { Box, Stack, Typography } from "@mui/material"
  * @returns {JSX.Element}
  */
 
-const lowestScore = 1
-const meanScore = 5
-const highestScore = 10
-const medianScore = 6
-const lowestquartile = 4
-const upperquartile = 8
+interface Props {
+  sum?: SessionSummary | null
+}
 
-export default function scoreDetails() {
+export default function ScoreDetails(props: Props) {
+  const { sum } = props
   //null for testing
   return (
     <Box>
@@ -24,18 +23,19 @@ export default function scoreDetails() {
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
-          Lowest Score: {lowestScore} | Mean Score: {meanScore}
+          Lowest Score: {sum?.low} | Mean Score: {sum?.average}
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
-          Highest Score: {highestScore} | Median Score: {medianScore}
+          Highest Score: {sum?.high} | Median Score: {sum?.median}
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
         </Typography>{" "}
         <Typography variant='subtitle2' textAlign='left'>
           {" "}
-          Lowest Quartile: {lowestquartile} | Upper Quartile: {upperquartile}
+          Lowest Quartile: {sum?.lower_quartile} | Upper Quartile:{" "}
+          {sum?.upper_quartile}
         </Typography>{" "}
       </Stack>
       <Stack sx={{ m: 1 }} spacing={3}>

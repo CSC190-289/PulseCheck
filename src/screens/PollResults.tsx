@@ -3,8 +3,7 @@ import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
 import subAnswerCard from "@/components/poll/submission/subAnswerCard"
-import scoreDetails from "@/components/poll/submission/scoreDetails"
-import subChart from "@/components/poll/submission/subchart"
+import ScoreDetails from "@/components/poll/submission/scoreDetails"
 import { useParams } from "react-router-dom"
 import { useAuthContext } from "@/lib/hooks"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
@@ -26,7 +25,7 @@ export default function PollResults() {
   const id = params.id ?? ""
   const ref = api.submissions.doc(id)
   const [sub] = useDocumentDataOnce(ref)
-  const [users] = useCollection(api.sessions.users.collect(id))
+  // const [users] = useCollection(api.sessions.users.collect(id))
 
   //  const snackbar = useSnackbar()
   //  const user = sub?.user
@@ -52,8 +51,10 @@ export default function PollResults() {
               Your Total Sorce Is {sub?.score}
             </Typography>
 
-            {subChart()}
-            <Stack> {scoreDetails()} </Stack>
+            {/* {subChart()} */}
+            <Stack>
+              <ScoreDetails sum={}></ScoreDetails>{" "}
+            </Stack>
             <Grid2></Grid2>
             {/* make a Grid with subAnswerCard() */}
             <Stack> {subAnswerCard()} </Stack>
