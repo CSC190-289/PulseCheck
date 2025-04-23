@@ -2,19 +2,13 @@ import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
 //import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
-<<<<<<< HEAD
-import subAnswerCard from "@/components/poll/submission/subAnswerCard"
 import ScoreDetails from "@/components/poll/submission/scoreDetails"
-=======
-import SubAnswerCard from "@/components/poll/submission/SubAnswerCard"
-import scoreDetails from "@/components/poll/submission/scoreDetails"
-import subChart from "@/components/poll/submission/subchart"
->>>>>>> 0c7d843792d281517f13ea5dde39a1eb941db0f7
 import { useParams } from "react-router-dom"
-import { useAuthContext } from "@/lib/hooks"
-import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import ToolbarParticpant from "@/components/poll/submission/ToolbarParticpant"
 import React, { useEffect, useState } from "react"
+import SubAnswerCard from "@/components/poll/submission/subAnswerCard"
+import { getDoc } from "firebase/firestore"
+import { Session } from "@/lib/types"
 
 /**
  * Allows users to set the settings for a question of a poll.
@@ -31,6 +25,17 @@ export default function PollResults() {
   const id = params.id ?? ""
   const ref = api.submissions.doc(id)
   const [sub] = useDocumentDataOnce(ref)
+  const [session, setSession] = useState<Session>()
+
+  useEffect(() => {
+    if (sub !== null && sub !== undefined) {
+      getDoc(sub.session)
+        .then((x) => {
+          setSession(x.data())
+        })
+        .catch((err) => console.debug(err))
+    }
+  }, [sub])
   // const [users] = useCollection(api.sessions.users.collect(id))
 
   //  const snackbar = useSnackbar()
@@ -59,7 +64,7 @@ export default function PollResults() {
 
             {/* {subChart()} */}
             <Stack>
-              <ScoreDetails sum={}></ScoreDetails>{" "}
+              <ScoreDetails sum={session?.summary}></ScoreDetails>{" "}
             </Stack>
             <Grid2></Grid2>
             {/* make a Grid with subAnswerCard() */}

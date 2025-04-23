@@ -1,13 +1,12 @@
-import { Question, Submission } from "@/lib/types"
+import { Question } from "@/lib/types"
 import {
   Typography,
-  Box,
   Card,
   CardContent,
   CardActionArea,
   CardMedia,
 } from "@mui/material"
-import { DocumentData, DocumentReference, getDoc } from "firebase/firestore"
+import { DocumentReference, getDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
 
 interface Props {
