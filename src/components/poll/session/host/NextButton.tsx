@@ -16,7 +16,7 @@ export default function NextButton(props: NextButtonProps) {
     if (!session) throw new Error("session is null!")
     const currentQuestion = session.question
     if (currentQuestion) {
-      await api.sessions.gradeQuestion(sref, currentQuestion.ref)
+      await api.sessions.gradeQuestion(sref, currentQuestion)
       await api.sessions.clearQuestion(sref)
       if (!currentQuestion.anonymous) {
         await api.sessions.displayUserResponses(sref, currentQuestion)

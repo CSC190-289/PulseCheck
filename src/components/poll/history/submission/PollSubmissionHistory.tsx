@@ -56,7 +56,7 @@ export default function PollSubmissionHistory() {
           </Grid2>
           {filteredSubmissions.map((x) => (
             <Grid2 key={x.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <RA.Fade>
+              <RA.Fade triggerOnce cascade>
                 <SubmissionCard sid={x.id} submission={x.data()} />
               </RA.Fade>
             </Grid2>

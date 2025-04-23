@@ -54,7 +54,7 @@ export default function PollSessionHistory() {
           </Grid2>
           {filteredSessions.map((x) => (
             <Grid2 key={x.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <RA.Fade>
+              <RA.Fade triggerOnce cascade>
                 <SessionCard sid={x.id} session={x.data()} />
               </RA.Fade>
             </Grid2>

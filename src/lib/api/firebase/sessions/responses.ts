@@ -110,6 +110,7 @@ export default class ResponseStore extends BaseStore {
     rref: DocumentReference<SessionResponse>,
     correct_opts: QueryDocumentSnapshot<SessionOption>[]
   ) {
+    /* TODO - take into account of prompt_type */
     const r_ss = await getDoc(rref)
     if (!r_ss.exists()) throw new Error(`${rref.path} does not exist!`)
     const choices = r_ss.data().choices

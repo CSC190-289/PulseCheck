@@ -51,8 +51,9 @@ export default function QuestionEditor(props: Props) {
     <Accordion
       defaultExpanded={props.defaultExpanded}
       slotProps={{
-        transition: { unmountOnExit: false },
-      }}>
+        transition: { unmountOnExit: true },
+      }}
+      sx={{ width: "90vw" }}>
       <AccordionSummary expandIcon={<ExpandMore />} draggable>
         <DragHandle color='action' />
         <Typography ml={1} sx={{ wordBreak: "break-word" }}>
