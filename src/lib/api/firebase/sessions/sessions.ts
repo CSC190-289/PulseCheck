@@ -10,14 +10,19 @@ import {
   getDoc,
   getDocs,
   limit,
+  QuerySnapshot,
   query,
   serverTimestamp,
   setDoc,
   updateDoc,
   where,
   writeBatch,
+  QueryDocumentSnapshot,
 } from "firebase/firestore"
 import BaseStore from "../store"
+import { User } from "firebase/auth"
+import { Submission } from "@/lib/types"
+
 import {
   CurrentQuestion,
   Poll,
@@ -509,5 +514,20 @@ export default class SessionStore extends BaseStore {
       await batch.commit()
     }
     console.debug(`Deleted ${count} document(s) from ${clx.sessions}`)
+  }
+
+  /** @briefs Finds all sessions selected by user  */
+  public async findUserSessions(
+    uid: string
+  ): Promise<QueryDocumentSnapshot<Session>[]> {
+    const uref = doc(this.db, clx.users, uid)
+    const subsRef = collection(this.db, clx.sessions)
+    const q = query(
+      subsRef,
+      where("host", "==", uref),
+      where("state", "==", SessionState.FINISHED)
+    )
+    const ss = await getDocs(q)
+    return (ss.docs as QueryDocumentSnapshot<Session>[]) ?? []
   }
 }

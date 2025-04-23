@@ -1,97 +1,97 @@
 import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge"
-import { Card, CardContent, Typography } from "@mui/material"
-import { DocumentData, getDoc } from "firebase/firestore"
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  Typography,
+} from "@mui/material"
+import { QueryDocumentSnapshot } from "firebase/firestore"
 import api from "@/lib/api/firebase"
-import { DocumentReference } from "firebase/firestore"
-import { getAuth } from "firebase/auth"
-import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import { useEffect, useState } from "react"
-import { Session, Submission } from "@/lib/types"
+import { Submission } from "@/lib/types"
+import { useAuthContext } from "@/lib/hooks"
+import { useNavigate } from "react-router-dom"
 
 export default function MostRecentScores() {
-  const auth = getAuth()
-  const uid: string = auth.currentUser?.uid!
-  console.debug(uid)
-
-  const [ref, setRef] = useState<DocumentReference<Submission, DocumentData>>()
+  const { user } = useAuthContext()
+  const [snapshot, setSnapshot] = useState<
+    QueryDocumentSnapshot<Submission> | null | undefined
+  >()
+  const navigate = useNavigate()
+  const [score, setScore] = useState(0)
 
   useEffect(() => {
-    if (auth) {
+    if (user) {
       api.submissions
-        .findLatestSub(uid)
-        .then((mostRec) => {
-          mostRec.forEach((doc) => {
-            console.debug("data: ", doc.id)
-            setRef(api.submissions.doc(doc.id))
-          })
+        .findMostRecentSubmission(user.uid)
+        .then((x) => {
+          if (!x) return
+          setSnapshot(x)
+          for (let i = 0; i <= x.data().score_100; i++) {
+            setTimeout(() => {
+              setScore(i)
+            }, i * 6)
+          }
+          setTimeout(() => {
+            setScore(x.data().score_100)
+          }, 500)
         })
         .catch((err) => console.debug(err))
     }
-  }, [auth])
+  }, [user])
 
-  const [sub] = useDocumentDataOnce(ref)
-  const total_score = sub?.score
+  const sub = snapshot?.data()
   const submitted_at = sub?.submitted_at
 
-  const [session, setSession] = useState<Session>()
-  useEffect(() => {
-    if (sub) {
-      const title: string = sub.session.id
-      const pollRef = api.sessions.doc(title)
-      getDoc(pollRef)
-        .then((doc) => {
-          setSession(doc.data())
-        })
-        .catch((err) => console.debug(err))
+  const onClick = () => {
+    if (snapshot) {
+      void navigate(`/poll/submission/${snapshot.id}/results`)
     }
-  }, [sub])
-
-  useEffect(() => {
-    console.debug(session)
-  }, [session])
+  }
 
   return (
-    <Card variant='outlined' sx={{ marginTop: 4 }}>
-      <Typography
-        variant='h6'
-        component='div'
-        align='center'
-        sx={{ marginTop: 2 }}>
-        Most recent poll:
-      </Typography>
+    <Card variant='outlined' sx={{ mt: 2 }}>
+      <CardActionArea onClick={onClick}>
+        <CardContent>
+          <Typography variant='h6' align='center'>
+            Most Recent Poll
+          </Typography>
+          <Box display={"flex"} justifyContent={"center"}>
+            <Gauge
+              cornerRadius={6}
+              width={256}
+              value={score}
+              startAngle={-110}
+              endAngle={110}
+              fontSize={24}
+              text={({ value, valueMax }) => `${value} / ${valueMax}`}
+              sx={(theme) => ({
+                [`& .${gaugeClasses.valueArc}`]: {
+                  fill: theme.palette.action,
+                },
+                [`& .${gaugeClasses.referenceArc}`]: {
+                  fill: theme.palette.text.disabled,
+                },
+              })}
+            />
+          </Box>
+          <Box>
+            <Typography
+              variant='h6'
+              fontWeight={"bold"}
+              align='center'
+              gutterBottom>
+              {sub?.title}
+            </Typography>
 
-      <CardContent sx={{ display: "flex", alignItems: "center" }}>
-        <Gauge
-          width={250}
-          height={200}
-          value={total_score}
-          startAngle={-110}
-          endAngle={110}
-          sx={{
-            [`& .${gaugeClasses.valueText}`]: {
-              fontSize: 40,
-              transform: "translate(0px, 0px)",
-            },
-          }}
-          text={({ value, valueMax }) => `${value} / ${valueMax}`}
-        />
-      </CardContent>
-      <Typography
-        variant='h6'
-        component='div'
-        align='center'
-        sx={{ marginTop: 2 }}>
-        {session?.title}
-      </Typography>
-
-      <Typography
-        variant='h6'
-        component='div'
-        align='center'
-        sx={{ marginTop: 2 }}>
-        Recorded: {submitted_at?.toDate().toLocaleDateString()}{" "}
-        {submitted_at?.toDate().toLocaleTimeString()}
-      </Typography>
+            <Typography variant='body2' color='textSecondary' align='center'>
+              Submitted: {submitted_at?.toDate().toLocaleDateString()}{" "}
+              {submitted_at?.toDate().toLocaleTimeString()}
+            </Typography>
+          </Box>
+        </CardContent>
+      </CardActionArea>
     </Card>
   )
 }

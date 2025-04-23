@@ -3,7 +3,6 @@ import {
   collection,
   CollectionReference,
   doc,
-  DocumentReference,
   getDoc,
   serverTimestamp,
   updateDoc,
@@ -12,6 +11,9 @@ import {
   where,
   orderBy,
   limit,
+  QuerySnapshot,
+  DocumentReference,
+  QueryDocumentSnapshot,
 } from "firebase/firestore"
 import BaseStore from "./store"
 import {
@@ -21,7 +23,7 @@ import {
   Submission,
 } from "@/lib/types"
 import api, { clx } from "."
-
+import { User } from "firebase/auth"
 interface UserResponse {
   question: SessionQuestion
   response: SessionResponse | null
@@ -99,7 +101,10 @@ export default class SubmissionStore extends BaseStore {
     return getDocs(q)
   }
 
-  public findLatestSub(uid: string) {
+  /** @brief Finds the most recent submission, otherwise null */
+  public async findMostRecentSubmission(
+    uid: string
+  ): Promise<QueryDocumentSnapshot<Submission> | null> {
     const userRef = doc(this.db, clx.users, uid)
     const subsRef = collection(this.db, clx.submissions)
     const q = query(
@@ -108,7 +113,8 @@ export default class SubmissionStore extends BaseStore {
       orderBy("submitted_at", "desc"),
       limit(1)
     )
-    return getDocs(q)
+    const ss = await getDocs(q)
+    return ss.empty ? null : (ss.docs[0] as QueryDocumentSnapshot<Submission>)
   }
 
   public findAllBySID(sid: string) {
@@ -116,5 +122,15 @@ export default class SubmissionStore extends BaseStore {
     const subsRef = this.collect()
     const q = query(subsRef, where("session", "==", sessionRef))
     return getDocs(q)
+  }
+  public async findUserSubmissions(
+    uid: string
+  ): Promise<QueryDocumentSnapshot<Submission>[]> {
+    const uref = doc(this.db, clx.users, uid)
+    const subsRef = collection(this.db, clx.submissions)
+    const q = query(subsRef, where("user", "==", uref))
+    const ss = await getDocs(q)
+
+    return (ss.docs as QueryDocumentSnapshot<Submission>[]) ?? []
   }
 }

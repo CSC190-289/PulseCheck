@@ -97,7 +97,7 @@ export default function PollHost() {
     <React.Fragment>
       <Header sref={sref} session={session} users={users} />
       {session?.question && <LinearProgress />}
-      <Container sx={{ mt: 2 }}>
+      <Container sx={{ mt: 2, mb: 2 }}>
         <RoomCodeTitle session={session} />
         {session?.state === SessionState.OPEN && (
           <QRCodeSVG
