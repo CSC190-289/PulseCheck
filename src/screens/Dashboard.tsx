@@ -5,7 +5,7 @@ import { useAuthContext } from "@/lib/hooks"
 import { useCollectionOnce } from "react-firebase-hooks/firestore"
 import UserPollCard from "@/components/dashboard/UserPollCard"
 import { Add, HowToVote } from "@mui/icons-material"
-import MostRecentScores from "@/components/Graphs/MostRecentScore"
+import MostRecentScores from "@/components/graphs/MostRecentScore"
 
 export default function Dashboard() {
   const navigate = useNavigate()

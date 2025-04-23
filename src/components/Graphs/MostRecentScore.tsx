@@ -1,4 +1,4 @@
-import { Gauge } from "@mui/x-charts/Gauge"
+import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge"
 import {
   Box,
   Card,
@@ -19,20 +19,29 @@ export default function MostRecentScores() {
     QueryDocumentSnapshot<Submission> | null | undefined
   >()
   const navigate = useNavigate()
+  const [score, setScore] = useState(0)
 
   useEffect(() => {
     if (user) {
       api.submissions
         .findMostRecentSubmission(user.uid)
         .then((x) => {
+          if (!x) return
           setSnapshot(x)
+          for (let i = 0; i <= x.data().score_100; i++) {
+            setTimeout(() => {
+              setScore(i)
+            }, i * 6)
+          }
+          setTimeout(() => {
+            setScore(x.data().score_100)
+          }, 500)
         })
         .catch((err) => console.debug(err))
     }
   }, [user])
 
   const sub = snapshot?.data()
-  const score = sub?.score_100
   const submitted_at = sub?.submitted_at
 
   const onClick = () => {
@@ -50,14 +59,21 @@ export default function MostRecentScores() {
           </Typography>
           <Box display={"flex"} justifyContent={"center"}>
             <Gauge
-              cornerRadius={32}
-              color='blue'
+              cornerRadius={6}
               width={256}
               value={score}
               startAngle={-110}
               endAngle={110}
               fontSize={24}
               text={({ value, valueMax }) => `${value} / ${valueMax}`}
+              sx={(theme) => ({
+                [`& .${gaugeClasses.valueArc}`]: {
+                  fill: theme.palette.action,
+                },
+                [`& .${gaugeClasses.referenceArc}`]: {
+                  fill: theme.palette.text.disabled,
+                },
+              })}
             />
           </Box>
           <Box>

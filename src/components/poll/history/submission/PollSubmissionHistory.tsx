@@ -2,13 +2,35 @@ import api from "@/lib/api/firebase"
 import { useAuthContext } from "@/lib/hooks"
 import { Submission } from "@/lib/types"
 import { Container, Grid2, TextField } from "@mui/material"
-import { QuerySnapshot } from "firebase/firestore"
-import React, { useEffect, useState } from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import SubmissionCard from "./SubmissionCard"
+import { QueryDocumentSnapshot } from "firebase/firestore/lite"
+import { RA } from "@/styles"
 
 export default function PollSubmissionHistory() {
   const { user, loading } = useAuthContext()
-  const [submissions, setSubmissions] = useState<QuerySnapshot<Submission>>()
+  const [submissions, setSubmissions] = useState<
+    QueryDocumentSnapshot<Submission>[]
+  >([])
+  const [filteredSubmissions, setFilteredSubmissions] = useState<
+    QueryDocumentSnapshot<Submission>[]
+  >([])
+
+  const [filter, setFilter] = useState("")
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (!filter) {
+        const start = submissions.slice(0, 4)
+        setSubmissions(start)
+        return
+      }
+      const filtered = submissions.filter((x) =>
+        x.data().title.toLowerCase().includes(filter.toLowerCase())
+      )
+      setFilteredSubmissions(filtered)
+    }, 250)
+  }, [filter, submissions])
 
   useEffect(() => {
     if (user && !loading) {
@@ -22,6 +44,10 @@ export default function PollSubmissionHistory() {
     }
   }, [user, loading])
 
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value)
+  }
+
   return (
     <React.Fragment>
       <Container sx={{ mt: 2 }}>
@@ -30,11 +56,14 @@ export default function PollSubmissionHistory() {
             <TextField
               label='Filter your submissions by poll title...'
               fullWidth
+              onChange={onChange}
             />
           </Grid2>
-          {submissions?.docs.map((x) => (
+          {filteredSubmissions.map((x) => (
             <Grid2 key={x.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <SubmissionCard sid={x.id} submission={x.data()} />
+              <RA.Fade>
+                <SubmissionCard sid={x.id} submission={x.data()} />
+              </RA.Fade>
             </Grid2>
           ))}
         </Grid2>

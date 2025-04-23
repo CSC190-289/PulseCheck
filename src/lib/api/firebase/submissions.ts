@@ -125,12 +125,12 @@ export default class SubmissionStore extends BaseStore {
   }
   public async findUserSubmissions(
     uid: string
-  ): Promise<QuerySnapshot<Submission>> {
+  ): Promise<QueryDocumentSnapshot<Submission>[]> {
     const uref = doc(this.db, clx.users, uid)
     const subsRef = collection(this.db, clx.submissions)
     const q = query(subsRef, where("user", "==", uref))
     const ss = await getDocs(q)
 
-    return ss as QuerySnapshot<Submission>
+    return (ss.docs as QueryDocumentSnapshot<Submission>[]) ?? []
   }
 }
