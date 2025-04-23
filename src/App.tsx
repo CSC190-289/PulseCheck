@@ -32,7 +32,7 @@ export default function App() {
           element={<Screen.PollResults />}
         />
         <Route
-          path='/poll/submission/:id/hostResults'
+          path='/poll/session/:id/results'
           element={<Screen.PollHostResults />}
         />
         <Route path='/poll/history' element={<Screen.PollHistory />} />

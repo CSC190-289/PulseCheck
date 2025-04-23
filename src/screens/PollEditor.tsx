@@ -29,7 +29,12 @@ export default function PollEditor() {
   }, [id, navigate])
 
   const pollRef = api.polls.doc(id)
-  const [poll, loading, error] = useDocumentData(pollRef)
+  const [poll, loading, error] = useDocumentData(pollRef, {
+    initialValue: undefined,
+    snapshotOptions: {
+      serverTimestamps: "previous",
+    },
+  })
 
   // console.debug("pe.poll", poll, loading, error)
 

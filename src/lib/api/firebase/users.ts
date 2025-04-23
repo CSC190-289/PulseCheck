@@ -6,14 +6,15 @@ import {
   setDoc,
 } from "firebase/firestore"
 import BaseStore from "./store"
-import { User } from "../../types"
+import { User } from "@/lib/types"
+import { clx } from "."
 
 /**
  * Manages /users collection in Firestore.
  */
 export default class UserStore extends BaseStore {
-  public doc(uid: string) {
-    return doc(this.db, "users", uid) as DocumentReference<User>
+  public doc(uid: string): DocumentReference<User> {
+    return doc(this.db, clx.users, uid) as DocumentReference<User>
   }
 
   public async create(uid: string, payload: Partial<User>) {

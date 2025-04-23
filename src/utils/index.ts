@@ -22,7 +22,7 @@ export function stoc(str: string) {
  * Generated initials from a given name string based on the following rules:
  *  - If there is only one word, return the first character.
  *  - If there are two words, return the first character of each word.
- *  - If there are three or more words, take the first two characters of the first two words.
+ *  - If there are three or more words, take the first characters of the first and last word.
  *  - The resulting initials are always in uppercase.
  *  - Leading, trailing, and extra spaces are trimmed before processing.
  * @param name - The input name string.
@@ -31,15 +31,16 @@ export function stoc(str: string) {
 export function stoni(name: string) {
   const words = name.trim().split(/\s+/) // Split by whitespace and remove extra spaces
   let initials = ""
-
   if (words.length === 1) {
-    initials = words[0].slice(0, 1) // Take the first letter of the single word
+    /* take first character of first word */
+    initials = words[0].slice(0, 1)
   } else if (words.length === 2) {
-    initials = words[0].slice(0, 1) + words[1].slice(0, 1) // Take first letter of both words
+    /* take first character of first and second word */
+    initials = words[0].slice(0, 1) + words[1].slice(0, 1)
   } else {
-    initials = words[0].slice(0, 2) + words[1].slice(0, 2) // Take first 2 letters of first 2 words
+    /* take first character of first and last word */
+    initials = words[0].slice(0, 1) + words[words.length - 1].slice(0, 1)
   }
-
   return initials.toUpperCase()
 }
 
@@ -92,8 +93,8 @@ export function stommss(s: string) {
  * @param n Number of participants
  * @returns Formatted participant count label
  */
-export function ntops(n: number) {
-  return `${n} Participant${n !== 1 ? "s" : ""}`
+export function ntops(n: number | null | undefined) {
+  return `${n ?? 0} Participant${n !== 1 ? "s" : ""}`
 }
 
 /**
@@ -159,4 +160,13 @@ export function getMedian(arr: number[]): number {
   } else {
     return arr[mid]
   }
+}
+
+/**
+ * @brief Converts 0-100 scale number to red-green color
+ */
+export function ntogc(score: number | undefined): string {
+  const clamped = Math.max(0, Math.min(100, score ?? NaN))
+  const hue = clamped * 1.2
+  return `hsl(${hue}, 58%, 25%)`
 }

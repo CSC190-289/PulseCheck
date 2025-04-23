@@ -1,5 +1,5 @@
 import {
-  Toolbar as MUIToolbar,
+  Toolbar,
   TextField,
   IconButton,
   Box,
@@ -17,7 +17,13 @@ import {
 import React, { useEffect, useState } from "react"
 import api from "@/lib/api/firebase"
 import useSnackbar from "@/lib/hooks/useSnackbar"
-import { Done, Edit, MenuOpen, ScreenShare } from "@mui/icons-material"
+import {
+  ArrowBack,
+  Done,
+  Edit,
+  MenuOpen,
+  ScreenShare,
+} from "@mui/icons-material"
 import TimerSwitch from "../TimerSwitch"
 import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"
@@ -132,8 +138,14 @@ export default function Header(props: HeaderProps) {
 
   return (
     <AppBar color='inherit' position='relative'>
-      <MUIToolbar>
-        <Stack direction={"row"} alignItems={"center"} flexGrow={1}>
+      <Toolbar>
+        <Stack direction={"row"} alignItems={"center"} flex={1}>
+          <IconButton
+            onClick={() => {
+              void navigate(-1)
+            }}>
+            <ArrowBack />
+          </IconButton>
           {isEditing ? (
             <TextField
               size='small'
@@ -204,7 +216,7 @@ export default function Header(props: HeaderProps) {
           Last Updated:{" "}
           {updatedAt ? updatedAt.toDate().toLocaleDateString() : ""}
         </Typography> */}
-      </MUIToolbar>
+      </Toolbar>
     </AppBar>
   )
 }

@@ -11,7 +11,6 @@ import {
   getDocs,
   limit,
   QuerySnapshot,
-  
   query,
   serverTimestamp,
   setDoc,
@@ -20,8 +19,8 @@ import {
   writeBatch,
 } from "firebase/firestore"
 import BaseStore from "../store"
-import {User} from "firebase/auth"
-import {Submission} from "@/lib/types"
+import { User } from "firebase/auth"
+import { Submission } from "@/lib/types"
 
 import {
   CurrentQuestion,
@@ -103,19 +102,6 @@ export default class SessionStore extends BaseStore {
    * @param uid - User ID
    * @returns {Promise<boolean>} - True if the user is waiting, false otherwise.
    */
-
-  public async searchSub(uref: DocumentReference<User>): Promise<QuerySnapshot<Submission>>{
-    const subsRef = collection(this.db, clx.sessions)
-    const q = query(subsRef, where("host", "==", uref))
-    const ss = await getDocs(q)
-  
-  return ss as QuerySnapshot<Submission>
-  }
-
-  
-
-
-
   public async isWaitingForEntry(sid: string, uid: string): Promise<boolean> {
     const ref = doc(this.doc(sid), clx.waiting_users, uid)
     const data = await getDoc(ref)
@@ -527,5 +513,19 @@ export default class SessionStore extends BaseStore {
       await batch.commit()
     }
     console.debug(`Deleted ${count} document(s) from ${clx.sessions}`)
+  }
+
+  /** @briefs Finds all sessions selected by user  */
+  public async findUserSessions(uid: string): Promise<QuerySnapshot<Session>> {
+    const uref = doc(this.db, clx.users, uid)
+    const subsRef = collection(this.db, clx.sessions)
+    const q = query(
+      subsRef,
+      where("host", "==", uref),
+      where("state", "==", SessionState.FINISHED)
+    )
+    const ss = await getDocs(q)
+
+    return ss as QuerySnapshot<Session>
   }
 }

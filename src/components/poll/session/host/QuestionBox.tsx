@@ -1,5 +1,5 @@
 import { CurrentQuestion } from "@/lib/types"
-import { Box, Card, CardContent, Stack, Typography } from "@mui/material"
+import { Box, Card, CardContent, Typography } from "@mui/material"
 import Image from "mui-image"
 import React from "react"
 
@@ -23,7 +23,9 @@ export default function QuestionBox(props: QuestionBoxProps) {
           ))}
         </CardContent>
       </Card>
-      {question.prompt_img && <Image src={question.prompt_img} />}
+      <Box display={"flex"} justifyContent={"center"}>
+        {question.prompt_img && <Image width={720} src={question.prompt_img} />}
+      </Box>
     </React.Fragment>
   )
 }

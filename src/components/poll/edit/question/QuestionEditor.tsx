@@ -5,7 +5,6 @@ import {
   AccordionSummary,
   Typography,
   Stack,
-  Grid2,
   AccordionActions,
   Button,
   Skeleton,
@@ -16,11 +15,12 @@ import { Question } from "@/lib/types"
 import PromptField from "./PromptField"
 import PromptTypeField from "./PromptTypeField"
 import Settings from "./Settings"
-import { useSnackbar } from "@/lib/hooks"
 import api from "@/lib/api/firebase"
 import PromptOptionList from "./option/PromptOptionList"
 import { useDocumentData } from "react-firebase-hooks/firestore"
 import { DocumentReference } from "firebase/firestore"
+import RemoveButton from "./RemoveButton"
+import AddTagButton from "./AddTagButton"
 
 interface Props {
   pid: string
@@ -33,23 +33,6 @@ interface Props {
 export default function QuestionEditor(props: Props) {
   const { pid, qid, index, qref } = props
   const [data, loading, error] = useDocumentData(qref)
-  const snackbar = useSnackbar()
-
-  const handleRemove = () => {
-    /* delete question in poll(id) */
-    const aux = async () => {
-      try {
-        const ref = api.polls.questions.doc(pid, qid)
-        await api.polls.questions.delete(ref)
-      } catch {
-        snackbar.show({
-          type: "error",
-          message: "Failed to remove question",
-        })
-      }
-    }
-    void aux()
-  }
 
   const handleAddOption = () => {
     const aux = async () => {
@@ -61,62 +44,47 @@ export default function QuestionEditor(props: Props) {
   }
 
   if (error || loading || !data) {
-    return (
-      <Box sx={{ width: "90vw" }}>
-        <Skeleton sx={{ height: 60 }} />
-      </Box>
-    )
+    return <Skeleton sx={{ width: "90vw", height: 65 }} />
   }
 
   return (
-    <Accordion defaultExpanded={props.defaultExpanded}>
+    <Accordion
+      defaultExpanded={props.defaultExpanded}
+      slotProps={{
+        transition: { unmountOnExit: false },
+      }}>
       <AccordionSummary expandIcon={<ExpandMore />} draggable>
-        <Box display={"flex"} columnGap={2}>
-          {/* <Box> */}
-          <DragHandle color='action' />
-          {/* </Box> */}
-          <Typography sx={{ wordBreak: "break-word" }}>
-            <strong>{index + 1}.</strong> {data.prompt}
-          </Typography>
-        </Box>
+        <DragHandle color='action' />
+        <Typography ml={1} sx={{ wordBreak: "break-word" }}>
+          <strong>{index + 1}.</strong> {data.prompt}
+        </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Grid2 spacing={2}>
-          <Grid2 size={{ xl: 12, lg: 12, md: 12, sm: 12, xs: 12 }}>
-            <Stack spacing={2}>
-              <PromptField pid={pid} qid={qid} prompt={data.prompt} />
-              <UploadImageBox pid={pid} qid={qid} url={data.prompt_img} />
-              <PromptTypeField
-                pid={pid}
-                qid={qid}
-                promptType={data.prompt_type}
-              />
-              <PromptOptionList
-                options={data.options}
-                promptType={data.prompt_type}
-              />
-              <Box flex={1} display={"flex"} justifyContent={"center"}>
-                <Button startIcon={<Add />} onClick={handleAddOption}>
-                  Add Option
-                </Button>
-              </Box>
-            </Stack>
-          </Grid2>
-          <Grid2 size={{ xl: 12, lg: 12, md: 12, sm: 12, xs: 12 }}>
-            <Settings
-              pid={pid}
-              qid={qid}
-              points={data.points}
-              anonymous={data.anonymous}
-              time={data.time}
-            />
-          </Grid2>
-        </Grid2>
+        <Stack spacing={1}>
+          <PromptField pid={pid} qid={qid} prompt={data.prompt} />
+          <UploadImageBox pid={pid} qid={qid} url={data.prompt_img} />
+          <PromptTypeField pid={pid} qid={qid} promptType={data.prompt_type} />
+          <PromptOptionList
+            options={data.options}
+            promptType={data.prompt_type}
+          />
+          <Box flex={1} display={"flex"} justifyContent={"center"}>
+            <Button startIcon={<Add />} onClick={handleAddOption}>
+              Add Option
+            </Button>
+          </Box>
+        </Stack>
+        <Settings
+          pid={pid}
+          qid={qid}
+          points={data.points}
+          anonymous={data.anonymous}
+          time={data.time}
+        />
       </AccordionDetails>
       <AccordionActions>
-        <Button color='error' onClick={handleRemove}>
-          Remove
-        </Button>
+        <AddTagButton pid={pid} qid={qid} />
+        <RemoveButton pid={pid} qid={qid} />
       </AccordionActions>
     </Accordion>
   )

@@ -19,6 +19,7 @@ import { TransitionProps } from "@mui/material/transitions"
 import api from "@/lib/api/firebase"
 import { useAuthContext } from "@/lib/hooks"
 import Image from "mui-image"
+import { QuestionAnswer, QuestionMark } from "@mui/icons-material"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>
@@ -59,9 +60,12 @@ export default function ResponseDialog(props: ResponseDialogProps) {
       }}>
       <AppBar position='relative' enableColorOnDark>
         <Toolbar>
-          <Typography fontWeight={"bold"}>
-            {`Question (${currentQuestion?.prompt_type})`}
-          </Typography>
+          <Stack spacing={1} direction={"row"}>
+            <QuestionAnswer />
+            <Typography fontWeight={"bold"}>
+              {`Question (${currentQuestion?.prompt_type})`}
+            </Typography>
+          </Stack>
         </Toolbar>
       </AppBar>
       <DialogContent>
@@ -76,27 +80,27 @@ export default function ResponseDialog(props: ResponseDialogProps) {
           </CardContent>
         </Card>
         {currentQuestion?.prompt_img && (
-          <Image src={currentQuestion.prompt_img} />
+          <Box display={"flex"} justifyContent={"center"}>
+            <Image width={720} src={currentQuestion.prompt_img} />
+          </Box>
         )}
-        <Box>
-          {currentQuestion && (
-            <Box mb={1}>
-              {/* render question choices */}
-              <Stack spacing={2} mt={2} direction={"column"}>
-                {currentQuestion.options.map((x) => (
-                  <Choice
-                    key={x.ref.path}
-                    ref={x.ref}
-                    text={x.text}
-                    promptType={currentQuestion.prompt_type}
-                    theChosenOnes={selectedOptions}
-                    setTheChosenOnes={setSelectedOptions}
-                  />
-                ))}
-              </Stack>
-            </Box>
-          )}
-        </Box>
+        {currentQuestion && (
+          <Box mb={1}>
+            {/* render question choices */}
+            <Stack spacing={2} mt={2} direction={"column"}>
+              {currentQuestion.options.map((x) => (
+                <Choice
+                  key={x.ref.path}
+                  ref={x.ref}
+                  text={x.text}
+                  promptType={currentQuestion.prompt_type}
+                  theChosenOnes={selectedOptions}
+                  setTheChosenOnes={setSelectedOptions}
+                />
+              ))}
+            </Stack>
+          </Box>
+        )}
       </DialogContent>
     </Dialog>
   )
