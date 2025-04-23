@@ -20,11 +20,6 @@ export default function PollSubmissionHistory() {
 
   useEffect(() => {
     setTimeout(() => {
-      if (!filter) {
-        const start = submissions.slice(0, 4)
-        setSubmissions(start)
-        return
-      }
       const filtered = submissions.filter((x) =>
         x.data().title.toLowerCase().includes(filter.toLowerCase())
       )

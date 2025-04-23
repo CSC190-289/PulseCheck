@@ -18,11 +18,6 @@ export default function PollSessionHistory() {
 
   useEffect(() => {
     setTimeout(() => {
-      if (!filter) {
-        const start = sessions.slice(0, 4)
-        setSessions(start)
-        return
-      }
       const filtered = sessions.filter((x) =>
         x.data().title.toLowerCase().includes(filter.toLowerCase())
       )

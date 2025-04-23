@@ -2,7 +2,6 @@ import PollSessionHistory from "@/components/poll/history/session/PollSessionHis
 import PollSubmissionHistory from "@/components/poll/history/submission/PollSubmissionHistory"
 import { Box, Tab, Tabs } from "@mui/material"
 import React, { useState } from "react"
-import { Route, Routes } from "react-router-dom"
 
 interface TabPanelProps {
   children?: React.ReactNode
