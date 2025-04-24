@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom"
 import { useAuthContext } from "."
+import { useEffect } from "react"
 
 export default function usePompeii() {
   const navigate = useNavigate()
-  const user = useAuthContext()
+  const { user, loading } = useAuthContext()
 
-  if (!user) {
-    void navigate("/")
-  }
+  useEffect(() => {
+    if (!user && !loading) {
+      void navigate("/")
+    }
+  }, [user, loading, navigate])
 }
