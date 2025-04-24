@@ -1,12 +1,4 @@
-import {
-  Container,
-  Typography,
-  Box,
-  Stack,
-  Grid2,
-  Card,
-  CardContent,
-} from "@mui/material"
+import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
 //import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
@@ -17,7 +9,6 @@ import React, { useEffect, useState } from "react"
 import SubAnswerCard from "@/components/poll/submission/subAnswerCard"
 import { getDoc } from "firebase/firestore"
 import { Session } from "@/lib/types"
-import ParticipantScoreDetails from "@/components/poll/submission/ParticipantScoreDetails"
 import MostRecentScores from "@/components/graphs/MostRecentScore"
 
 /**
@@ -60,31 +51,25 @@ export default function PollResults() {
       )}
       <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
         <Box mt={2}>
-          <Stack spacing={1}>
-            <Card>
-              <CardContent>
-                <Typography variant='h6' textAlign='center'>
-                  {sub?.display_name}
-                </Typography>
-                <Typography
-                  variant='body2'
-                  color='textSecondary'
-                  textAlign='center'>
-                  Your Total Sorce Is {sub?.score}
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent>
+          <Stack sx={{ m: 1 }} spacing={1}>
+            <Typography variant='h6' textAlign='center'>
+              {sub?.display_name}
+            </Typography>
+
+            <MostRecentScores mrpsd={0} />
+            {/* {subChart()} */}
+            <Stack>
+              {sub?.session && (
                 <ScoreDetails sum={session?.summary}></ScoreDetails>
-              </CardContent>
-            </Card>
-            {/* {sub?.session && <></>} */}
-            {session?.questions?.map((x) => (
-              <Grid2 key={x.path} size={{ xl: 30, lg: 30, md: 30, xs: 30 }}>
-                <Typography>{JSON.stringify(x.path)}</Typography>
-              </Grid2>
-            ))}
+              )}
+            </Stack>
+            <Grid2></Grid2>
+            {/* make a Grid with subAnswerCard() */}
+            <Stack>
+              {session?.questions.map((x) => (
+                <SubAnswerCard key={x.id} qref={x} />
+              ))}
+            </Stack>
           </Stack>
         </Box>
       </Container>
