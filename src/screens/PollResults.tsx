@@ -1,4 +1,12 @@
-import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
+import {
+  Container,
+  Typography,
+  Box,
+  Stack,
+  Grid2,
+  Card,
+  CardContent,
+} from "@mui/material"
 //import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
@@ -41,6 +49,7 @@ export default function PollResults() {
 
   //  const snackbar = useSnackbar()
   //  const user = sub?.user
+  console.debug(session?.questions)
   return (
     <React.Fragment>
       {session?.title && sub?.submitted_at && (
@@ -50,26 +59,33 @@ export default function PollResults() {
       )}
       <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
         <Box mt={2}>
-          <Stack sx={{ m: 1 }} spacing={1}>
-            <Typography variant='h6' textAlign='center'>
-              {sub?.display_name}
-            </Typography>
-            <Typography variant='subtitle2' textAlign='center'>
-              Your Total Sorce Is {sub?.score}
-            </Typography>
-
-            {/* {subChart()} */}
-            <Stack>
-              {sub?.session && (
+          <Stack spacing={1}>
+            <Card>
+              <CardContent>
+                <Typography variant='h6' textAlign='center'>
+                  {sub?.display_name}
+                </Typography>
+                <Typography
+                  variant='body2'
+                  color='textSecondary'
+                  textAlign='center'>
+                  Your Total Sorce Is {sub?.score}
+                </Typography>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent>
                 <ScoreDetails sum={session?.summary}></ScoreDetails>
-              )}
-            </Stack>
-            <Grid2></Grid2>
-            {/* make a Grid with subAnswerCard() */}
-            <Stack>{/* <SubAnswerCard submission={ref} /> */}</Stack>
+              </CardContent>
+            </Card>
+            {/* {sub?.session && <></>} */}
+            {session?.questions?.map((x) => (
+              <Grid2 key={x.path} size={{ xl: 30, lg: 30, md: 30, xs: 30 }}>
+                <Typography>{JSON.stringify(x.path)}</Typography>
+              </Grid2>
+            ))}
           </Stack>
-        </Box>{" "}
-        <Box></Box>
+        </Box>
       </Container>
     </React.Fragment>
   )

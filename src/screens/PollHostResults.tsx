@@ -1,4 +1,12 @@
-import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
+import {
+  Container,
+  Typography,
+  Box,
+  Stack,
+  Grid2,
+  Card,
+  CardContent,
+} from "@mui/material"
 import SubChart from "@/components/poll/submission/Subchart"
 import Toolbar from "@/components/poll/submission/Toolbar"
 import ScoreDetails from "@/components/poll/submission/scoreDetails"
@@ -56,23 +64,21 @@ export default function PollHostResults() {
           create_at={session?.created_at}></Toolbar>
       )}
       <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
-        <Box mt={2}>
+        <Box mt={2} alignItems={"center"}>
           <Stack> {SubChart()} </Stack>
-          <Stack>
-            {" "}
-            <ScoreDetails sum={session?.summary}></ScoreDetails>{" "}
-          </Stack>
+          <Card>
+            <CardContent>
+              <ScoreDetails sum={session?.summary}></ScoreDetails>{" "}
+            </CardContent>
+          </Card>
           <Grid2 container spacing={2}>
-            <Container>
-              <Typography>
-                {" "}
-                Total Participant: {submissions?.length ?? 0}
-              </Typography>
-            </Container>
+            <Typography>
+              Total Participant: {submissions?.length ?? 0}
+            </Typography>
             {submissions?.map((x) => (
               <Grid2 key={x.ref.path} size={{ xl: 30, lg: 30, md: 30, xs: 30 }}>
                 <RA.Zoom triggerOnce>
-                  <ParticipantsScoreCard sub={x.data()} />
+                  <ParticipantsScoreCard ref={x.ref} sub={x.data()} />
                   {/* <Stack>{participantsScoreCard(x.data)} </Stack> */}
                 </RA.Zoom>
               </Grid2>
