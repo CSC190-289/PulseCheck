@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react"
 import SubAnswerCard from "@/components/poll/submission/subAnswerCard"
 import { getDoc } from "firebase/firestore"
 import { Session } from "@/lib/types"
+import ParticipantScoreDetails from "@/components/poll/submission/ParticipantScoreDetails"
 
 /**
  * Allows users to set the settings for a question of a poll.
@@ -40,13 +41,12 @@ export default function PollResults() {
 
   //  const snackbar = useSnackbar()
   //  const user = sub?.user
-
   return (
     <React.Fragment>
-      {sub?.session.id && (
+      {session?.title && sub?.submitted_at && (
         <ToolbarParticpant
-          id={sub?.session.id}
-          submitted_at={sub.submitted_at}></ToolbarParticpant>
+          title={session?.title}
+          submitted_at={sub?.submitted_at}></ToolbarParticpant>
       )}
       <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
         <Box mt={2}>
@@ -54,23 +54,19 @@ export default function PollResults() {
             <Typography variant='h6' textAlign='center'>
               {sub?.display_name}
             </Typography>
-            {/* <Typography variant='subtitle2' textAlign='center'>
-              Submitted At{" "}
-              {submitted_at ? submitted_at.toDate().toLocaleDateString() : ""}
-            </Typography> */}
             <Typography variant='subtitle2' textAlign='center'>
               Your Total Sorce Is {sub?.score}
             </Typography>
 
             {/* {subChart()} */}
             <Stack>
-              <ScoreDetails sum={session?.summary}></ScoreDetails>{" "}
+              {sub?.session && (
+                <ScoreDetails sum={session?.summary}></ScoreDetails>
+              )}
             </Stack>
             <Grid2></Grid2>
             {/* make a Grid with subAnswerCard() */}
-            <Stack>
-              <SubAnswerCard submission={ref} />
-            </Stack>
+            <Stack>{/* <SubAnswerCard submission={ref} /> */}</Stack>
           </Stack>
         </Box>{" "}
         <Box></Box>
