@@ -8,9 +8,11 @@ import {
 } from "@mui/material"
 import { DocumentReference, getDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
-
+import { SessionQuestion } from "@/lib/types"
+import { SessionOption } from "@/lib/types"
 interface Props {
-  qref: DocumentReference<Question>
+  question: DocumentReference<SessionQuestion>
+  option: SessionOption
 }
 
 /**
@@ -23,14 +25,9 @@ interface Props {
 If IMG SHOW ELSE SHOW NOTHING
 */
 
-const img = "REPLACE WITH IMGGGG"
-const title = "Getting Stated?"
-const userAnswer = "Yes"
-const correctAnswer = "Yes"
-
 export default function SubAnswerCard(props: Props) {
   // null for testing
-  //const { submission } = props
+  const { question, option } = props
 
   const [questionData, setQuestionData] = useState<Question | null>(null)
 
@@ -66,7 +63,8 @@ export default function SubAnswerCard(props: Props) {
           image={questionData?.prompt_img || ""}></CardMedia>
         <CardContent>
           <Typography variant='h6' gutterBottom>
-            {title}
+            {question?.prompt}
+            {}
           </Typography>
           <Typography variant='body2' color='textSecondary'>
             You chose {userAnswer}

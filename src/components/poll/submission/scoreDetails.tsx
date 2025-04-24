@@ -22,7 +22,7 @@ export default function ScoreDetails(props: Props) {
           Score Details
         </Typography>{" "}
         <RA.Zoom triggerOnce>
-          <Grid2 container spacing={2} size={{ xl: 3, lg: 3, md: 3, sm: 4 }}>
+          <Grid2 container spacing={1} size={{ xl: 3, lg: 3, md: 3, sm: 4 }}>
             <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
               <Typography variant='subtitle2' textAlign='left'>
                 {" "}
@@ -61,9 +61,6 @@ export default function ScoreDetails(props: Props) {
             </Grid2>
           </Grid2>
         </RA.Zoom>
-      </Stack>
-      <Stack sx={{ m: 1 }} spacing={3}>
-        {" "}
       </Stack>
     </Box>
   )
