@@ -68,7 +68,7 @@ export default function usePompeii(flag: boolean) {
   const { user, loading } = useAuthContext()
 
   useEffect(() => {
-    if ((!user && !loading) || flag) {
+    if ((!user && !loading) || (flag && user?.isAnonymous)) {
       void navigate("/")
     }
   }, [user, loading, navigate, flag])
