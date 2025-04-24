@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { Button, Container, Typography, Grid2 } from "@mui/material"
+import { Button, Container, Typography, Grid2} from "@mui/material"
 import api from "@/lib/api/firebase"
 import { useAuthContext } from "@/lib/hooks"
 import { useCollectionOnce } from "react-firebase-hooks/firestore"
@@ -30,7 +30,8 @@ export default function Dashboard() {
 
   return (
     <Container maxWidth='md' sx={{ textAlign: "initial", mb: 2 }}>
-      <MostRecentScores />
+      
+      <MostRecentScores mrpsd={0}/>
       <Grid2 container mt={2} spacing={1}>
         <Grid2 size={6}>
           <Button
