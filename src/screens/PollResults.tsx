@@ -18,6 +18,7 @@ import SubAnswerCard from "@/components/poll/submission/subAnswerCard"
 import { getDoc } from "firebase/firestore"
 import { Session } from "@/lib/types"
 import ParticipantScoreDetails from "@/components/poll/submission/ParticipantScoreDetails"
+import MostRecentScores from "@/components/graphs/MostRecentScore"
 
 /**
  * Allows users to set the settings for a question of a poll.

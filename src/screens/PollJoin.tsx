@@ -15,6 +15,7 @@ import { FormEvent } from "react"
 import { RA } from "@/styles"
 import { useAuthContext } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
+import usePompeii from "@/lib/hooks/usePompeii"
 
 function DisplayNameField(props: {
   uid: string
@@ -45,6 +46,7 @@ function DisplayNameField(props: {
 
 export default function PollJoin() {
   const navigate = useNavigate()
+  usePompeii({ blockGuests: true })
   const ref = useRef<HTMLButtonElement>(null)
   const [query] = useSearchParams()
   const [roomCode, setRoomCode] = useState<string>(query.get("code") ?? "")
@@ -62,14 +64,14 @@ export default function PollJoin() {
     }
   }, [query, user, displayName, fire])
 
-  useEffect(() => {
-    /* check authentication */
-    if (!user && !loading) {
-      void navigate("/get-started")
-    } else if (user?.isAnonymous) {
-      void navigate("/get-started")
-    }
-  }, [user, loading, navigate])
+  // useEffect(() => {
+  //   /* check authentication */
+  //   if (!user && !loading) {
+  //     void navigate("/get-started")
+  //   } else if (user?.isAnonymous) {
+  //     void navigate("/get-started")
+  //   }
+  // }, [user, loading, navigate])
 
   const handleJoinClick = (e: MouseEvent | FormEvent) => {
     e.preventDefault()

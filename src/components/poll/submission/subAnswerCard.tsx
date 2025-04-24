@@ -63,7 +63,7 @@ export default function SubAnswerCard(props: Props) {
           image={questionData?.prompt_img || ""}></CardMedia>
         <CardContent>
           <Typography variant='h6' gutterBottom>
-            {title}
+            {question?.prompt}
             {}
           </Typography>
           <Typography variant='body2' color='textSecondary'>
