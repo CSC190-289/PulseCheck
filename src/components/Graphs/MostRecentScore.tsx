@@ -1,4 +1,3 @@
-import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge"
 import {
   Box,
   Card,
@@ -12,6 +11,7 @@ import { useEffect, useState } from "react"
 import { Submission } from "@/lib/types"
 import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"
+import PulseGauge from "./PulseGauge"
 
 export default function MostRecentScores() {
   const { user } = useAuthContext()
@@ -19,7 +19,6 @@ export default function MostRecentScores() {
     QueryDocumentSnapshot<Submission> | null | undefined
   >()
   const navigate = useNavigate()
-  const [score, setScore] = useState(0)
 
   useEffect(() => {
     if (user) {
@@ -28,20 +27,15 @@ export default function MostRecentScores() {
         .then((x) => {
           if (!x) return
           setSnapshot(x)
-          for (let i = 0; i <= x.data().score_100; i++) {
-            setTimeout(() => {
-              setScore(i)
-            }, i * 6)
-          }
-          setTimeout(() => {
-            setScore(x.data().score_100)
-          }, 500)
         })
         .catch((err) => console.debug(err))
     }
   }, [user])
 
   const sub = snapshot?.data()
+
+  /* TODO - create skeleton when sub is undefined */
+
   const submitted_at = sub?.submitted_at
 
   const onClick = () => {
@@ -58,7 +52,8 @@ export default function MostRecentScores() {
             Most Recent Poll
           </Typography>
           <Box display={"flex"} justifyContent={"center"}>
-            <Gauge
+            <PulseGauge score={sub?.score_100 ?? 0} />
+            {/* <Gauge
               cornerRadius={6}
               width={256}
               value={score}
@@ -74,7 +69,7 @@ export default function MostRecentScores() {
                   fill: theme.palette.text.disabled,
                 },
               })}
-            />
+            /> */}
           </Box>
           <Box>
             <Typography

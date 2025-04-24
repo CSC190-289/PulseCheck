@@ -10,7 +10,6 @@ import {
   getDoc,
   getDocs,
   limit,
-  QuerySnapshot,
   query,
   serverTimestamp,
   setDoc,
@@ -20,16 +19,12 @@ import {
   QueryDocumentSnapshot,
 } from "firebase/firestore"
 import BaseStore from "../store"
-import { User } from "firebase/auth"
-import { Submission } from "@/lib/types"
-
 import {
   CurrentQuestion,
   Poll,
   Session,
   SessionQuestion,
   SessionState,
-  SessionSummary,
 } from "@/lib/types"
 import api, { clx } from ".."
 import UserStore from "./users"
@@ -37,6 +32,7 @@ import WaitingUserStore from "./waiting_users"
 import ChatStore from "./chat"
 import { generateRoomCode, getMedian } from "@/utils"
 import QuestionStore from "./question"
+import SubmissionStore from "../submissions"
 
 /**
  * @brief Manages /sessions collection in Firestore.
@@ -46,6 +42,7 @@ export default class SessionStore extends BaseStore {
   private readonly _waiting_users: WaitingUserStore
   private readonly _chat: ChatStore
   private readonly _questions: QuestionStore
+  private readonly _submissions: SubmissionStore
 
   constructor(db: Firestore) {
     super(db)
@@ -53,6 +50,7 @@ export default class SessionStore extends BaseStore {
     this._waiting_users = new WaitingUserStore(db)
     this._chat = new ChatStore(db)
     this._questions = new QuestionStore(db)
+    this._submissions = new SubmissionStore(db)
   }
 
   public get users() {
@@ -69,6 +67,10 @@ export default class SessionStore extends BaseStore {
 
   public get questions() {
     return this._questions
+  }
+
+  public get submissions() {
+    return this._submissions
   }
 
   public doc(sid: string) {
@@ -404,10 +406,9 @@ export default class SessionStore extends BaseStore {
   }
 
   /**
-   * @brief Changes session state to {something}.
+   * @brief Changes session state to FINISHED.
    */
   public async finish(sref: DocumentReference<Session>) {
-    /* TODO - change state to something, then reveal user results */
     console.debug("create submission docs!")
     const sid = sref.id
     const s_ss = await getDoc(sref)
@@ -516,7 +517,7 @@ export default class SessionStore extends BaseStore {
     console.debug(`Deleted ${count} document(s) from ${clx.sessions}`)
   }
 
-  /** @briefs Finds all sessions selected by user  */
+  /** @brief Finds all sessions the user hosted  */
   public async findUserSessions(
     uid: string
   ): Promise<QueryDocumentSnapshot<Session>[]> {

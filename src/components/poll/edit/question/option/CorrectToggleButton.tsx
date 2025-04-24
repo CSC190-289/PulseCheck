@@ -22,10 +22,6 @@ export default function CorrectToggleButton(props: Props) {
   const { ref, promptType } = props
   const [correct, setCorrect] = useState(props.correct)
   const snackbar = useSnackbar()
-  /* TODO - Implement PromptOption toggle to update firestore
-  The state is already implement, there is a debounce delay to update
-  firestore. API store update the document.
-   */
 
   useEffect(() => {
     async function saveChecked(bool: boolean) {
