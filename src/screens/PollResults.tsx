@@ -55,6 +55,7 @@ export default function PollResults() {
             <Typography variant='h6' textAlign='center'>
               {sub?.display_name}
             </Typography>
+
               <MostRecentScores mrpsd={0}/>
             {/* {subChart()} */}
             <Stack>

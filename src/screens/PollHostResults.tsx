@@ -1,5 +1,5 @@
 import { Container, Typography, Box, Stack, Grid2 } from "@mui/material"
-import SubChart from "@/components/poll/submission/Subchart"
+import SubChart from "@/components/graphs/subchart"
 import Toolbar from "@/components/poll/submission/Toolbar"
 import ScoreDetails from "@/components/poll/submission/scoreDetails"
 import { useParams } from "react-router-dom"
@@ -57,7 +57,8 @@ export default function PollHostResults() {
       )}
       <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
         <Box mt={2}>
-          <Stack> {SubChart()} </Stack>
+         
+         <SubChart/>
           <Stack>
             {" "}
             <ScoreDetails sum={session?.summary}></ScoreDetails>{" "}
