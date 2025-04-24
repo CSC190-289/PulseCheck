@@ -56,7 +56,7 @@ export default function PollResults() {
               {sub?.display_name}
             </Typography>
 
-              <MostRecentScores mrpsd={0}/>
+            <MostRecentScores mrpsd={0} />
             {/* {subChart()} */}
             <Stack>
               {sub?.session && (
@@ -65,7 +65,11 @@ export default function PollResults() {
             </Stack>
             <Grid2></Grid2>
             {/* make a Grid with subAnswerCard() */}
-            <Stack>{/* <SubAnswerCard submission={ref} /> */}</Stack>
+            <Stack>
+              {session?.questions.map((x) => (
+                <SubAnswerCard key={x.id} qref={x} />
+              ))}
+            </Stack>
           </Stack>
         </Box>{" "}
         <Box></Box>
