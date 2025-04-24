@@ -47,11 +47,11 @@ export default function UserPollCard(props: UserPolLCardProps) {
             </Avatar>
             <Typography flex={1}>{poll.title}</Typography>
           </Box>
-          <Typography variant='body2' color='textSecondary'>
+          <Typography textAlign={"right"} variant='body2' color='textSecondary'>
             {ntoq(poll.questions.length)}
           </Typography>
-          <Typography variant='body2' color='textSecondary'>
-            {tstos(poll.updated_at)}
+          <Typography textAlign={"right"} variant='body2' color='textSecondary'>
+            Updated {tstos(poll.updated_at)}
           </Typography>
         </CardContent>
       </CardActionArea>

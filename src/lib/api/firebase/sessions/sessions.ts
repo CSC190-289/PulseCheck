@@ -385,12 +385,12 @@ export default class SessionStore extends BaseStore {
   /** @brief Grades the responses for the given question */
   public async gradeQuestion(
     sref: DocumentReference<Session>,
-    qref: DocumentReference<SessionQuestion>
+    question: CurrentQuestion
   ) {
-    const opts = await this.questions.options.getAll(sref.id, qref.id)
+    const opts = await this.questions.options.getAll(sref.id, question.ref.id)
     const docs = opts.docs
     const correct_opts = docs.filter((x) => x.data().correct)
-    await this.questions.gradeAll(sref.id, qref.id, correct_opts)
+    await this.questions.gradeAll(sref.id, question.ref.id, correct_opts)
   }
 
   /**

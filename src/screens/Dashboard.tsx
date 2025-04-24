@@ -29,7 +29,7 @@ export default function Dashboard() {
   }
 
   return (
-    <Container maxWidth='md' sx={{ textAlign: "initial" }}>
+    <Container maxWidth='md' sx={{ textAlign: "initial", mb: 2 }}>
       <MostRecentScores />
       <Grid2 container mt={2} spacing={1}>
         <Grid2 size={6}>
