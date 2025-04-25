@@ -11,6 +11,7 @@ import { useEffect, useState } from "react"
 import { Submission } from "@/lib/types"
 import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"
+import NoRecentPolls from "./NoRecentPoll"
 import PulseGauge from "./PulseGauge"
 
 interface mrpsd {
@@ -39,8 +40,10 @@ export default function MostRecentScores(props:mrpsd) {
   }, [user])
 
   const sub = snapshot?.data()
-  //console.debug(snapshot?.data)
-
+  console.debug("testing",snapshot?.data())
+  if(!snapshot?.data()){
+    return <NoRecentPolls/>
+  }
   /* TODO - create skeleton when sub is undefined */
 
   const submitted_at = sub?.submitted_at
