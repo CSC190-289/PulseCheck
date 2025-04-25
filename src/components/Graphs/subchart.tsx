@@ -31,7 +31,7 @@ export default function subChart() {
   const [submissions, setSubmissions] = useState<
     QueryDocumentSnapshot<Submission, DocumentData>[]
   >([])
-  
+  const average:number = session?.summary?.average!
   useEffect(() => {
     if (session) {
       api.submissions
@@ -45,6 +45,7 @@ export default function subChart() {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session])
 
+  console.debug(session?.summary)
 
   return (
       <Card variant='outlined' sx={{ mt: 2 }}>
@@ -53,7 +54,7 @@ export default function subChart() {
                 Poll Average
               </Typography>
               <Box display={"flex"} justifyContent={"center"}>
-                <PulseGauge score={session?.summary?.average ?? 0}/>
+                <PulseGauge score={average}/>
                 {/* <Gauge
                   cornerRadius={6}
                   width={256}
