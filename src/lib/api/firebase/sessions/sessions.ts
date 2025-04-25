@@ -406,7 +406,7 @@ export default class SessionStore extends BaseStore {
   }
 
   /**
-   * @brief Changes session state to FINISHED.
+   * @brief Changes session state to FINISHED. Creates all submissions for users in submission.
    */
   public async finish(sref: DocumentReference<Session>) {
     console.debug("create submission docs!")
@@ -417,7 +417,7 @@ export default class SessionStore extends BaseStore {
     }
     const session = s_ss.data()
     const users = await this.users.getAll(sref)
-    const numbers: number[] = []
+    const arr: number[] = []
 
     for (const user of users.docs) {
       let score = 0
@@ -444,7 +444,7 @@ export default class SessionStore extends BaseStore {
           }
         }
       }
-      numbers.push(score)
+      arr.push(score)
       await api.submissions.create({
         title: session.title,
         user: api.users.doc(uid),
@@ -456,36 +456,62 @@ export default class SessionStore extends BaseStore {
         score_100: (score / session.summary!.max_score) * 100,
       })
     }
-    const sorted = [...numbers].sort((a, b) => a - b)
-    const sum = numbers.reduce((acc, val) => acc + val, 0)
-    const average = sum / numbers.length
 
-    const median = getMedian(sorted)
-
-    let lower_quartile = 0
-    let upper_quartile = 0
-    if (sorted.length === 1) {
-      lower_quartile = sorted[0]
-      upper_quartile = sorted[0]
-    } else {
-      const mid = Math.floor(sorted.length / 2)
-      const lowerHalf = sorted.slice(0, mid)
-      const upperHalf =
-        sorted.length % 2 === 0 ? sorted.slice(mid) : sorted.slice(mid + 1)
-      lower_quartile = getMedian(lowerHalf)
-      upper_quartile = getMedian(upperHalf)
+    function calcMetrics(scores: number[], maxScore: number) {
+      const sorted = [...scores].sort((a, b) => a - b)
+      const sum = scores.reduce((acc, val) => acc + val, 0)
+      const average = sum / scores.length
+      const median = getMedian(sorted)
+      let lower_quartile = 0
+      let upper_quartile = 0
+      if (sorted.length === 1) {
+        lower_quartile = sorted[0]
+        upper_quartile = sorted[0]
+      } else {
+        const mid = Math.floor(sorted.length / 2)
+        const lowerHalf = sorted.slice(0, mid)
+        const upperHalf =
+          sorted.length % 2 === 0 ? sorted.slice(mid) : sorted.slice(mid + 1)
+        lower_quartile = getMedian(lowerHalf)
+        upper_quartile = getMedian(upperHalf)
+      }
+      const low = sorted[0]
+      const high = sorted[sorted.length - 1]
+      const low_100 = (low / maxScore) * 100
+      const high_100 = (high / maxScore) * 100
+      const average_100 = (average / maxScore) * 100
+      const median_100 = (median / maxScore) * 100
+      const lower_quartile_100 = (lower_quartile / maxScore) * 100
+      const upper_quartile_100 = (upper_quartile / maxScore) * 100
+      return {
+        average,
+        average_100,
+        low,
+        low_100,
+        high,
+        high_100,
+        median,
+        median_100,
+        lower_quartile,
+        lower_quartile_100,
+        upper_quartile,
+        upper_quartile_100,
+      }
     }
+
+    const maxScore = session.summary!.max_score
 
     await setDoc(
       sref,
       {
         summary: {
-          average,
-          low: sorted[0],
-          high: sorted[sorted.length - 1],
-          median,
-          lower_quartile,
-          upper_quartile,
+          ...calcMetrics(arr, maxScore),
+          // average,
+          // low: sorted[0],
+          // high: sorted[sorted.length - 1],
+          // median,
+          // lower_quartile,
+          // upper_quartile,
           total_participants: users.size,
         },
         state: SessionState.FINISHED,

@@ -87,11 +87,17 @@ export enum SessionState {
 export interface SessionSummary {
   total_participants: number
   median: number
+  median_100: number
   average: number
+  average_100: number
   low: number
+  // low_100: number
   high: number
+  high_100: number
   lower_quartile: number
+  lower_quartile_100: number
   upper_quartile: number
+  upper_quartile_100: number
   max_score: number
 }
 

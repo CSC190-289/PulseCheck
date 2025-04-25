@@ -9,7 +9,6 @@ import React, { useEffect, useState } from "react"
 import SubAnswerCard from "@/components/poll/submission/subAnswerCard"
 import { getDoc } from "firebase/firestore"
 import { Session } from "@/lib/types"
-import ParticipantScoreDetails from "@/components/poll/submission/ParticipantScoreDetails"
 import MostRecentScores from "@/components/graphs/MostRecentScore"
 
 /**
@@ -42,6 +41,7 @@ export default function PollResults() {
 
   //  const snackbar = useSnackbar()
   //  const user = sub?.user
+  console.debug(session?.questions)
   return (
     <React.Fragment>
       {session?.title && sub?.submitted_at && (
@@ -56,7 +56,7 @@ export default function PollResults() {
               {sub?.display_name}
             </Typography>
 
-              <MostRecentScores mrpsd={0}/>
+            <MostRecentScores mrpsd={0} />
             {/* {subChart()} */}
             <Stack>
               {sub?.session && (
@@ -65,10 +65,13 @@ export default function PollResults() {
             </Stack>
             <Grid2></Grid2>
             {/* make a Grid with subAnswerCard() */}
-            <Stack>{/* <SubAnswerCard submission={ref} /> */}</Stack>
+            <Stack>
+              {session?.questions.map((x) => (
+                <SubAnswerCard key={x.id} qref={x} />
+              ))}
+            </Stack>
           </Stack>
-        </Box>{" "}
-        <Box></Box>
+        </Box>
       </Container>
     </React.Fragment>
   )
