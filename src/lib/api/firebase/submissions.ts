@@ -123,6 +123,7 @@ export default class SubmissionStore extends BaseStore {
     const q = query(subsRef, where("session", "==", sessionRef))
     return getDocs(q)
   }
+
   public async findUserSubmissions(
     uid: string
   ): Promise<QueryDocumentSnapshot<Submission>[]> {

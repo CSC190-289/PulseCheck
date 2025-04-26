@@ -36,6 +36,9 @@ export default class UserStore extends BaseStore {
     await setDoc(suref, payload, { merge: false })
   }
 
+  /**
+   * Retrieves all users currently in the session.
+   */
   public async getAll(sref: DocumentReference<Session>) {
     const ref = this.collect(sref.id)
     const q = query(ref)

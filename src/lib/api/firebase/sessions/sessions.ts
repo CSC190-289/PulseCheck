@@ -25,6 +25,7 @@ import {
   Session,
   SessionQuestion,
   SessionState,
+  SessionUser,
 } from "@/lib/types"
 import api, { clx } from ".."
 import UserStore from "./users"
@@ -405,57 +406,43 @@ export default class SessionStore extends BaseStore {
     })
   }
 
+  protected async createSubmission(
+    sid: string,
+    user: QueryDocumentSnapshot<SessionUser>,
+    questions: DocumentReference<SessionQuestion>[]
+  ) {
+    let score = 0
+    console.debug(`grading user(${user.id})`)
+    const uid = user.id
+    for (const qref of questions) {
+      const qid = qref.id
+      const q_ss = await getDoc(qref)
+      if (!q_ss.exists()) {
+        throw new Error(`Failed to get sessions/${sid}/questions/${qid}`)
+      }
+      const rref = this.questions.responses.doc(sid, qid, uid)
+      const r_ss = await getDoc(rref)
+      const question = q_ss.data()
+      if (!r_ss.exists()) {
+        console.debug(`user(${uid}) did not answer this question(${qid})`)
+        await this.questions.responses.answer(sid, qid, uid, [])
+      } else {
+        if (question.prompt_type !== "ranking-poll") {
+          const res = r_ss.data()
+          if (res.correct) {
+            score += question.points
+          }
+        }
+      }
+    }
+    return score
+  }
+
   /**
    * @brief Changes session state to FINISHED. Creates all submissions for users in submission.
    */
   public async finish(sref: DocumentReference<Session>) {
     console.debug("create submission docs!")
-    const sid = sref.id
-    const s_ss = await getDoc(sref)
-    if (!s_ss.exists()) {
-      throw new Error(`Failed to get sessions/${sid}`)
-    }
-    const session = s_ss.data()
-    const users = await this.users.getAll(sref)
-    const arr: number[] = []
-
-    for (const user of users.docs) {
-      let score = 0
-      console.debug(`Grading user(${user.id})`)
-      const uid = user.id
-      for (const qref of session.questions) {
-        const qid = qref.id
-        const q_ss = await getDoc(qref)
-        if (!q_ss.exists()) {
-          throw new Error(`Failed to get sessions/${sid}/questions/${qid}`)
-        }
-        const rref = this.questions.responses.doc(sid, qid, uid)
-        const r_ss = await getDoc(rref)
-        const question = q_ss.data()
-        if (!r_ss.exists()) {
-          console.debug(`user(${uid}) did not answer this question(${qid})`)
-          await this.questions.responses.answer(sid, qid, uid, [])
-        } else {
-          if (question.prompt_type !== "ranking-poll") {
-            const res = r_ss.data()
-            if (res.correct) {
-              score += question.points
-            }
-          }
-        }
-      }
-      arr.push(score)
-      await api.submissions.create({
-        title: session.title,
-        user: api.users.doc(uid),
-        display_name: user.data().display_name,
-        photo_url: user.data().photo_url,
-        session: sref,
-        score: score,
-        max_score: session.summary!.max_score,
-        score_100: (score / session.summary!.max_score) * 100,
-      })
-    }
 
     function calcMetrics(scores: number[], maxScore: number) {
       const sorted = [...scores].sort((a, b) => a - b)
@@ -499,13 +486,63 @@ export default class SessionStore extends BaseStore {
       }
     }
 
+    const sid = sref.id
+    /* fetch session doc */
+    const s_ss = await getDoc(sref)
+    if (!s_ss.exists()) {
+      throw new Error(`Failed to get sessions/${sid}`)
+    }
+    const session = s_ss.data()
+    /* fetch all users */
+    const users = (await this.users.getAll(sref)).docs
+    /* init user scores Z */
+    const theScores: number[] = []
+
+    for (const user of users) {
+      let score = 0
+      console.debug(`Grading user(${user.id})`)
+      const uid = user.id
+      for (const qref of session.questions) {
+        const qid = qref.id
+        const q_ss = await getDoc(qref)
+        if (!q_ss.exists()) {
+          throw new Error(`Failed to get sessions/${sid}/questions/${qid}`)
+        }
+        const rref = this.questions.responses.doc(sid, qid, uid)
+        const r_ss = await getDoc(rref)
+        const question = q_ss.data()
+        if (!r_ss.exists()) {
+          console.debug(`user(${uid}) did not answer this question(${qid})`)
+          await this.questions.responses.answer(sid, qid, uid, [])
+        } else {
+          if (question.prompt_type !== "ranking-poll") {
+            const res = r_ss.data()
+            if (res.correct) {
+              score += question.points
+            }
+          }
+        }
+      }
+      theScores.push(score)
+      await api.submissions.create({
+        title: session.title,
+        user: api.users.doc(uid),
+        display_name: user.data().display_name,
+        photo_url: user.data().photo_url,
+        session: sref,
+        score: score,
+        max_score: session.summary!.max_score,
+        score_100: (score / session.summary!.max_score) * 100,
+      })
+    }
+
     const maxScore = session.summary!.max_score
 
     await setDoc(
       sref,
       {
         summary: {
-          ...calcMetrics(arr, maxScore),
+          ...calcMetrics(theScores, maxScore),
           // average,
           // low: sorted[0],
           // high: sorted[sorted.length - 1],
