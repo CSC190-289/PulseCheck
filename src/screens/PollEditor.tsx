@@ -61,8 +61,6 @@ export default function PollEditor() {
     return <Typography>Failed to load Poll ({id})</Typography>
   }
 
-
-
   return (
     <React.Fragment>
       {poll && <Header pid={id} poll={poll} />}
