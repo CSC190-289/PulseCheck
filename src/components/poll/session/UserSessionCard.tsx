@@ -1,5 +1,5 @@
 import { SessionResponse, SessionUser } from "@/lib/types"
-import { stoc } from "@/utils"
+import { stoc, stoni } from "@/utils"
 import { Check, Clear } from "@mui/icons-material"
 import { Avatar, Box, Card, Chip, Typography } from "@mui/material"
 import { QueryDocumentSnapshot } from "firebase/firestore"
@@ -36,9 +36,13 @@ export default function UserSessionCard(props: Props) {
         <Card>
           <Box m={1} display={"flex"} alignItems={"center"}>
             {user.photo_url ? (
-              <Avatar src={user.photo_url} />
+              <Avatar src={user.photo_url} color={stoc(user.display_name)}>
+                {stoni(user.display_name)}
+              </Avatar>
             ) : (
-              <Avatar color={stoc(user.display_name)} />
+              <Avatar color={stoc(user.display_name)}>
+                {stoni(user.display_name)}
+              </Avatar>
             )}
             <Typography ml={1}>{user.display_name}</Typography>
             <Box flex={1} />

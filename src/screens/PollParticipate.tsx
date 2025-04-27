@@ -102,13 +102,15 @@ export function PollParticipate() {
             <ResultsChart results={session.results} />
           </Box>
         )}
-        <Box marginInline={8}>
-          <MemoryGame
-            gridNumber={4}
-            foundCardsColor='#e91e63'
-            holeCardsColor='#00796b'
-          />
-        </Box>
+        {session?.state === SessionState.OPEN && (
+          <Box marginInline={8}>
+            <MemoryGame
+              gridNumber={4}
+              foundCardsColor='#e91e63'
+              holeCardsColor='#00796b'
+            />
+          </Box>
+        )}
         {/* render the users who are in the poll session */}
         <UserSessionGrid
           users={users}

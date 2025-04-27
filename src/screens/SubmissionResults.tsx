@@ -3,13 +3,14 @@ import { Container, Typography, Stack, Grid2 } from "@mui/material"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
 import PollMetricsCard from "@/components/poll/results/PollMetricsCard"
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import Header from "@/components/poll/results/submission/Header"
 import React, { useEffect, useState } from "react"
 import AnswerCard from "@/components/poll/results/AnswerCard"
 import { getDoc } from "firebase/firestore"
 import { Session } from "@/lib/types"
 import SubmissionGaugeCard from "@/components/graphs/SubmissionGaugeCard"
+import Confetti from "react-confetti"
 
 /**
  * Allows users to set the settings for a question of a poll.
@@ -27,6 +28,15 @@ export default function SubmissionResults() {
   const ref = api.submissions.doc(id)
   const [sub] = useDocumentDataOnce(ref)
   const [session, setSession] = useState<Session>()
+  const [showConfetti, setShowConfetti] = useState(false)
+  const location = useLocation()
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (location.state.finished && sub?.score_100 === 100) {
+      setShowConfetti(true)
+    }
+  }, [location.state, sub])
 
   useEffect(() => {
     if (sub !== null && sub !== undefined) {
@@ -43,6 +53,7 @@ export default function SubmissionResults() {
   //  const user = sub?.user
   return (
     <React.Fragment>
+      {showConfetti && <Confetti tweenDuration={5000} recycle={false} />}
       {session?.title && sub?.submitted_at && (
         <Header
           title={session?.title}
