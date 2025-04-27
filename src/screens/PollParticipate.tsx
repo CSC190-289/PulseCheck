@@ -10,6 +10,7 @@ import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
+import MemoryGame from 'react-card-memory-game'
 
 const CHECK_INTERVAL_MS = 2000
 
@@ -101,6 +102,13 @@ export function PollParticipate() {
           </Box>
         )}
         {/* render the users who are in the poll session */}
+        <Box marginInline={10}>
+          <MemoryGame
+            gridNumber={4}
+            foundCardsColor='#e91e63'
+            holeCardsColor='#00796b'
+          />
+        </Box>
         <UserSessionGrid users={users} results={session?.results} />
       </Container>
     </React.Fragment>

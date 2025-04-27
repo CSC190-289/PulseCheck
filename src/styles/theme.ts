@@ -12,7 +12,7 @@ const opts = (mode: PaletteMode): ThemeOptions => ({
     },
   },
   typography: {
-    // fontFamily: "monospace",
+    fontFamily: "monospace",
   },
   components: {
     MuiInputBase: {
