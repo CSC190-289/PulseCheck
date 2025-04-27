@@ -26,7 +26,7 @@ const BUCKET_URL = "gs://pulsecheck-7cf2b.firebasestorage.app"
 
 const app = initializeApp(config)
 const vertexAI = getVertexAI(app)
-export const geminiModel = getGenerativeModel(vertexAI, {
+export const model = getGenerativeModel(vertexAI, {
   model: "gemini-2.0-flash-001",
 })
 export const auth = getAuth(app)
@@ -56,6 +56,44 @@ export enum clx {
   /* Collection for storing user submissions for poll sessions */
   submissions = "submissions",
   /* Collection for storing user answers of the current question */
+}
+
+export async function extractTextWIP(uri: string) {
+  const prompt = "Extract Text! Return it as formatted text per page."
+  const image = {
+    fileData: {
+      mimeType: "application/pdf",
+      fileUri: uri,
+    },
+  }
+  const payload = [prompt, image]
+  console.debug("processing...")
+  const result = await model.generateContent(payload)
+  const res = result.response
+  const text = res.text()
+  console.debug(text)
+}
+
+export async function extractText() {
+  // Provide a prompt that contains text
+  const prompt = "Extract Text! Return it as formatted text per page."
+  // To generate text output, call generateContent with the text input
+  const imagePart = {
+    fileData: {
+      mimeType: "application/pdf",
+      fileUri:
+        "https://firebasestorage.googleapis.com/v0/b/pulsecheck-7cf2b.firebasestorage.app/o/Lecture%2012%20-%20Design%20Patterns%20-%20Part%202.pdf?alt=media&token=be4fa786-d3c7-4fc0-b9d0-f44838d18715",
+    },
+  }
+  console.debug("processing...")
+  const result = await model.generateContent([prompt, imagePart])
+  const response = result.response
+  const text = response.text()
+  console.debug(text)
+  // const payload: ExtractResponse = JSON.parse(text) as ExtractResponse
+  // for (const x of payload) {
+  //   console.debug(x.text)
+  // }
 }
 
 /**
