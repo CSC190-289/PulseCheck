@@ -20,9 +20,15 @@ export default function PollSubmissionHistory() {
 
   useEffect(() => {
     setTimeout(() => {
-      const filtered = submissions.filter((x) =>
-        x.data().title.toLowerCase().includes(filter.toLowerCase())
-      )
+      const filtered = submissions
+        .filter((x) =>
+          x.data().title.toLowerCase().includes(filter.toLowerCase())
+        )
+        .sort((x, y) => {
+          const xdate = x.data().submitted_at.toMillis()
+          const ydate = y.data().submitted_at.toMillis()
+          return ydate - xdate
+        })
       setFilteredSubmissions(filtered)
     }, 250)
   }, [filter, submissions])

@@ -9,7 +9,7 @@ import {
 import BaseStore from "../store"
 import OptionStore from "./options"
 import { clx } from ".."
-import { SessionOption, SessionQuestion } from "@/lib/types"
+import { PromptType, SessionOption, SessionQuestion } from "@/lib/types"
 import ResponseStore from "./responses"
 
 /**
@@ -49,6 +49,7 @@ export default class QuestionStore extends BaseStore {
   public async gradeAll(
     sid: string,
     qid: string,
+    prompt_type: PromptType,
     correct_opts: QueryDocumentSnapshot<SessionOption>[]
   ) {
     const responses = await this.responses.getAllAsMap(sid, qid)
@@ -56,7 +57,7 @@ export default class QuestionStore extends BaseStore {
     Object.entries(responses).forEach((x) => {
       const uid = x[0]
       const rref = this.responses.doc(sid, qid, uid)
-      const p = this.responses.grade(rref, correct_opts)
+      const p = this.responses.grade(rref, prompt_type, correct_opts)
       promises.push(p)
     })
     await Promise.all(promises)

@@ -25,6 +25,10 @@ export default function PollHost() {
   const question = session?.question
 
   useEffect(() => {
+    console.debug(session)
+  }, [session])
+
+  useEffect(() => {
     /* if session exists and is done loading */
     if (session && !sessionLoading) {
       if (session.state === SessionState.CLOSED) {

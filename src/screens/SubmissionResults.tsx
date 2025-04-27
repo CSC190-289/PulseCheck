@@ -9,19 +9,14 @@ import React, { useEffect, useState } from "react"
 import AnswerCard from "@/components/poll/results/AnswerCard"
 import { getDoc } from "firebase/firestore"
 import { Session } from "@/lib/types"
-import SubmissionGaugeCard from "@/components/graphs/SubmissionGaugeCard"
 import Confetti from "react-confetti"
+import ScoreGaugeCard from "@/components/graphs/ScoreGaugeCard"
 
 /**
  * Allows users to set the settings for a question of a poll.
  * @author VerySirias
  * @returns {JSX.Element}
  */
-
-// interface Props {
-//   //submission: submissionProp
-// }
-
 export default function SubmissionResults() {
   const params = useParams()
   const id = params.id ?? ""
@@ -33,7 +28,7 @@ export default function SubmissionResults() {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (location.state.finished && sub?.score_100 === 100) {
+    if (location.state?.finished && sub?.score_100 === 100) {
       setShowConfetti(true)
     }
   }, [location.state, sub])
@@ -62,7 +57,7 @@ export default function SubmissionResults() {
       <Container sx={{ mt: 2, textAlign: "initial" }}>
         <Stack spacing={1}>
           <Typography variant='h6'>{sub?.display_name}</Typography>
-          <SubmissionGaugeCard mrpsd={0} />
+          <ScoreGaugeCard sub={sub} />
           <Stack>
             {sub?.session && (
               <PollMetricsCard sum={session?.summary}></PollMetricsCard>

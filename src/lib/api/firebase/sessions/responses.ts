@@ -12,8 +12,9 @@ import {
   setDoc,
 } from "firebase/firestore"
 import { clx } from ".."
-import { SessionOption, SessionResponse } from "@/lib/types"
+import { PromptType, SessionOption, SessionResponse } from "@/lib/types"
 import BaseStore from "../store"
+import { X } from "@mui/icons-material"
 
 /**
  * Manages session responses to session questions
@@ -111,15 +112,35 @@ export default class ResponseStore extends BaseStore {
 
   public async grade(
     rref: DocumentReference<SessionResponse>,
+    prompt_type: PromptType,
     correct_opts: QueryDocumentSnapshot<SessionOption>[]
   ) {
-    /* TODO - take into account of prompt_type */
     const r_ss = await getDoc(rref)
     if (!r_ss.exists()) throw new Error(`${rref.path} does not exist!`)
     const choices = r_ss.data().choices
-    const correct =
-      correct_opts.every((x) => choices.some((y) => refEqual(x.ref, y))) &&
-      correct_opts.length === choices.length
+    let correct = false
+    switch (prompt_type) {
+      case "multi-select": {
+        correct =
+          correct_opts.every((x) => choices.some((y) => refEqual(x.ref, y))) &&
+          correct_opts.length === choices.length
+        break
+      }
+      case "multiple-choice": {
+        correct = correct_opts.some((x) =>
+          choices.some((y) => refEqual(x.ref, y))
+        )
+        break
+      }
+      case "ranking-poll": {
+        correct = true
+        break
+      }
+      default: {
+        throw new Error(`Invalid PromptType!`)
+      }
+    }
+    /* update user response */
     await setDoc(rref, { correct }, { merge: true })
   }
 }

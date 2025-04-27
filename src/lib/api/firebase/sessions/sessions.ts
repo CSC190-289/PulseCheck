@@ -352,6 +352,7 @@ export default class SessionStore extends BaseStore {
       sref.id,
       question.ref.id
     )
+    console.debug(responses)
     /* init frequency table */
     const table: Record<string, { text: string; count: number }> = {}
     /* iterate all options of question */
@@ -368,6 +369,7 @@ export default class SessionStore extends BaseStore {
         table[opt.id].count++
       }
     }
+
     /* init series */
     const series = {
       labels: Object.values(table).map((x) => x.text),
@@ -400,7 +402,12 @@ export default class SessionStore extends BaseStore {
     const opts = await this.questions.options.getAll(sref.id, question.ref.id)
     const docs = opts.docs
     const correct_opts = docs.filter((x) => x.data().correct)
-    await this.questions.gradeAll(sref.id, question.ref.id, correct_opts)
+    await this.questions.gradeAll(
+      sref.id,
+      question.ref.id,
+      question.prompt_type,
+      correct_opts
+    )
   }
 
   /**

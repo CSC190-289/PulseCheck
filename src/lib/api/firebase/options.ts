@@ -8,8 +8,11 @@ import {
   doc,
   DocumentData,
   DocumentReference,
+  getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore"
 import BaseStore, { CollectionParams, DocumentParams, CRUDStore } from "./store"
 import { PromptOption, Question } from "../../types"
@@ -60,6 +63,12 @@ export default class PromptOptionStore
     /* update question doc to include refernece to {oref}  */
     await setDoc(qref, { options: arrayUnion(oref) }, { merge: true })
     return oref
+  }
+
+  public async getAllCorrect(ref: CollectionReference<PromptOption>) {
+    const q = query(ref, where("correct", "==", "true"))
+    const ss = await getDocs(q)
+    return ss.docs
   }
 
   public async updateByRef(

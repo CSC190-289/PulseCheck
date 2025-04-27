@@ -18,9 +18,15 @@ export default function PollSessionHistory() {
 
   useEffect(() => {
     setTimeout(() => {
-      const filtered = sessions.filter((x) =>
-        x.data().title.toLowerCase().includes(filter.toLowerCase())
-      )
+      const filtered = sessions
+        .filter((x) =>
+          x.data().title.toLowerCase().includes(filter.toLowerCase())
+        )
+        .sort((x, y) => {
+          const xdate = x.data().created_at.toMillis()
+          const ydate = y.data().created_at.toMillis()
+          return ydate - xdate
+        })
       setFilteredSession(filtered)
     }, 250)
   }, [filter, sessions])

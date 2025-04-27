@@ -5,7 +5,7 @@ import { useAuthContext } from "@/lib/hooks"
 import { useCollectionOnce } from "react-firebase-hooks/firestore"
 import UserPollCard from "@/components/dashboard/UserPollCard"
 import { Add, HowToVote } from "@mui/icons-material"
-import SubmissionGaugeCard from "@/components/graphs/SubmissionGaugeCard"
+import MostRecentGaugeCard from "@/components/graphs/MostRecentGaugeCard"
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -30,7 +30,7 @@ export default function Dashboard() {
 
   return (
     <Container maxWidth='md' sx={{ textAlign: "initial", marginBlock: 2 }}>
-      <SubmissionGaugeCard mrpsd={1} />
+      <MostRecentGaugeCard mrpsd={1} />
       <Grid2 container mt={2} spacing={1}>
         <Grid2 size={6}>
           <Button

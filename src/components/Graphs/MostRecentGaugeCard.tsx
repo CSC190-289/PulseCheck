@@ -18,7 +18,7 @@ interface Props {
   mrpsd: number
 }
 
-export default function SubmissionGaugeCard(props: Props) {
+export default function MostRecentGaugeCard(props: Props) {
   const { mrpsd } = props
   const { user } = useAuthContext()
   const [snapshot, setSnapshot] = useState<

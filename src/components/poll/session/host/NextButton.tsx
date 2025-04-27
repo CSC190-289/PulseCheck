@@ -18,9 +18,7 @@ export default function NextButton(props: NextButtonProps) {
     if (currentQuestion) {
       await api.sessions.gradeQuestion(sref, currentQuestion)
       await api.sessions.clearQuestion(sref)
-      // if (!currentQuestion.anonymous) {
       await api.sessions.displayUserResponses(sref, currentQuestion)
-      // }
       setText("Next")
     } else {
       /* grade user responses */
