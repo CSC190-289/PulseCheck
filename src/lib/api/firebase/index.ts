@@ -76,7 +76,9 @@ export async function extractTextWIP(uri: string) {
 
 export async function extractText() {
   // Provide a prompt that contains text
-  const prompt = "Extract Text! Return it as formatted text per page."
+  const promptExtract = "Extract Text! Return it as formatted text per page."
+  const promptMultipleChoice = "Generate 3 questions and 4 multiple choice style options, of which 3 are incorrect and 1 is correct for each question in a json format that i can parse. label possible answers in number format and tell me which one of the options is correct based by returning its index"
+  const removethingies = "Remove first three characters from given text"
   // To generate text output, call generateContent with the text input
   const imagePart = {
     fileData: {
@@ -86,14 +88,29 @@ export async function extractText() {
     },
   }
   console.debug("processing...")
-  const result = await model.generateContent([prompt, imagePart])
-  const response = result.response
-  const text = response.text()
-  console.debug(text)
-  // const payload: ExtractResponse = JSON.parse(text) as ExtractResponse
-  // for (const x of payload) {
-  //   console.debug(x.text)
-  // }
+  const result = await model.generateContent([promptExtract, imagePart])
+  const responseParsed = result.response
+  const textParsed = responseParsed.text()
+  //console.debug(textParsed)
+  const questionResults = await model.generateContent([textParsed,promptMultipleChoice])
+  const questionResponse = questionResults.response
+  const questionJson = questionResponse.text() // returns json
+  console.debug(questionJson)
+
+  const removeResult = await model.generateContent([questionJson, removethingies])
+  const removeResponse = removeResult.response
+  const removeText = removeResponse.text()
+  console.debug(removeText[0])
+  type parseType = {
+    question: string,
+    options: string[],
+    correct_answer: number
+
+  }
+
+  const payload: parseType = JSON.parse(removeText) as parseType
+  console.debug(payload)
+
 }
 
 /**
