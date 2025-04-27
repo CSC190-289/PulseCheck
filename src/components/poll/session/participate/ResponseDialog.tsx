@@ -19,7 +19,7 @@ import { TransitionProps } from "@mui/material/transitions"
 import api from "@/lib/api/firebase"
 import { useAuthContext } from "@/lib/hooks"
 import Image from "mui-image"
-import { QuestionAnswer, QuestionMark } from "@mui/icons-material"
+import { QuestionAnswer } from "@mui/icons-material"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>

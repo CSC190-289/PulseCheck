@@ -33,7 +33,6 @@ import {
   ScreenShare,
   Upload,
 } from "@mui/icons-material"
-import TimerSwitch from "../TimerSwitch"
 import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"
 import { Poll } from "@/lib/types"

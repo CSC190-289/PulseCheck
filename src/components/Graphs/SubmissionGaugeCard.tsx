@@ -40,11 +40,10 @@ export default function SubmissionGaugeCard(props: Props) {
   }, [user])
 
   const sub = snapshot?.data()
-  console.debug("testing",snapshot?.data())
-  if(!snapshot?.data()){
-    return <NoRecentPolls/>
+  console.debug("testing", snapshot?.data())
+  if (!snapshot?.data()) {
+    return <NoRecentPolls />
   }
-
 
   const submitted_at = sub?.submitted_at
 

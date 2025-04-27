@@ -1,7 +1,7 @@
 import { useThemeContext } from "@/lib/hooks"
 import { Session } from "@/lib/types"
 import { ntops, stoc, tstos } from "@/utils"
-import { BarChart, Poll } from "@mui/icons-material"
+import { BarChart } from "@mui/icons-material"
 import {
   Avatar,
   Box,
@@ -9,7 +9,6 @@ import {
   CardActionArea,
   CardContent,
   Typography,
-  useTheme,
 } from "@mui/material"
 import React from "react"
 import { useNavigate } from "react-router-dom"
