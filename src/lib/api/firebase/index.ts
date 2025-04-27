@@ -9,6 +9,7 @@ import AuthStore from "./auth"
 import SessionStore from "./sessions/sessions"
 import SubmissionStore from "./submissions"
 import { getVertexAI, getGenerativeModel } from "firebase/vertexai"
+import VertexStore from "./vertex"
 
 export const DEPLOY_URL = "https://pulsecheck-7cf2b.web.app"
 
@@ -105,6 +106,7 @@ class APIStore {
   private readonly _polls: PollStore
   private readonly _sessions: SessionStore
   private readonly _submissions: SubmissionStore
+  private readonly _vertex: VertexStore
 
   constructor(db: Firestore) {
     this._auth = new AuthStore()
@@ -112,6 +114,7 @@ class APIStore {
     this._polls = new PollStore(db)
     this._sessions = new SessionStore(db)
     this._submissions = new SubmissionStore(db)
+    this._vertex = new VertexStore()
   }
 
   public get auth(): AuthStore {
@@ -132,6 +135,10 @@ class APIStore {
 
   public get submissions(): SubmissionStore {
     return this._submissions
+  }
+
+  public get vertex(): VertexStore {
+    return this._vertex
   }
 }
 

@@ -12,7 +12,7 @@ import { useState, useEffect } from "react"
 import React from "react"
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
-import { firestore } from "@/lib/api/firebase"
+import { firestore, storage } from "@/lib/api/firebase"
 import { CloudUpload, Delete } from "@mui/icons-material"
 interface Props {
   pid: string
@@ -40,8 +40,10 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 })
 
-const storage = getStorage()
-
+/**
+ * Handles uploading question images to fire cloud storage.
+ * @author Bran7tastic
+ */
 export default function UploadImageBox(props: Props) {
   /**
    * @Bran7astic

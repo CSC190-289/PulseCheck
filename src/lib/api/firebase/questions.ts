@@ -13,7 +13,7 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import BaseStore from "./store"
-import { Poll, PromptOption, Question } from "../../types"
+import { Poll, Question } from "../../types"
 import PromptOptionStore from "./options"
 import { clx } from "."
 
@@ -72,11 +72,12 @@ export default class QuestionStore extends BaseStore {
   public async update(
     qref: DocumentReference<Question>,
     payload: Partial<Question>
-  ) {
-    return updateDoc(qref, {
+  ): Promise<DocumentReference<Question>> {
+    await updateDoc(qref, {
       ...payload,
       updated_at: serverTimestamp(),
     })
+    return qref
   }
 
   public async delete(qref: DocumentReference<Question>) {
@@ -89,18 +90,18 @@ export default class QuestionStore extends BaseStore {
     await setDoc(pref, { questions: arrayRemove(qref) }, { merge: true })
   }
 
-  public async appendOption(
-    qref: DocumentReference<Question>,
-    oref: DocumentReference<PromptOption>
-  ) {
-    await setDoc(
-      qref,
-      {
-        options: arrayUnion(oref),
-      },
-      {
-        merge: true,
-      }
-    )
-  }
+  // public async appendOption(
+  //   qref: DocumentReference<Question>,
+  //   oref: DocumentReference<PromptOption>
+  // ) {
+  //   await setDoc(
+  //     qref,
+  //     {
+  //       options: arrayUnion(oref),
+  //     },
+  //     {
+  //       merge: true,
+  //     }
+  //   )
+  // }
 }

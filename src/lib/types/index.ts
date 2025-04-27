@@ -218,3 +218,9 @@ export interface Submission {
 export interface SessionSubmission {
   ref: DocumentReference<Submission>
 }
+
+export type AIQuestions = {
+  question: string
+  options: string[]
+  correct_answer: string
+}[]

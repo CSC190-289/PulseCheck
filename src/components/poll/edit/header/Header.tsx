@@ -13,22 +13,32 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  Fab,
+  styled,
 } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import api from "@/lib/api/firebase"
 import useSnackbar from "@/lib/hooks/useSnackbar"
 import {
   ArrowBack,
+  AutoAwesome,
+  CompareSharp,
   Done,
   Edit,
   MenuOpen,
   ScreenShare,
+  Upload,
 } from "@mui/icons-material"
 import TimerSwitch from "../TimerSwitch"
 import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"
 import { Poll } from "@/lib/types"
 import DeleteMenuItem from "./DeleteMenuItem"
+import UploadPDFDialog from "../UploadPDFDialog"
 
 interface HeaderProps {
   pid: string /* poll id */
@@ -54,6 +64,7 @@ export default function Header(props: HeaderProps) {
   const [anonymous, setAnonymous] = useState(poll.anonymous)
   const [anchorElPoll, setAnchorElPoll] = useState<HTMLElement | null>(null)
   const navigate = useNavigate()
+  const [generateWithAIModal, setGenerateWithAIModal] = useState(false)
 
   useEffect(() => {
     async function saveAnonymous(bool: boolean | null) {
@@ -79,6 +90,11 @@ export default function Header(props: HeaderProps) {
     setAnchorElPoll(event.currentTarget)
   }
 
+  const openGenerateWithAI = () => {
+    setGenerateWithAIModal(true)
+    handleClose()
+  }
+
   const handleClose = () => {
     setAnchorElPoll(null)
   }
@@ -89,10 +105,6 @@ export default function Header(props: HeaderProps) {
       title: text,
     })
   }
-
-  // const handleDocClick = () => {
-  //   console.debug("do something")
-  // }
 
   const handleTitleClick = () => {
     handleClickEdit()
@@ -137,86 +149,105 @@ export default function Header(props: HeaderProps) {
   }
 
   return (
-    <AppBar color='inherit' position='relative'>
-      <Toolbar>
-        <Stack direction={"row"} alignItems={"center"} flex={1}>
-          <IconButton
-            onClick={() => {
-              void navigate(-1)
-            }}>
-            <ArrowBack />
-          </IconButton>
-          {isEditing ? (
-            <TextField
-              size='small'
-              placeholder='Poll Title'
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onKeyDown={handleKeyPress}
-              fullWidth
-              slotProps={{
-                input: {
-                  endAdornment: isEditing && (
-                    <IconButton color='primary' onClick={handleClickEdit}>
-                      <Done />
-                    </IconButton>
-                  ),
-                },
-              }}
-            />
-          ) : (
-            <Typography onDoubleClick={handleTitleClick} textAlign={"left"}>
-              {title}
-            </Typography>
-          )}
-          {!isEditing && (
-            <IconButton size='small' color='primary' onClick={handleClickEdit}>
-              <Edit />
+    <React.Fragment>
+      <AppBar color='inherit' position='relative'>
+        <Toolbar>
+          <Stack direction={"row"} alignItems={"center"} flex={1}>
+            <IconButton
+              onClick={() => {
+                void navigate(-1)
+              }}>
+              <ArrowBack />
             </IconButton>
-          )}
-          <Box flex={1} marginInline={2} />
-          <Box>
-            <IconButton onClick={handleOpen} color='inherit'>
-              <MenuOpen />
-            </IconButton>
-            <Menu
-              anchorEl={anchorElPoll}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              open={Boolean(anchorElPoll)}
-              onClose={handleClose}>
-              <MenuItem>
-                <FormControlLabel
-                  label='Anonymous'
-                  checked={Boolean(anonymous)}
-                  control={
-                    <Switch onChange={(e) => setAnonymous(e.target.checked)} />
-                  }
-                />
-              </MenuItem>
-              {/* <MenuItem>
+            {isEditing ? (
+              <TextField
+                size='small'
+                placeholder='Poll Title'
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onKeyDown={handleKeyPress}
+                fullWidth
+                slotProps={{
+                  input: {
+                    endAdornment: isEditing && (
+                      <IconButton color='primary' onClick={handleClickEdit}>
+                        <Done />
+                      </IconButton>
+                    ),
+                  },
+                }}
+              />
+            ) : (
+              <Typography onDoubleClick={handleTitleClick} textAlign={"left"}>
+                {title}
+              </Typography>
+            )}
+            {!isEditing && (
+              <IconButton
+                size='small'
+                color='primary'
+                onClick={handleClickEdit}>
+                <Edit />
+              </IconButton>
+            )}
+            <Box flex={1} marginInline={2} />
+            <Box>
+              <IconButton onClick={handleOpen} color='inherit'>
+                <MenuOpen />
+              </IconButton>
+              <Menu
+                anchorEl={anchorElPoll}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                open={Boolean(anchorElPoll)}
+                onClose={handleClose}>
+                <MenuItem>
+                  <FormControlLabel
+                    label='Anonymous'
+                    checked={Boolean(anonymous)}
+                    control={
+                      <Switch
+                        onChange={(e) => setAnonymous(e.target.checked)}
+                      />
+                    }
+                  />
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={openGenerateWithAI}>
+                  <ListItemIcon>
+                    <AutoAwesome />
+                  </ListItemIcon>
+                  <ListItemText>Generate with AI</ListItemText>
+                </MenuItem>
+                {/* <MenuItem>
                 <TimerSwitch pid={pid} time={poll.time} />
               </MenuItem> */}
-              <Divider />
-              <DeleteMenuItem pid={pid} onClick={handleClose} />
-              <Divider />
-              <MenuItem onClick={handleHostClick}>
-                <ListItemIcon>
-                  <ScreenShare />
-                </ListItemIcon>
-                <ListItemText>Host</ListItemText>
-              </MenuItem>
-            </Menu>
-          </Box>
-        </Stack>
-        {/* <Typography variant='body2'>
+                <Divider />
+                <DeleteMenuItem pid={pid} onClick={handleClose} />
+                <Divider />
+                <MenuItem onClick={handleHostClick}>
+                  <ListItemIcon>
+                    <ScreenShare />
+                  </ListItemIcon>
+                  <ListItemText>Host</ListItemText>
+                </MenuItem>
+              </Menu>
+            </Box>
+          </Stack>
+          {/* <Typography variant='body2'>
           Last Updated:{" "}
           {updatedAt ? updatedAt.toDate().toLocaleDateString() : ""}
         </Typography> */}
-      </Toolbar>
-    </AppBar>
+        </Toolbar>
+      </AppBar>
+      <UploadPDFDialog
+        pid={pid}
+        open={generateWithAIModal}
+        onClose={() => setGenerateWithAIModal(false)}
+      />
+    </React.Fragment>
   )
 }

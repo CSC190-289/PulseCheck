@@ -1,4 +1,4 @@
-import { Poll, User } from "../../types"
+import { AIQuestions, Poll, User } from "../../types"
 import BaseStore from "./store"
 import QuestionStore from "./questions"
 import {
@@ -19,6 +19,7 @@ import {
   where,
 } from "firebase/firestore"
 import api, { clx } from "."
+import ThemeSelect from "@/components/ThemeSelect"
 
 /**
  * Manages /polls collection in Firestore.
@@ -89,5 +90,44 @@ export default class PollStore extends BaseStore {
   public async delete(pref: DocumentReference<Poll>) {
     await deleteDoc(pref)
     // await api.sessions.deleteAllByPREF(pref)
+  }
+
+  public async generateQuestions(pid: string, questions: AIQuestions) {
+    /* create reference to poll's question subcollection */
+    const q_clx = this.questions.collect(pid)
+    /* process each question from AI */
+    const promises: Promise<void>[] = questions.map(async (ai) => {
+      try {
+        /* create question doc */
+        const ref = await this.questions.add(q_clx)
+        const qid = ref.id
+        /* update question doc prompt with AI response */
+        await this.questions.update(ref, { prompt: ai.question })
+        const opts_clx = this.questions.options.collect({
+          pid: pid,
+          qid: qid,
+        })
+        /* iterate and create option docs from AI response */
+        const opt_proms = ai.options.map(async (opt) => {
+          try {
+            /* create option doc */
+            const oref = await this.questions.options.create(opts_clx)
+            /* update option doc */
+            await this.questions.options.updateByRef(oref, {
+              text: opt,
+              correct: opt === ai.correct_answer,
+            })
+          } catch (err) {
+            console.debug(err)
+          }
+        })
+        /* wait for all options to be process */
+        await Promise.all(opt_proms)
+      } catch (err) {
+        console.debug(err)
+      }
+    })
+    /* wait for all questions to be process */
+    await Promise.all(promises)
   }
 }
