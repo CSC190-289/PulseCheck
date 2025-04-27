@@ -5190,6 +5190,7 @@ __metadata:
     qrcode.react: "npm:^4.2.0"
     react: "npm:^19.0.0"
     react-awesome-reveal: "npm:^4.3.1"
+    react-card-memory-game: "npm:^1.1.6"
     react-dom: "npm:^19.0.0"
     react-firebase-hooks: "npm:^5.1.1"
     react-query-firestore: "npm:^0.3.2"
@@ -5242,6 +5243,17 @@ __metadata:
     "@emotion/react": ^11.0.0
     react: ">=16.14.0"
   checksum: 10c0/018326aff8b0e8b3a04a026cae85fc754c0013bc188287a9a91a4e1f5ff883254fc0898ac13799e27b329cce0a9b57506de13940fe2908788ef8c2d220e40d46
+  languageName: node
+  linkType: hard
+
+"react-card-memory-game@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "react-card-memory-game@npm:1.1.6"
+  dependencies:
+    reactjs-flip-card: "npm:^1.0.81"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10c0/d5c641b6dcc8f8078edf9e2c768781afd368dbc7dc08bbd70b5b1cfc489f6eb2ef859ed01c18e9dd4a34b60c184c5f8cb124cae80f0a5656317e6bd581a2a208
   languageName: node
   linkType: hard
 
@@ -5400,6 +5412,15 @@ __metadata:
   version: 19.0.0
   resolution: "react@npm:19.0.0"
   checksum: 10c0/9cad8f103e8e3a16d15cb18a0d8115d8bd9f9e1ce3420310aea381eb42aa0a4f812cf047bb5441349257a05fba8a291515691e3cb51267279b2d2c3253f38471
+  languageName: node
+  linkType: hard
+
+"reactjs-flip-card@npm:^1.0.81":
+  version: 1.1.2
+  resolution: "reactjs-flip-card@npm:1.1.2"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10c0/aecbe17e336a7d6fc5bba3f3cbaa2dfeb6c77ebd20c0e6cf997f8809f712dfca2860a2e0979deb432effa086b9c2d154036b5b9068a7f63940a64e0087e3630e
   languageName: node
   linkType: hard
 

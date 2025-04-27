@@ -23,6 +23,7 @@
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-awesome-reveal": "^4.3.1",
+    "react-card-memory-game": "^1.1.6",
     "react-dom": "^19.0.0",
     "react-firebase-hooks": "^5.1.1",
     "react-query-firestore": "^0.3.2",
