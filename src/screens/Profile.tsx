@@ -143,61 +143,81 @@ export default function Profile() {
 
   const saveChanges = async (field: string): Promise<void> => {
     if (!user) {
-      return;
+      return
     }
-    setSave(true);
-  
+    setSave(true)
+
     try {
       // Check if the value has actually changed
       if (field === "displayName" && tempVal === originalName) {
         // No change was made to display name
-        cancelEdit();
-        setSave(false);
-        return;
+        cancelEdit()
+        setSave(false)
+        return
       } else if (field === "email" && tempVal === originalEmail) {
         // No change was made to email
-        cancelEdit();
-        setSave(false);
-        return;
+        cancelEdit()
+        setSave(false)
+        return
       }
-  
-      const userRef = doc(firestore, "users", user.uid);
-  
+
+      const userRef = doc(firestore, "users", user.uid)
+
       if (field === "displayName") {
         // Update auth profile
         await updateProfile(user, {
           displayName: tempVal,
-        });
-  
+        })
+
         // Update Firestore
         await updateDoc(userRef, {
           display_name: tempVal,
-        });
-  
-        setName(tempVal);
-        setDisplayName(tempVal);
-        setOriginalName(tempVal);
+        })
+
+        setName(tempVal)
+        setDisplayName(tempVal)
+        setOriginalName(tempVal)
       } else if (field === "email") {
-        await updateEmail(user, tempVal);
+        await updateEmail(user, tempVal)
         await updateDoc(userRef, {
           email: tempVal,
-        });
-        setEmail(tempVal);
-        setOriginalEmail(tempVal);
+        })
+        setEmail(tempVal)
+        setOriginalEmail(tempVal)
       }
-  
+
       snackbar.show({
         message: "Profile updated successfully",
         type: "success",
-      });
-      
+      })
     } catch (err: unknown) {
-      // Error handling code remains the same
+      console.error("Error updating", err)
+      if (err instanceof FirebaseError) {
+        if (err.code === "email in use <3 ") {
+          setError((prev) => ({ ...prev, email: "Email already in use!" }))
+        } else if (err.code === "requires login!") {
+          snackbar.show({
+            message: "Please login again to update your profile",
+            type: "error",
+          })
+          void navigate("/login", { state: { requiresReauth: true } })
+        } else {
+          snackbar.show({
+            message: `Error: ${err.message}`,
+            type: "error",
+          })
+        }
+      } else {
+        snackbar.show({
+          message: "Profile update unsuccessful",
+          type: "error",
+        })
+      }
     } finally {
-      setSave(false);
-      setEditUser(null);
+      setSave(false)
+      setEditUser(null)
     }
-  };
+  }
 
   const handleSaveDisplayName = (): void => {
     void saveChanges("displayName")
