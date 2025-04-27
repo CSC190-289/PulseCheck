@@ -10,7 +10,7 @@ import {
 import { styled } from "@mui/material/styles"
 import { useState, useEffect } from "react"
 import React from "react"
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
 import { firestore, storage } from "@/lib/api/firebase"
 import { CloudUpload, Delete } from "@mui/icons-material"

@@ -10,12 +10,7 @@ import {
   Fab,
   styled,
 } from "@mui/material"
-import {
-  getDownloadURL,
-  ref,
-  StorageReference,
-  uploadBytes,
-} from "firebase/storage"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import React, { useState } from "react"
 
 interface UploadPDFBoxProps {

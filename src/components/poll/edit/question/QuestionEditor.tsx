@@ -37,8 +37,8 @@ export default function QuestionEditor(props: Props) {
   const handleAddOption = () => {
     const aux = async () => {
       const ocref = api.polls.questions.options.collect({ pid, qid })
-      const oref = await api.polls.questions.options.create(ocref)
-      await api.polls.questions.appendOption(qref, oref)
+      await api.polls.questions.options.create(ocref)
+      //await api.polls.questions.appendOption(qref, oref)
     }
     void aux()
   }
