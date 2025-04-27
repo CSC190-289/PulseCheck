@@ -1,5 +1,5 @@
 import UserAvatar from "@/components/poll/results/UserAvatar"
-import api, { extractText } from "@/lib/api/firebase"
+import api from "@/lib/api/firebase"
 import { Button, Container, Typography } from "@mui/material"
 import { useEffect } from "react"
 
@@ -21,9 +21,9 @@ export default function Debug() {
       <Typography>Debug Here</Typography>
       <Button
         onClick={() => {
-          void extractText()
-            .then(() => console.debug("it works!"))
-            .catch((err) => console.debug(err))
+          //   void extractText()
+          //     .then(() => console.debug("it works!"))
+          //     .catch((err) => console.debug(err))
         }}>
         Click me
       </Button>

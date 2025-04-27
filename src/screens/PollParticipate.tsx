@@ -40,12 +40,15 @@ export function PollParticipate() {
           type: "success",
         })
         /* navigate to submission */
-        // void navigate("/poll/join")
         if (!user) return
         api.sessions.submissions
           .get(sref.id, user.uid)
           .then((x) => {
-            void navigate(`/poll/submission/${x.ref.id}/results`)
+            void navigate(`/poll/submission/${x.ref.id}/results`, {
+              state: {
+                finished: true,
+              },
+            })
           })
           .catch((err) => console.debug(err))
       }
@@ -59,9 +62,7 @@ export function PollParticipate() {
         if (!user && !loading) {
           void navigate("/")
         }
-        if (!user) {
-          return
-        }
+        if (!user) return
         const uid = user.uid
         const hasJoined = await api.sessions.hasJoined(sid, uid)
         if (!hasJoined) {
@@ -101,7 +102,14 @@ export function PollParticipate() {
           </Box>
         )}
         {/* render the users who are in the poll session */}
-        <UserSessionGrid users={users} results={session?.results} />
+        <UserSessionGrid
+          users={users}
+          results={session?.results}
+          anonymous={
+            Boolean(session?.anonymous) ||
+            Boolean(session?.results?.question?.anonymous)
+          }
+        />
       </Container>
     </React.Fragment>
   )

@@ -59,66 +59,6 @@ export enum clx {
   /* Collection for storing user answers of the current question */
 }
 
-export async function extractTextWIP(uri: string) {
-  const prompt = "Extract Text! Return it as formatted text per page."
-  const image = {
-    fileData: {
-      mimeType: "application/pdf",
-      fileUri: uri,
-    },
-  }
-  const payload = [prompt, image]
-  console.debug("processing...")
-  const result = await model.generateContent(payload)
-  const res = result.response
-  const text = res.text()
-  console.debug(text)
-}
-
-export async function extractText() {
-  // Provide a prompt that contains text
-  const promptExtract = "Extract Text! Return it as formatted text per page."
-  const promptMultipleChoice =
-    "Generate 3 questions and 4 multiple choice style options, of which 3 are incorrect and 1 is correct for each question in a json format that i can parse. label possible answers in number format and tell me which one of the options is correct based by returning its index"
-  const removethingies = "Remove first three characters from given text"
-  // To generate text output, call generateContent with the text input
-  const imagePart = {
-    fileData: {
-      mimeType: "application/pdf",
-      fileUri:
-        "https://firebasestorage.googleapis.com/v0/b/pulsecheck-7cf2b.firebasestorage.app/o/Lecture%2012%20-%20Design%20Patterns%20-%20Part%202.pdf?alt=media&token=be4fa786-d3c7-4fc0-b9d0-f44838d18715",
-    },
-  }
-  console.debug("processing...")
-  const result = await model.generateContent([promptExtract, imagePart])
-  const responseParsed = result.response
-  const textParsed = responseParsed.text()
-  //console.debug(textParsed)
-  const questionResults = await model.generateContent([
-    textParsed,
-    promptMultipleChoice,
-  ])
-  const questionResponse = questionResults.response
-  const questionJson = questionResponse.text() // returns json
-  console.debug(questionJson)
-
-  const removeResult = await model.generateContent([
-    questionJson,
-    removethingies,
-  ])
-  const removeResponse = removeResult.response
-  const removeText = removeResponse.text()
-  console.debug(removeText[0])
-  interface parseType {
-    question: string
-    options: string[]
-    correct_answer: number
-  }
-
-  const payload: parseType = JSON.parse(removeText) as parseType
-  console.debug(payload)
-}
-
 /**
  * Serves as a central interface for managing Firestore.
  */
@@ -136,7 +76,7 @@ class APIStore {
     this._polls = new PollStore(db)
     this._sessions = new SessionStore(db)
     this._submissions = new SubmissionStore(db)
-    this._vertex = new VertexStore()
+    this._vertex = new VertexStore(model)
   }
 
   public get auth(): AuthStore {

@@ -31,8 +31,12 @@ export default function PollHost() {
         void navigate("/dashboard")
       } else if (session.state === SessionState.FINISHED) {
         /* session finished successfully! */
-        void navigate(`/poll/session/${sref.id}/results`)
         /* view results */
+        void navigate(`/poll/session/${sref.id}/results`, {
+          state: {
+            finished: true,
+          },
+        })
       }
     }
   }, [session, sessionLoading, navigate, sref])
@@ -119,7 +123,14 @@ export default function PollHost() {
           </Box>
         )}
         {/* render users currently in the poll session */}
-        <UserSessionGrid users={users} results={session?.results} />
+        <UserSessionGrid
+          users={users}
+          results={session?.results}
+          anonymous={
+            Boolean(session?.anonymous) ||
+            Boolean(session?.results?.question?.anonymous)
+          }
+        />
       </Container>
     </React.Fragment>
   )

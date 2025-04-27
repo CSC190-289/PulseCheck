@@ -20,6 +20,7 @@ import api from "@/lib/api/firebase"
 import { useAuthContext } from "@/lib/hooks"
 import Image from "mui-image"
 import { QuestionAnswer } from "@mui/icons-material"
+import SlideUpTransition from "@/components/transition/SlideUpTransition"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>
@@ -56,7 +57,7 @@ export default function ResponseDialog(props: ResponseDialogProps) {
       open={currentQuestion !== null}
       disablePortal={false}
       slots={{
-        transition: Transition,
+        transition: SlideUpTransition,
       }}>
       <AppBar position='relative' enableColorOnDark>
         <Toolbar>
@@ -105,12 +106,3 @@ export default function ResponseDialog(props: ResponseDialogProps) {
     </Dialog>
   )
 }
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction='up' ref={ref} {...props} />
-})

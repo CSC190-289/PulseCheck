@@ -219,7 +219,9 @@ export default function Header(props: HeaderProps) {
                   <ListItemIcon>
                     <AutoAwesome />
                   </ListItemIcon>
-                  <ListItemText>Generate with AI</ListItemText>
+                  <ListItemText>
+                    <Typography>Generate with AI</Typography>
+                  </ListItemText>
                 </MenuItem>
                 {/* <MenuItem>
                 <TimerSwitch pid={pid} time={poll.time} />
