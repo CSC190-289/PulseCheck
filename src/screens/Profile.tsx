@@ -148,6 +148,19 @@ export default function Profile() {
     setSave(true)
 
     try {
+      // Check if the value has actually changed
+      if (field === "displayName" && tempVal === originalName) {
+        // No change was made to display name
+        cancelEdit()
+        setSave(false)
+        return
+      } else if (field === "email" && tempVal === originalEmail) {
+        // No change was made to email
+        cancelEdit()
+        setSave(false)
+        return
+      }
+
       const userRef = doc(firestore, "users", user.uid)
 
       if (field === "displayName") {
@@ -177,7 +190,6 @@ export default function Profile() {
         message: "Profile updated successfully",
         type: "success",
       })
-      //edit to snackbar so that message loads on top
     } catch (err: unknown) {
       console.error("Error updating", err)
       if (err instanceof FirebaseError) {

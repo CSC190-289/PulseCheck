@@ -13,12 +13,6 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogContentText,
-  Fab,
-  styled,
 } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import api from "@/lib/api/firebase"
@@ -26,12 +20,10 @@ import useSnackbar from "@/lib/hooks/useSnackbar"
 import {
   ArrowBack,
   AutoAwesome,
-  CompareSharp,
   Done,
   Edit,
   MenuOpen,
   ScreenShare,
-  Upload,
 } from "@mui/icons-material"
 import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"

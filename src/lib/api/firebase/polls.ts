@@ -19,7 +19,6 @@ import {
   where,
 } from "firebase/firestore"
 import api, { clx } from "."
-import ThemeSelect from "@/components/ThemeSelect"
 
 /**
  * Manages /polls collection in Firestore.

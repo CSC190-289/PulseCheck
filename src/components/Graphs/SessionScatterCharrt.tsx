@@ -1,4 +1,5 @@
 import { Submission } from "@/lib/types"
+import { Card, CardContent } from "@mui/material"
 import { ScatterChart } from "@mui/x-charts"
 import React from "react"
 
@@ -10,18 +11,22 @@ export default function SessionScatterCard(props: Props) {
   const { submissions } = props
   return (
     <React.Fragment>
-      <ScatterChart
-        series={[
-          {
-            label: "Participant Scores",
-            data: submissions.map((x) => ({
-              x: +x.score_100?.toFixed(),
-              y: x.score,
-              id: x.user.id,
-            })),
-          },
-        ]}
-      />
+      <Card variant='outlined'>
+        <CardContent>
+          <ScatterChart
+            series={[
+              {
+                label: "Participant Scores",
+                data: submissions.map((x) => ({
+                  x: +x.score_100?.toFixed(),
+                  y: x.score,
+                  id: x.user.id,
+                })),
+              },
+            ]}
+          />
+        </CardContent>
+      </Card>
     </React.Fragment>
   )
 }
