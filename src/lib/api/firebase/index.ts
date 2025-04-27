@@ -26,7 +26,9 @@ const BUCKET_URL = "gs://pulsecheck-7cf2b.firebasestorage.app"
 
 const app = initializeApp(config)
 const vertexAI = getVertexAI(app)
-export const geminiModel = getGenerativeModel(vertexAI, {model: "gemini-2.0-flash-001"})
+export const model = getGenerativeModel(vertexAI, {
+  model: "gemini-2.0-flash-001",
+})
 export const auth = getAuth(app)
 export const firestore = getFirestore(app)
 export const storage = getStorage(app, BUCKET_URL)
@@ -54,6 +56,32 @@ export enum clx {
   /* Collection for storing user submissions for poll sessions */
   submissions = "submissions",
   /* Collection for storing user answers of the current question */
+}
+
+type ExtractResponse = { box_2d: number[]; text: string }[]
+
+export async function run() {
+  // Provide a prompt that contains text
+  const prompt = "Extract Text! Return it, but not JSON format."
+  // To generate text output, call generateContent with the text input
+  const imagePart = {
+    fileData: {
+      mimeType: "application/pdf",
+      fileUri:
+        "https://firebasestorage.googleapis.com/v0/b/pulsecheck-7cf2b.firebasestorage.app/o/Lecture%2012%20-%20Design%20Patterns%20-%20Part%202.pdf?alt=media&token=be4fa786-d3c7-4fc0-b9d0-f44838d18715",
+    },
+  }
+  console.debug("processing...")
+  const result = await model.generateContent([prompt, imagePart])
+  const response = result.response
+  const text = response.text()
+  console.debug(text)
+  const payload: ExtractResponse = JSON.parse(text) as ExtractResponse
+  for (const x of payload) {
+    console.debug(x.text)
+  }
+
+  console.debug(text)
 }
 
 /**

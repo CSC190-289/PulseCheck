@@ -1,23 +1,32 @@
 import UserAvatar from "@/components/poll/results/UserAvatar"
-import api from "@/lib/api/firebase"
+import api, { run } from "@/lib/api/firebase"
 import { Button, Container, Typography } from "@mui/material"
-import { useEffect } from "react";
+import { useEffect } from "react"
 
 export default function Debug() {
-
   //**PAGE REFRESH**//
-      useEffect(() => {
-        function handleOnBeforeUnload(event: BeforeUnloadEvent) {
-          event.preventDefault();
-          return (event.returnValue = '');
-        }
-        window.addEventListener('beforeunload', handleOnBeforeUnload, {capture:true})
-      }, [])
-    //**PAGE REFRESH**//
+  useEffect(() => {
+    function handleOnBeforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault()
+      return (event.returnValue = "")
+    }
+    window.addEventListener("beforeunload", handleOnBeforeUnload, {
+      capture: true,
+    })
+  }, [])
+  //**PAGE REFRESH**//
 
   return (
     <Container>
       <Typography>Debug Here</Typography>
+      <Button
+        onClick={() => {
+          void run()
+            .then(() => console.debug("it works!"))
+            .catch((err) => console.debug(err))
+        }}>
+        Click me
+      </Button>
       <UserAvatar uid='hi' displayName='Michael' />
       <Button
         onClick={() => {
