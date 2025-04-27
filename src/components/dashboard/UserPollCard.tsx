@@ -1,7 +1,7 @@
 import { useThemeContext } from "@/lib/hooks"
 import { Poll } from "@/lib/types"
-import { ntoq, stoc, stoni, tstos } from "@/utils"
-import { Ballot, Description } from "@mui/icons-material"
+import { ntoq, stoc, tstos } from "@/utils"
+import { Description } from "@mui/icons-material"
 import {
   Avatar,
   Box,
