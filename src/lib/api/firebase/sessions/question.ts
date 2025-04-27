@@ -12,6 +12,9 @@ import { clx } from ".."
 import { SessionOption, SessionQuestion } from "@/lib/types"
 import ResponseStore from "./responses"
 
+/**
+ * Manages session questions
+ */
 export default class QuestionStore extends BaseStore {
   private readonly _options: OptionStore
   private readonly _responses: ResponseStore

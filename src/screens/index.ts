@@ -7,8 +7,8 @@ import PollEditor from "./PollEditor"
 import PollHost from "./PollHost"
 import PollJoin from "./PollJoin"
 import PollSession from "./PollSession"
-import PollResults from "./PollResults"
-import PollHostResults from "./PollHostResults"
+import SubmissionResults from "./SubmissionResults"
+import SessionResults from "./SessionResults"
 import PollView from "./PollView"
 import PrivacyPolicy from "./PrivacyPolicy"
 import Profile from "./Profile"
@@ -33,8 +33,8 @@ export const Screen = {
   Dashboard,
   PollJoin,
   PollEditor,
-  PollResults,
-  PollHostResults,
+  SubmissionResults,
+  SessionResults,
   PollHistory,
   PollView,
   Profile,

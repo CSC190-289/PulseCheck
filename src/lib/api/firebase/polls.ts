@@ -88,6 +88,6 @@ export default class PollStore extends BaseStore {
 
   public async delete(pref: DocumentReference<Poll>) {
     await deleteDoc(pref)
-    await api.sessions.deleteAllByPREF(pref)
+    // await api.sessions.deleteAllByPREF(pref)
   }
 }

@@ -6,18 +6,21 @@ import {
   Grid2,
   Card,
   CardContent,
+  Divider,
 } from "@mui/material"
-import SubChart from "@/components/graphs/subchart"
-import Toolbar from "@/components/poll/submission/Toolbar"
-import ScoreDetails from "@/components/poll/submission/scoreDetails"
+import SessionGaugeCard from "@/components/graphs/SessionGaugeCard"
+import Header from "@/components/poll/results/session/Header"
+import PollMetricsCard from "@/components/poll/results/PollMetricsCard"
 import { useParams } from "react-router-dom"
 import api from "@/lib/api/firebase"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import React, { useEffect, useState } from "react"
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore"
 import { Submission } from "@/lib/types"
-import ParticipantsScoreCard from "@/components/poll/submission/ParticipantsScoreCard"
+import ScoreCard from "@/components/poll/results/submission/ScoreCard"
 import { RA } from "@/styles"
+import { ntops } from "@/utils"
+import SessionScatterCard from "@/components/graphs/SessionScatterCharrt"
 
 /**
  * Allows Host to see the poll results.
@@ -34,7 +37,7 @@ import { RA } from "@/styles"
  * These components are in compoents/poll/submission
  */
 
-export default function PollHostResults() {
+export default function SessionResults() {
   const params = useParams()
   const id = params.id ?? ""
   const ref = api.sessions.doc(id)
@@ -59,32 +62,30 @@ export default function PollHostResults() {
   return (
     <React.Fragment>
       {session && (
-        <Toolbar
-          title={session?.title}
-          create_at={session?.created_at}></Toolbar>
+        <Header title={session?.title} create_at={session?.created_at}></Header>
       )}
-      <Container maxWidth='xs' sx={{ textAlign: "initial" }}>
-        <Box mt={2} alignItems={"center"}>
-          <Stack> {SubChart()} </Stack>
-          <Card>
-            <CardContent>
-              <ScoreDetails sum={session?.summary}></ScoreDetails>{" "}
-            </CardContent>
-          </Card>
-          <Grid2 container spacing={2}>
-            <Typography>
-              Total Participant: {submissions?.length ?? 0}
-            </Typography>
+      <Container sx={{ mt: 2, textAlign: "initial" }}>
+        <Stack spacing={1}>
+          <SessionGaugeCard
+            score={session?.summary?.average_100 ?? NaN}
+            title={session?.title ?? ""}
+            timestamp={session?.created_at}
+          />
+          <PollMetricsCard sum={session?.summary}></PollMetricsCard>
+          <SessionScatterCard submissions={submissions.map((i) => i.data())} />
+          <Divider>
+            <Typography>{ntops(submissions.length)}</Typography>
+          </Divider>
+          <Grid2 container spacing={1}>
             {submissions?.map((x) => (
-              <Grid2 key={x.ref.path} size={{ xl: 30, lg: 30, md: 30, xs: 30 }}>
-                <RA.Zoom triggerOnce>
-                  <ParticipantsScoreCard ref={x.ref} sub={x.data()} />
-                  {/* <Stack>{participantsScoreCard(x.data)} </Stack> */}
-                </RA.Zoom>
+              <Grid2
+                key={x.ref.path}
+                size={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 3 }}>
+                <ScoreCard ref={x.ref} sub={x.data()} />
               </Grid2>
             ))}
           </Grid2>
-        </Box>
+        </Stack>
       </Container>
     </React.Fragment>
   )

@@ -11,6 +11,9 @@ import { clx } from ".."
 import BaseStore from "../store"
 import { SessionOption, SessionQuestion } from "@/lib/types"
 
+/**
+ * Manages options to choose for a question
+ */
 export default class OptionStore extends BaseStore {
   public doc(sid: string, qid: string, oid: string) {
     return doc(this.db, clx.sessions, sid, clx.questions, qid, clx.options, oid)

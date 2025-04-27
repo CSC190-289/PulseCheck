@@ -197,9 +197,9 @@ export default function Header(props: HeaderProps) {
                   }
                 />
               </MenuItem>
-              <MenuItem>
+              {/* <MenuItem>
                 <TimerSwitch pid={pid} time={poll.time} />
-              </MenuItem>
+              </MenuItem> */}
               <Divider />
               <DeleteMenuItem pid={pid} onClick={handleClose} />
               <Divider />

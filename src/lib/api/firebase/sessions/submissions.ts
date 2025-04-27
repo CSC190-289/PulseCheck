@@ -1,15 +1,28 @@
-import { doc, DocumentReference, setDoc } from "firebase/firestore"
+import { doc, DocumentReference, getDoc, setDoc } from "firebase/firestore"
 import BaseStore from "../store"
-import { Submission } from "@/lib/types"
+import { SessionSubmission } from "@/lib/types"
 import { clx } from ".."
 
+/**
+ * Manages session submissions
+ */
 export default class SubmissionStore extends BaseStore {
-  public doc(ssid: string, subId: string) {
-    const ref = doc(this.db, clx.submissions, ssid, clx.sessions, subId)
-    return ref
+  public doc(sid: string, uid: string): DocumentReference<SessionSubmission> {
+    const ref = doc(this.db, clx.submissions, sid, clx.sessions, uid)
+    return ref as DocumentReference<SessionSubmission>
   }
 
-  public async insert(ref: DocumentReference<Submission>, payload: Submission) {
+  public async insert(sid: string, uid: string, payload: SessionSubmission) {
+    const ref = this.doc(sid, uid)
     await setDoc(ref, payload, { merge: false })
+  }
+
+  public async get(sid: string, uid: string): Promise<SessionSubmission> {
+    const ref = this.doc(sid, uid)
+    const ss = await getDoc(ref)
+    if (!ss.exists()) {
+      throw new Error(`SessionSubmission(${ss.id}) does not exist!`)
+    }
+    return ss.data()
   }
 }

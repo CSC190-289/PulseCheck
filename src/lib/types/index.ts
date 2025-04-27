@@ -91,7 +91,7 @@ export interface SessionSummary {
   average: number
   average_100: number
   low: number
-  // low_100: number
+  low_100: number
   high: number
   high_100: number
   lower_quartile: number
@@ -201,6 +201,7 @@ export interface SessionResponse {
   created_at: Timestamp
 }
 
+/** data model to display a user's score */
 export interface Submission {
   title: string
   session: DocumentReference<Session>
@@ -212,4 +213,8 @@ export interface Submission {
   submitted_at: Timestamp
   photo_url: string | null
   email: string | null
+}
+
+export interface SessionSubmission {
+  ref: DocumentReference<Submission>
 }

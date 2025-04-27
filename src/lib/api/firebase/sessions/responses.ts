@@ -15,6 +15,9 @@ import { clx } from ".."
 import { SessionOption, SessionResponse } from "@/lib/types"
 import BaseStore from "../store"
 
+/**
+ * Manages session responses to session questions
+ */
 export default class ResponseStore extends BaseStore {
   public doc(sid: string, qid: string, rid: string) {
     return doc(

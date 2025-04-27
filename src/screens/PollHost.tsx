@@ -31,10 +31,11 @@ export default function PollHost() {
         void navigate("/dashboard")
       } else if (session.state === SessionState.FINISHED) {
         /* session finished successfully! */
-        void navigate("/dashboard")
+        void navigate(`/poll/session/${sref.id}/results`)
+        /* view results */
       }
     }
-  }, [session, sessionLoading, navigate])
+  }, [session, sessionLoading, navigate, sref])
 
   useEffect(() => {
     /* ensure user is host */
