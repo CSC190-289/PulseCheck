@@ -44,7 +44,7 @@ export default function MostRecentScores(props:mrpsd) {
   if(!snapshot?.data()){
     return <NoRecentPolls/>
   }
-  /* TODO - create skeleton when sub is undefined */
+
 
   const submitted_at = sub?.submitted_at
 

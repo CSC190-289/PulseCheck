@@ -16,6 +16,8 @@ import api from "@/lib/api/firebase"
 import { Add } from "@mui/icons-material"
 import { RA } from "@/styles"
 
+
+
 export default function PollEditor() {
   const params = useParams()
   const id = params.id ?? ""
@@ -35,6 +37,8 @@ export default function PollEditor() {
       serverTimestamps: "previous",
     },
   })
+
+
 
   // console.debug("pe.poll", poll, loading, error)
 
@@ -62,6 +66,7 @@ export default function PollEditor() {
   }
 
   return (
+    
     <React.Fragment>
       {poll && <Header pid={id} poll={poll} />}
       <Container sx={{ marginBlock: 2 }} maxWidth='xl'>

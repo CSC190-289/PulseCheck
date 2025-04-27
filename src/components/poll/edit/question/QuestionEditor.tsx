@@ -67,8 +67,7 @@ export default function QuestionEditor(props: Props) {
           <PromptTypeField pid={pid} qid={qid} promptType={data.prompt_type} />
           <PromptOptionList
             options={data.options}
-            promptType={data.prompt_type}
-          />
+            promptType={data.prompt_type} />
           <Box flex={1} display={"flex"} justifyContent={"center"}>
             <Button startIcon={<Add />} onClick={handleAddOption}>
               Add Option
@@ -80,8 +79,7 @@ export default function QuestionEditor(props: Props) {
           qid={qid}
           points={data.points}
           anonymous={data.anonymous}
-          time={data.time}
-        />
+          time={data.time} />
       </AccordionDetails>
       <AccordionActions>
         <AddTagButton pid={pid} qid={qid} />
