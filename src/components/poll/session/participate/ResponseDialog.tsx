@@ -7,15 +7,13 @@ import {
   Box,
   Stack,
   DialogContent,
-  Slide,
   Card,
   CardContent,
 } from "@mui/material"
 import Choice from "./Choice"
 
 import { DocumentReference } from "firebase/firestore"
-import React, { useEffect, useState } from "react"
-import { TransitionProps } from "@mui/material/transitions"
+import { useEffect, useState } from "react"
 import api from "@/lib/api/firebase"
 import { useAuthContext } from "@/lib/hooks"
 import Image from "mui-image"
