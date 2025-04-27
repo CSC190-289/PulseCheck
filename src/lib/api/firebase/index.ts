@@ -26,7 +26,9 @@ const BUCKET_URL = "gs://pulsecheck-7cf2b.firebasestorage.app"
 
 const app = initializeApp(config)
 const vertexAI = getVertexAI(app)
-export const geminiModel = getGenerativeModel(vertexAI, {model: "gemini-2.0-flash-001"})
+export const geminiModel = getGenerativeModel(vertexAI, {
+  model: "gemini-2.0-flash-001",
+})
 export const auth = getAuth(app)
 export const firestore = getFirestore(app)
 export const storage = getStorage(app, BUCKET_URL)
