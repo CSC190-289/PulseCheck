@@ -114,8 +114,9 @@ export function tstos(timestamp: Timestamp) {
   )
 
   let timeAgo = ""
-
-  if (diffInSeconds < 60) {
+  if (diffInSeconds < 5) {
+    timeAgo = "Just Now"
+  } else if (diffInSeconds < 60) {
     timeAgo = `${diffInSeconds}s ago`
   } else if (diffInSeconds < 3600) {
     const diffInMinutes = Math.floor(diffInSeconds / 60)
@@ -164,6 +165,7 @@ export function getMedian(arr: number[]): number {
 
 /**
  * @brief Converts 0-100 scale number to red-green color
+ * @deprecated
  */
 export function ntogc(score: number | undefined): string {
   const clamped = Math.max(0, Math.min(100, score ?? NaN))

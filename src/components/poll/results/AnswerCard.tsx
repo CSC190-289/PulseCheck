@@ -2,26 +2,22 @@ import { SessionQuestion } from "@/lib/types"
 import { Typography, Card, CardContent, CardMedia } from "@mui/material"
 import { DocumentReference, getDoc } from "firebase/firestore"
 import { useEffect, useState } from "react"
+
 interface Props {
   qref: DocumentReference<SessionQuestion>
 }
+
+// const img = "REPLACE WITH IMGGGG"
+const title = "Getting Stated?"
+// const userAnswer = "Yes"
+// const correctAnswer = "Yes"
 
 /**
  * UI for answer card showing users what was the right answer
  * @author VerySirias
  * @returns {JSX.Element}
  */
-
-/*TODO 
-If IMG SHOW ELSE SHOW NOTHING
-*/
-
-const img = "REPLACE WITH IMGGGG"
-const title = "Getting Stated?"
-// const userAnswer = "Yes"
-// const correctAnswer = "Yes"
-
-export default function SubAnswerCard(props: Props) {
+export default function AnswerCard(props: Props) {
   // null for testing
   const { question, option } = props
 

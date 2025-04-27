@@ -11,7 +11,6 @@ import {
   where,
   orderBy,
   limit,
-  QuerySnapshot,
   DocumentReference,
   QueryDocumentSnapshot,
 } from "firebase/firestore"
@@ -23,7 +22,6 @@ import {
   Submission,
 } from "@/lib/types"
 import api, { clx } from "."
-import { User } from "firebase/auth"
 interface UserResponse {
   question: SessionQuestion
   response: SessionResponse | null
@@ -52,11 +50,14 @@ export default class SubmissionStore extends BaseStore {
     await updateDoc(ref, payload)
   }
 
-  public async create(payload: Partial<Submission>) {
-    await addDoc(this.collect(), {
+  public async create(
+    payload: Partial<Submission>
+  ): Promise<DocumentReference<Submission>> {
+    const ref = await addDoc(this.collect(), {
       ...payload,
       submitted_at: serverTimestamp(),
     })
+    return ref as DocumentReference<Submission>
   }
 
   public async getUserResponses(

@@ -29,14 +29,14 @@ export default function App() {
         <Route path='/poll/:id/edit' element={<Screen.PollEditor />} />
         <Route
           path='/poll/submission/:id/results'
-          element={<Screen.PollResults />}
+          element={<Screen.SubmissionResults />}
         />
         <Route
           path='/poll/session/:id/results'
-          element={<Screen.PollHostResults />}
+          element={<Screen.SessionResults />}
         />
         <Route path='/poll/history/' element={<Screen.PollHistory />} />
-        <Route path='/poll/:id/overview' element={<Screen.PollView />} />
+        {/* <Route path='/poll/:id/overview' element={<Screen.PollView />} /> */}
         <Route path='/profile' element={<Screen.Profile />} />
         <Route path='*' element={<Screen.NotFound />} />
       </Routes>

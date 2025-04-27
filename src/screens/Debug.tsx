@@ -1,4 +1,4 @@
-import UserAvatar from "@/components/poll/submission/UserAvatar"
+import UserAvatar from "@/components/poll/results/UserAvatar"
 import api from "@/lib/api/firebase"
 import { Button, Container, Typography } from "@mui/material"
 

@@ -52,7 +52,6 @@ export enum clx {
   /* Collection for storing user submissions for poll sessions */
   submissions = "submissions",
   /* Collection for storing user answers of the current question */
-
 }
 
 /**

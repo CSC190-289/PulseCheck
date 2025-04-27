@@ -39,13 +39,22 @@ export function PollParticipate() {
           message: "Poll Session Finished!",
           type: "success",
         })
-        void navigate("/poll/join")
+        /* navigate to submission */
+        // void navigate("/poll/join")
+        if (!user) return
+        api.sessions.submissions
+          .get(sref.id, user.uid)
+          .then((x) => {
+            void navigate(`/poll/submission/${x.ref.id}/results`)
+          })
+          .catch((err) => console.debug(err))
       }
     }
   }, [session, sessionLoading, snackbar, navigate])
 
   useEffect(() => {
     const int = setInterval(() => {
+      /* check to ensure user is in session every few seconds */
       const aux = async () => {
         if (!user && !loading) {
           void navigate("/")

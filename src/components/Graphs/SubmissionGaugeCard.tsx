@@ -13,11 +13,11 @@ import { useAuthContext } from "@/lib/hooks"
 import { useNavigate } from "react-router-dom"
 import PulseGauge from "./PulseGauge"
 
-interface mrpsd {
+interface Props {
   mrpsd: number
 }
 
-export default function MostRecentScores(props:mrpsd) {
+export default function SubmissionGaugeCard(props: Props) {
   const { mrpsd } = props
   const { user } = useAuthContext()
   const [snapshot, setSnapshot] = useState<
@@ -52,34 +52,47 @@ export default function MostRecentScores(props:mrpsd) {
   }
 
   /*mrpsd == 0 is for post poll statistics*/
-  if (mrpsd==0){
+  if (mrpsd === 0) {
+    return (
+      <Card variant='outlined'>
+        {/* <CardActionArea onClick={onClick}> */}
+        <CardContent>
+          <Typography variant='h6' align='center'>
+            Your Score
+          </Typography>
+          <Box display={"flex"} justifyContent={"center"}>
+            <PulseGauge score={sub?.score_100 ?? 0} />
+          </Box>
+          <Box>
+            <Typography
+              variant='h6'
+              fontWeight={"bold"}
+              align='center'
+              gutterBottom>
+              {sub?.title}
+            </Typography>
+
+            <Typography variant='body2' color='textSecondary' align='center'>
+              Submitted: {submitted_at?.toDate().toLocaleDateString()}{" "}
+              {submitted_at?.toDate().toLocaleTimeString()}
+            </Typography>
+          </Box>
+        </CardContent>
+        {/* </CardActionArea> */}
+      </Card>
+    )
+  }
+  /*mrpsd == 1 is for Most recent Poll*/
+  if (mrpsd === 1) {
     return (
       <Card variant='outlined' sx={{ mt: 2 }}>
         <CardActionArea onClick={onClick}>
           <CardContent>
-  
             <Typography variant='h6' align='center'>
-              Your Total Sorce Is
+              Your Latest Score
             </Typography>
             <Box display={"flex"} justifyContent={"center"}>
               <PulseGauge score={sub?.score_100 ?? 0} />
-              {/* <Gauge
-                cornerRadius={6}
-                width={256}
-                value={score}
-                startAngle={-110}
-                endAngle={110}
-                fontSize={24}
-                text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                sx={(theme) => ({
-                  [`& .${gaugeClasses.valueArc}`]: {
-                    fill: theme.palette.action,
-                  },
-                  [`& .${gaugeClasses.referenceArc}`]: {
-                    fill: theme.palette.text.disabled,
-                  },
-                })}
-              /> */}
             </Box>
             <Box>
               <Typography
@@ -89,7 +102,7 @@ export default function MostRecentScores(props:mrpsd) {
                 gutterBottom>
                 {sub?.title}
               </Typography>
-  
+
               <Typography variant='body2' color='textSecondary' align='center'>
                 Submitted: {submitted_at?.toDate().toLocaleDateString()}{" "}
                 {submitted_at?.toDate().toLocaleTimeString()}
@@ -100,60 +113,11 @@ export default function MostRecentScores(props:mrpsd) {
       </Card>
     )
   }
-  /*mrpsd == 1 is for Most recent Poll*/
-  if (mrpsd==1){
-    return (
-      <Card variant='outlined' sx={{ mt: 2 }}>
-        <CardActionArea onClick={onClick}>
-          <CardContent>
-  
-            <Typography variant='h6' align='center'>
-              Most Recent Poll
-            </Typography>
-            <Box display={"flex"} justifyContent={"center"}>
-              <PulseGauge score={sub?.score_100 ?? 0} />
-              {/* <Gauge
-                cornerRadius={6}
-                width={256}
-                value={score}
-                startAngle={-110}
-                endAngle={110}
-                fontSize={24}
-                text={({ value, valueMax }) => `${value} / ${valueMax}`}
-                sx={(theme) => ({
-                  [`& .${gaugeClasses.valueArc}`]: {
-                    fill: theme.palette.action,
-                  },
-                  [`& .${gaugeClasses.referenceArc}`]: {
-                    fill: theme.palette.text.disabled,
-                  },
-                })}
-              /> */}
-            </Box>
-            <Box>
-              <Typography
-                variant='h6'
-                fontWeight={"bold"}
-                align='center'
-                gutterBottom>
-                {sub?.title}
-              </Typography>
-  
-              <Typography variant='body2' color='textSecondary' align='center'>
-                Submitted: {submitted_at?.toDate().toLocaleDateString()}{" "}
-                {submitted_at?.toDate().toLocaleTimeString()}
-              </Typography>
-            </Box>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    )}
 
   return (
     <Card variant='outlined' sx={{ mt: 2 }}>
       <CardActionArea onClick={onClick}>
         <CardContent>
-
           <Typography variant='h6' align='center'>
             Most Recent Poll
           </Typography>
@@ -194,5 +158,5 @@ export default function MostRecentScores(props:mrpsd) {
         </CardContent>
       </CardActionArea>
     </Card>
-  )}
-
+  )
+}

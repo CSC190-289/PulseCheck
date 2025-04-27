@@ -11,6 +11,7 @@ import BaseStore from "../store"
 import { clx } from ".."
 import { Session, SessionUser } from "@/lib/types"
 
+/** Manages users in a session */
 export default class UserStore extends BaseStore {
   public doc(sid: string, uid: string): DocumentReference<SessionUser> {
     return doc(

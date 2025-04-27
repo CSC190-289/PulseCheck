@@ -20,7 +20,6 @@ export default function PulseGauge(props: PulseGaugeProps) {
     <React.Fragment>
       <Gauge
         cornerRadius={6}
-        width={256}
         value={+score.toFixed()}
         startAngle={-110}
         endAngle={110}
