@@ -8,7 +8,6 @@ import {
 } from "@mui/material"
 import { Submission } from "@/lib/types"
 import { stoc } from "@/utils"
-import { RA } from "@/styles"
 import { useNavigate } from "react-router-dom"
 import { DocumentReference } from "firebase/firestore"
 

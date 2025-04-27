@@ -1,5 +1,5 @@
 import { Submission } from "@/lib/types"
-import { ntogc, stoc, stoni, tstos } from "@/utils"
+import { stoc, stoni, tstos } from "@/utils"
 import {
   Avatar,
   Box,
@@ -24,6 +24,8 @@ export default function SubmissionCard(props: SubmissionCardProps) {
   const onClick = () => {
     void navigate(`/poll/submission/${sid}/results`)
   }
+
+  console.debug("subId", sid)
 
   return (
     <React.Fragment>

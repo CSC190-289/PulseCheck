@@ -1,5 +1,5 @@
 import { SessionSummary } from "@/lib/types"
-import { Typography, Grid2, Card, CardContent, Divider } from "@mui/material"
+import { Typography, Grid2, Card, CardContent } from "@mui/material"
 
 interface Props {
   sum?: SessionSummary | null

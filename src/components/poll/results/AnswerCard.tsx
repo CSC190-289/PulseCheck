@@ -19,7 +19,7 @@ const title = "Getting Stated?"
  */
 export default function AnswerCard(props: Props) {
   // null for testing
-  const { question, option } = props
+  //const { question, option } = props
 
   // Stores question data
   const [questionData, setQuestionData] = useState<SessionQuestion | null>(null)
@@ -46,15 +46,15 @@ export default function AnswerCard(props: Props) {
   const correctAnswer = "b"
 
   const handleCorrect = () => {
-    if (userAnswer === correctAnswer) {
-      return "Correct Answer!"
-    }
+    // if (userAnswer === correctAnswer) {
+    //   return "Correct Answer!"
+    // }
     return `Correct Answer: ${correctAnswer}`
   }
   const handlebgColor = () => {
-    if (userAnswer === correctAnswer) {
-      return ""
-    }
+    // if (userAnswer === correctAnswer) {
+    //   return ""
+    // }
     return "pink"
   }
 
