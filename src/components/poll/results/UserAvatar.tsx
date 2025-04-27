@@ -8,10 +8,9 @@ interface UserAvatarProps {
 }
 
 export default function UserAvatar(props: UserAvatarProps) {
-  const { uid, displayName } = props
+  const { displayName } = props
 
   /* TODO - fetch user's profile picture from /users collection */
-  console.debug(`uid:`, uid)
 
   return (
     <React.Fragment>

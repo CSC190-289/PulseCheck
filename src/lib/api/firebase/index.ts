@@ -58,11 +58,25 @@ export enum clx {
   /* Collection for storing user answers of the current question */
 }
 
-type ExtractResponse = { box_2d: number[]; text: string }[]
+export async function extractTextWIP(uri: string) {
+  const prompt = "Extract Text! Return it as formatted text per page."
+  const image = {
+    fileData: {
+      mimeType: "application/pdf",
+      fileUri: uri,
+    },
+  }
+  const payload = [prompt, image]
+  console.debug("processing...")
+  const result = await model.generateContent(payload)
+  const res = result.response
+  const text = res.text()
+  console.debug(text)
+}
 
-export async function run() {
+export async function extractText() {
   // Provide a prompt that contains text
-  const prompt = "Extract Text! Return it, but not JSON format."
+  const prompt = "Extract Text! Return it as formatted text per page."
   // To generate text output, call generateContent with the text input
   const imagePart = {
     fileData: {
@@ -76,12 +90,10 @@ export async function run() {
   const response = result.response
   const text = response.text()
   console.debug(text)
-  const payload: ExtractResponse = JSON.parse(text) as ExtractResponse
-  for (const x of payload) {
-    console.debug(x.text)
-  }
-
-  console.debug(text)
+  // const payload: ExtractResponse = JSON.parse(text) as ExtractResponse
+  // for (const x of payload) {
+  //   console.debug(x.text)
+  // }
 }
 
 /**
