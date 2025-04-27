@@ -1,13 +1,4 @@
-import {
-  Container,
-  Typography,
-  Box,
-  Stack,
-  Grid2,
-  Card,
-  CardContent,
-  Divider,
-} from "@mui/material"
+import { Container, Typography, Stack, Grid2, Divider } from "@mui/material"
 import SessionGaugeCard from "@/components/graphs/SessionGaugeCard"
 import Header from "@/components/poll/results/session/Header"
 import PollMetricsCard from "@/components/poll/results/PollMetricsCard"
@@ -18,7 +9,6 @@ import React, { useEffect, useState } from "react"
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore"
 import { Submission } from "@/lib/types"
 import ScoreCard from "@/components/poll/results/submission/ScoreCard"
-import { RA } from "@/styles"
 import { ntops } from "@/utils"
 import SessionScatterCard from "@/components/graphs/SessionScatterCharrt"
 

@@ -50,7 +50,7 @@ export function PollParticipate() {
           .catch((err) => console.debug(err))
       }
     }
-  }, [session, sessionLoading, snackbar, navigate])
+  }, [session, sessionLoading, snackbar, navigate, sref.id, user])
 
   useEffect(() => {
     const int = setInterval(() => {
