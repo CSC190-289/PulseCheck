@@ -176,7 +176,22 @@ export default class SessionStore extends BaseStore {
       throw new Error(`Unauthorized access to poll!`)
     }
     const session = await addDoc(this.collect(), {
-      summary: null,
+      summary: {
+        total_participants: NaN,
+        average: NaN,
+        average_100: NaN,
+        high: NaN,
+        high_100: NaN,
+        low: NaN,
+        low_100: NaN,
+        lower_quartile: NaN,
+        lower_quartile_100: NaN,
+        median: NaN,
+        median_100: NaN,
+        upper_quartile: NaN,
+        upper_quartile_100: NaN,
+        max_score: NaN,
+      },
       host: uref,
       poll: pref,
       room_code: generateRoomCode(),
@@ -221,6 +236,7 @@ export default class SessionStore extends BaseStore {
     const question_refs: DocumentReference<SessionQuestion>[] = []
     /* iterate all of the poll's questions */
     let maxScore = 0
+
     for (const q of poll.questions) {
       /* fetch the question's data */
       const pq_ss = await getDoc(q)
@@ -256,9 +272,6 @@ export default class SessionStore extends BaseStore {
       }
     }
     await this.updateByRef(ref, {
-      state: SessionState.IN_PROGRESS,
-      questions_left: question_refs,
-      questions: question_refs,
       summary: {
         total_participants: NaN,
         average: NaN,
@@ -275,6 +288,9 @@ export default class SessionStore extends BaseStore {
         upper_quartile_100: NaN,
         max_score: maxScore,
       },
+      state: SessionState.IN_PROGRESS,
+      questions_left: question_refs,
+      questions: question_refs,
     })
   }
 

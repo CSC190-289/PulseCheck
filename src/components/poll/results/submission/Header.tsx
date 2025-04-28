@@ -26,7 +26,7 @@ export default function Header(props: HeaderProps) {
   return (
     <AppBar color='inherit' position='relative'>
       <Toolbar>
-        <Stack direction={"row"} flexGrow={1} spacing={1}>
+        <Stack direction={"row"} alignItems={"center"} flexGrow={1}>
           <IconButton onClick={onClick}>
             <ArrowBack color='inherit' />
           </IconButton>

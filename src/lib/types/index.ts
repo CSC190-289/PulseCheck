@@ -103,7 +103,7 @@ export interface SessionSummary {
 
 /** data model of a poll session document */
 export interface Session {
-  summary: SessionSummary | null
+  summary: SessionSummary
   host: DocumentReference<User>
   poll: DocumentReference<Poll>
   room_code: string
