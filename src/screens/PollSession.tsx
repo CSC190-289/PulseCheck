@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import api from "@/core/api/firebase"
+import api from "@/lib/api/firebase"
 import { Typography, Box, Button, LinearProgress } from "@mui/material"
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import useSnackbar from "@/core/hooks/useSnackbar"
-import { useAuthContext } from "@/core/hooks"
+import useSnackbar from "@/lib/hooks/useSnackbar"
+import { useAuthContext } from "@/lib/hooks"
 
 const CHECK_INTERVAL_MS = 2000
 
@@ -41,7 +41,7 @@ export default function PollSession() {
         } else {
           setStatus("Waiting to Join Session...")
         }
-      } catch (err: unknown) {
+      } catch (err) {
         console.debug(err)
       }
     }

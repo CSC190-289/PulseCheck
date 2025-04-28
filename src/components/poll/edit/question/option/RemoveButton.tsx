@@ -1,5 +1,5 @@
-import api from "@/core/api/firebase"
-import { PromptOption } from "@/core/types"
+import api from "@/lib/api/firebase"
+import { PromptOption } from "@/lib/types"
 import { Clear } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
 import { DocumentReference } from "firebase/firestore"
@@ -10,17 +10,12 @@ interface Props {
 }
 
 /**
- * @todo add docs
+ * Deletes the prompt option using the given reference document.
  * @author Camputron, VerySirias
  */
 export default function RemoveButton({ ref }: Props) {
-  /* TODO - Implement PromptOption remove function
-  Use the API store to delete this option in firestore.
-   */
-
   const handleRemove = () => {
-    /* TODO - delete this option */
-    console.debug(`remove option(${ref.id})`)
+    // console.debug(`remove option(${ref.id})`)
     void api.polls.questions.options.deleteByRef(ref)
   }
 

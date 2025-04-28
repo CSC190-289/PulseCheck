@@ -1,4 +1,4 @@
-import { Session, SessionOption } from "@/core/types"
+import { Session, SessionOption } from "@/lib/types"
 import {
   Dialog,
   Toolbar,
@@ -7,15 +7,18 @@ import {
   Box,
   Stack,
   DialogContent,
-  Slide,
+  Card,
+  CardContent,
 } from "@mui/material"
 import Choice from "./Choice"
 
 import { DocumentReference } from "firebase/firestore"
-import React, { useEffect, useState } from "react"
-import { TransitionProps } from "@mui/material/transitions"
-import api from "@/core/api/firebase"
-import { useAuthContext } from "@/core/hooks"
+import { useEffect, useState } from "react"
+import api from "@/lib/api/firebase"
+import { useAuthContext } from "@/lib/hooks"
+import Image from "mui-image"
+import { QuestionAnswer } from "@mui/icons-material"
+import SlideUpTransition from "@/components/transition/SlideUpTransition"
 
 interface ResponseDialogProps {
   sref: DocumentReference<Session>
@@ -36,6 +39,14 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   >([])
 
   useEffect(() => {
+    return () => {
+      console.debug("goodbye world")
+      setSelectedOptions([])
+    }
+  }, [currentQuestion])
+
+  useEffect(() => {
+    /* save users response */
     if (auth.user && currentQuestion) {
       void api.sessions.questions.responses.answer(
         sref.id,
@@ -52,56 +63,52 @@ export default function ResponseDialog(props: ResponseDialogProps) {
       open={currentQuestion !== null}
       disablePortal={false}
       slots={{
-        transition: Transition,
+        transition: SlideUpTransition,
       }}>
-      <AppBar position='relative'>
+      <AppBar position='relative' enableColorOnDark>
         <Toolbar>
-          <Typography>{currentQuestion?.prompt}</Typography>
+          <Stack spacing={1} direction={"row"}>
+            <QuestionAnswer />
+            <Typography fontWeight={"bold"}>
+              {`Question (${currentQuestion?.prompt_type})`}
+            </Typography>
+          </Stack>
         </Toolbar>
       </AppBar>
       <DialogContent>
-        <Box>
-          {currentQuestion && (
-            <Box mb={1}>
-              {currentQuestion.prompt_img && (
-                <Stack
-                  sx={{ justifyContent: "center", alignItems: "center" }}
-                  direction={"row"}
-                  mb={1}>
-                  <img
-                    style={{
-                      width: 400,
-                      objectFit: "contain",
-                    }}
-                    src={currentQuestion.prompt_img}
-                  />
-                </Stack>
-              )}
-
-              <Stack spacing={3} mt={3} direction={"column"}>
-                {currentQuestion.options.map((x) => (
-                  <Choice
-                    ref={x.ref}
-                    text={x.text}
-                    promptType={currentQuestion.prompt_type}
-                    theChosenOnes={selectedOptions}
-                    setTheChosenOnes={setSelectedOptions}
-                  />
-                ))}
-              </Stack>
-            </Box>
-          )}
-        </Box>
+        <Card sx={{ mb: 1 }}>
+          <CardContent>
+            {/* <Typography gutterBottom variant='body2' color='textSecondary'>
+              Question
+            </Typography> */}
+            {currentQuestion?.prompt
+              .split(/\r\n|\r|\n/)
+              .map((x, i) => <Typography key={i}>{x}</Typography>)}
+          </CardContent>
+        </Card>
+        {currentQuestion?.prompt_img && (
+          <Box display={"flex"} justifyContent={"center"}>
+            <Image width={720} src={currentQuestion.prompt_img} />
+          </Box>
+        )}
+        {currentQuestion && (
+          <Box mb={1}>
+            {/* render question choices */}
+            <Stack spacing={2} mt={2} direction={"column"}>
+              {currentQuestion.options.map((x) => (
+                <Choice
+                  key={x.ref.path}
+                  ref={x.ref}
+                  text={x.text}
+                  promptType={currentQuestion.prompt_type}
+                  theChosenOnes={selectedOptions}
+                  setTheChosenOnes={setSelectedOptions}
+                />
+              ))}
+            </Stack>
+          </Box>
+        )}
       </DialogContent>
     </Dialog>
   )
 }
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement
-  },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction='up' ref={ref} {...props} />
-})

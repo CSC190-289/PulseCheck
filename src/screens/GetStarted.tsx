@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import GuestJoin from "@/components/poll/join/GuestJoin"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
+import useGyro from "@/lib/hooks/useGyro"
 import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
 export default function GetStarted() {
+  useGyro()
   const auth = useAuthContext()
   const [params] = useSearchParams()
   const navigate = useNavigate()

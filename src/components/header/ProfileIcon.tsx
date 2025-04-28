@@ -1,6 +1,6 @@
-import api from "@/core/api/firebase"
-import { useAuthContext } from "@/core/hooks"
-import { User } from "@/core/types"
+import api from "@/lib/api/firebase"
+import { useAuthContext } from "@/lib/hooks"
+import { User } from "@/lib/types"
 import { stoc, stoni } from "@/utils"
 import {
   Avatar,

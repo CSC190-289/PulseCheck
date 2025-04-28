@@ -1,7 +1,7 @@
 import { IconButton, Menu } from "@mui/material"
 import { Menu as MenuIcon } from "@mui/icons-material"
 import React, { useState } from "react"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 import GuestMenuList from "./GuestMenuList"
 import AuthMenuList from "./AuthMenuList"
 import ProfileIcon from "./ProfileIcon"

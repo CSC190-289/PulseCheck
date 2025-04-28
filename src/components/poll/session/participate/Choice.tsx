@@ -1,4 +1,4 @@
-import { PromptType } from "@/core/types"
+import { PromptType } from "@/lib/types"
 import {
   Card,
   CardActionArea,
@@ -8,7 +8,7 @@ import {
 } from "@mui/material"
 import { Dispatch, SetStateAction } from "react"
 import { DocumentReference, refEqual } from "firebase/firestore"
-import { SessionOption } from "@/core/types"
+import { SessionOption } from "@/lib/types"
 
 //chosenones changes to specify what type it is
 //string of objects in array
@@ -25,13 +25,8 @@ interface ChoiceProps {
 
 export default function Choice(props: ChoiceProps) {
   const { text, ref, promptType, theChosenOnes, setTheChosenOnes } = props
-  console.debug(theChosenOnes)
-  const check = () => {
-    console.debug(props.promptType)
-
-    //option object creation
-    // const option = { ref, text }
-
+  const handleCheck = (event: React.SyntheticEvent) => {
+    event.preventDefault()
     switch (promptType) {
       case "multiple-choice": {
         setTheChosenOnes([ref])
@@ -57,14 +52,15 @@ export default function Choice(props: ChoiceProps) {
   }
   return (
     <Card>
-      <CardActionArea onClick={check}>
+      <CardActionArea onClick={handleCheck}>
         <FormControlLabel
+          onChange={handleCheck}
           value={props.text}
           sx={{ m: 1 }}
           checked={Boolean(theChosenOnes.find((x) => refEqual(x, ref)))}
           control={promptType === "multi-select" ? <Checkbox /> : <Radio />}
           label={text}
-          onClick={check}
+          // onClick={check}
         />
       </CardActionArea>
     </Card>

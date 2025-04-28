@@ -1,13 +1,14 @@
-import { IconButton, Radio } from "@mui/material"
+import { Checkbox, Radio } from "@mui/material"
 import React, { useEffect, useState } from "react"
-import useSnackbar from "@/core/hooks/useSnackbar"
-import api from "@/core/api/firebase"
+import useSnackbar from "@/lib/hooks/useSnackbar"
+import api from "@/lib/api/firebase"
 import { DocumentReference } from "firebase/firestore"
-import { PromptOption } from "@/core/types"
+import { PromptOption, PromptType } from "@/lib/types"
 
 interface Props {
   ref: DocumentReference<PromptOption>
   correct: boolean
+  promptType: PromptType
 }
 
 const SAVE_DELAY = 1000
@@ -18,13 +19,9 @@ const SAVE_DELAY = 1000
  * @returns {JSX.Element}
  */
 export default function CorrectToggleButton(props: Props) {
-  const { ref } = props
+  const { ref, promptType } = props
   const [correct, setCorrect] = useState(props.correct)
   const snackbar = useSnackbar()
-  /* TODO - Implement PromptOption toggle to update firestore
-  The state is already implement, there is a debounce delay to update
-  firestore. API store update the document.
-   */
 
   useEffect(() => {
     async function saveChecked(bool: boolean) {
@@ -53,9 +50,13 @@ export default function CorrectToggleButton(props: Props) {
 
   return (
     <React.Fragment>
-      <IconButton>
+      {/* <IconButton> */}
+      {promptType === "multi-select" ? (
+        <Checkbox checked={correct} onClick={handleCheckToggle} />
+      ) : (
         <Radio checked={correct} onClick={handleCheckToggle} />
-      </IconButton>
+      )}
+      {/* </IconButton> */}
     </React.Fragment>
   )
 }

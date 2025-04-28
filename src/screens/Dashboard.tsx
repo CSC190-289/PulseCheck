@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom"
 import { Button, Container, Typography, Grid2 } from "@mui/material"
-import api from "@/core/api/firebase"
-import { useAuthContext } from "@/core/hooks"
+import api from "@/lib/api/firebase"
+import { useAuthContext } from "@/lib/hooks"
 import { useCollectionOnce } from "react-firebase-hooks/firestore"
 import UserPollCard from "@/components/dashboard/UserPollCard"
 import { Add, HowToVote } from "@mui/icons-material"
+import MostRecentGaugeCard from "@/components/graphs/MostRecentGaugeCard"
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -28,8 +29,9 @@ export default function Dashboard() {
   }
 
   return (
-    <Container maxWidth='md' sx={{ textAlign: "initial" }}>
-      <Grid2 container mt={2} spacing={2}>
+    <Container maxWidth='md' sx={{ textAlign: "initial", marginBlock: 2 }}>
+      <MostRecentGaugeCard mrpsd={1} />
+      <Grid2 container mt={2} spacing={1}>
         <Grid2 size={6}>
           <Button
             startIcon={<HowToVote />}

@@ -2,7 +2,7 @@ import { Box, Button, ButtonProps, LinearProgress } from "@mui/material"
 import React, { useState } from "react"
 
 type AsyncButtonProps<T> = {
-  callback: () => Promise<T>
+  callback?: () => Promise<T>
   onError?: (err: unknown) => void
 } & ButtonProps
 
@@ -14,14 +14,19 @@ export default function AsyncButton<T>(props: AsyncButtonProps<T>) {
     async function aux() {
       setDisabled(true)
       try {
-        await callback()
+        if (callback !== undefined) {
+          await callback()
+        }
       } catch (err: unknown) {
         console.debug(err)
         if (onError) {
           onError(err)
         }
       } finally {
-        setDisabled(false)
+        const MS = 500
+        setTimeout(() => {
+          setDisabled(false)
+        }, MS)
       }
     }
     void aux()

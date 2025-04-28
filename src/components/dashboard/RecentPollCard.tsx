@@ -12,7 +12,7 @@ export default function RecentPollCard({
   result,
 }: RecentPollCardProps) {
   return (
-    <RA.Bounce triggerOnce>
+    <RA.Fade triggerOnce>
       <Card raised>
         <CardContent>
           <Typography mt={1} variant='h5' gutterBottom>
@@ -21,6 +21,6 @@ export default function RecentPollCard({
           <Typography>{result}</Typography>
         </CardContent>
       </Card>
-    </RA.Bounce>
+    </RA.Fade>
   )
 }

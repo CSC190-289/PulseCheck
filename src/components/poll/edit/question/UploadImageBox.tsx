@@ -10,9 +10,9 @@ import {
 import { styled } from "@mui/material/styles"
 import { useState, useEffect } from "react"
 import React from "react"
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import { doc, getDoc, updateDoc } from "firebase/firestore"
-import { firestore } from "@/core/api/firebase"
+import { firestore, storage } from "@/lib/api/firebase"
 import { CloudUpload, Delete } from "@mui/icons-material"
 interface Props {
   pid: string
@@ -40,8 +40,10 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 })
 
-const storage = getStorage()
-
+/**
+ * Handles uploading question images to fire cloud storage.
+ * @author Bran7tastic
+ */
 export default function UploadImageBox(props: Props) {
   /**
    * @Bran7astic
@@ -91,7 +93,7 @@ export default function UploadImageBox(props: Props) {
   }, [props.url])
 
   useEffect(() => {
-    console.debug("Image URL: ", imageURL)
+    // console.debug("Image URL: ", imageURL)
   }, [imageURL])
   // Asynchronously uploads file to cloud firestore and sets image url
   const fileUpload = async (fileToUpload: File, storagePath: string) => {
@@ -119,7 +121,7 @@ export default function UploadImageBox(props: Props) {
   }
 
   const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.debug("File Uploading")
+    // console.debug("File Uploading")
     const processFile = async () => {
       const selectedFile = event.target.files?.[0]
       if (selectedFile) {
@@ -170,18 +172,18 @@ export default function UploadImageBox(props: Props) {
       <Card
         variant='outlined'
         sx={{
-          padding: 5,
-          borderStyle: "dashed",
+          // padding: 5,
+          borderStyle: imageURL ? "none" : "dashed",
           borderWidth: 2,
-          borderRadius: 5,
+          borderRadius: 3,
         }}>
         {imageURL && (
           <CardMedia
             sx={{ objectFit: "contain" }}
             component='img'
             alt='img'
-            height='200'
-            width='113'
+            // height='200'
+            // width='113'
             image={imageURL}
           />
         )}
@@ -194,7 +196,11 @@ export default function UploadImageBox(props: Props) {
             <Tooltip title='Upload Image'>
               <IconButton component='label' color='primary' size='large'>
                 <CloudUpload fontSize='inherit' />
-                <VisuallyHiddenInput type='file' onChange={handleFile} />
+                <VisuallyHiddenInput
+                  type='file'
+                  accept='image/*'
+                  onChange={handleFile}
+                />
               </IconButton>
             </Tooltip>
           )}

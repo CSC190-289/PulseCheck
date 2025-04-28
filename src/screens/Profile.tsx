@@ -19,10 +19,10 @@ import { Edit, Check, Close } from "@mui/icons-material"
 import { RA } from "@/styles"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { auth } from "@/core/api/firebase"
+import { auth } from "@/lib/api/firebase"
 import { useAuthState } from "react-firebase-hooks/auth"
-import useSnackbar from "@/core/hooks/useSnackbar"
-import { firestore } from "@/core/api/firebase"
+import useSnackbar from "@/lib/hooks/useSnackbar"
+import { firestore } from "@/lib/api/firebase"
 import { doc, Timestamp, getDoc, updateDoc } from "firebase/firestore"
 import { updateEmail, updateProfile } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
@@ -63,9 +63,11 @@ export default function Profile() {
   const [tempVal, setTempVal] = useState("")
   // const [notif, setNotif] = useState({ show: false, message: "", type: "" })
 
-  console.debug("originalEmail", originalEmail)
-  console.debug("name", name)
-  console.debug("originalName", originalName)
+  useEffect(() => {
+    console.debug("originalEmail", originalEmail)
+    console.debug("name", name)
+    console.debug("originalName", originalName)
+  }, [originalEmail, name, originalName])
 
   useEffect(() => {
     // Load user data on component mount
@@ -146,6 +148,19 @@ export default function Profile() {
     setSave(true)
 
     try {
+      // Check if the value has actually changed
+      if (field === "displayName" && tempVal === originalName) {
+        // No change was made to display name
+        cancelEdit()
+        setSave(false)
+        return
+      } else if (field === "email" && tempVal === originalEmail) {
+        // No change was made to email
+        cancelEdit()
+        setSave(false)
+        return
+      }
+
       const userRef = doc(firestore, "users", user.uid)
 
       if (field === "displayName") {
@@ -175,7 +190,6 @@ export default function Profile() {
         message: "Profile updated successfully",
         type: "success",
       })
-      //edit to snackbar so that message loads on top
     } catch (err: unknown) {
       console.error("Error updating", err)
       if (err instanceof FirebaseError) {
@@ -404,12 +418,12 @@ export default function Profile() {
                   borderRadius: 1,
                   p: 2,
                 }}>
-                <Box sx={{ textAlign: "center", mb: 2 }}>
+                <Box sx={{ mb: 2 }}>
                   <Typography variant='body2' color='textSecondary'>
                     Theme Appearance
                   </Typography>
                 </Box>
-                <Box>
+                <Box textAlign={"initial"}>
                   <ThemeSelect fullWidth />
                 </Box>
               </Box>

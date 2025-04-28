@@ -9,12 +9,12 @@ import {
 } from "@mui/material"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import React, { useEffect, useRef, useState } from "react"
-import api from "@/core/api/firebase"
-import useSnackbar from "@/core/hooks/useSnackbar"
+import api from "@/lib/api/firebase"
+import useSnackbar from "@/lib/hooks/useSnackbar"
 import { FormEvent } from "react"
-import { RA } from "@/styles"
-import { useAuthContext } from "@/core/hooks"
+import { useAuthContext } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
+import usePompeii from "@/lib/hooks/usePompeii"
 
 function DisplayNameField(props: {
   uid: string
@@ -45,12 +45,13 @@ function DisplayNameField(props: {
 
 export default function PollJoin() {
   const navigate = useNavigate()
+  usePompeii({ blockGuests: true })
   const ref = useRef<HTMLButtonElement>(null)
   const [query] = useSearchParams()
   const [roomCode, setRoomCode] = useState<string>(query.get("code") ?? "")
   const [displayName, setDisplayName] = useState<string>("")
   const snackbar = useSnackbar()
-  const { user, loading } = useAuthContext()
+  const { user } = useAuthContext()
   const [disable, setDisable] = useState(false)
   const [fire, setFire] = useState(true)
 
@@ -62,14 +63,14 @@ export default function PollJoin() {
     }
   }, [query, user, displayName, fire])
 
-  useEffect(() => {
-    /* check authentication */
-    if (!user && !loading) {
-      void navigate("/get-started")
-    } else if (user?.isAnonymous) {
-      void navigate("/get-started")
-    }
-  }, [user, loading, navigate])
+  // useEffect(() => {
+  //   /* check authentication */
+  //   if (!user && !loading) {
+  //     void navigate("/get-started")
+  //   } else if (user?.isAnonymous) {
+  //     void navigate("/get-started")
+  //   }
+  // }, [user, loading, navigate])
 
   const handleJoinClick = (e: MouseEvent | FormEvent) => {
     e.preventDefault()
@@ -111,48 +112,48 @@ export default function PollJoin() {
   }
   return (
     <Container maxWidth='xs'>
-      <RA.Bounce>
-        <Card raised sx={{ mt: 8, pb: 2 }}>
-          <CardContent>
-            <Typography variant='h5' textAlign='center' marginBlock={4}>
-              Join Poll
-            </Typography>
-            <Stack
-              component='form'
-              onSubmit={handleJoinClick}
-              sx={{ m: 1 }} // margin for everything in the box
-              spacing={2}
-              noValidate
-              autoComplete='off'>
-              <TextField
-                id='room-code'
-                label='Room Code'
-                variant='outlined'
-                fullWidth
-                value={roomCode}
-                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+      {/* <RA.Bounce triggerOnce> */}
+      <Card raised sx={{ mt: 8, pb: 2 }}>
+        <CardContent>
+          <Typography variant='h5' textAlign='center' marginBlock={4}>
+            Join Poll
+          </Typography>
+          <Stack
+            component='form'
+            onSubmit={handleJoinClick}
+            sx={{ m: 1 }} // margin for everything in the box
+            spacing={2}
+            noValidate
+            autoComplete='off'>
+            <TextField
+              id='room-code'
+              label='Room Code'
+              variant='outlined'
+              fullWidth
+              value={roomCode}
+              onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+            />
+            {user && (
+              <DisplayNameField
+                uid={user.uid}
+                displayName={displayName}
+                setDisplayName={setDisplayName}
               />
-              {user && (
-                <DisplayNameField
-                  uid={user.uid}
-                  displayName={displayName}
-                  setDisplayName={setDisplayName}
-                />
-              )}
-              <Button
-                ref={ref}
-                type='submit'
-                variant='contained'
-                color='primary'
-                onClick={handleJoinClick}
-                fullWidth
-                disabled={disable}>
-                POLL UP
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-      </RA.Bounce>
+            )}
+            <Button
+              ref={ref}
+              type='submit'
+              variant='contained'
+              color='primary'
+              onClick={handleJoinClick}
+              fullWidth
+              disabled={disable}>
+              POLL UP
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
+      {/* </RA.Bounce> */}
     </Container>
   )
 }

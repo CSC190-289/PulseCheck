@@ -1,24 +1,16 @@
-import LeaveButton from "@/components/poll/session/LeaveButton"
-import api, { DEPLOY_URL } from "@/core/api/firebase"
-import { useAuthContext } from "@/core/hooks"
-import { SessionState, WaitingUser } from "@/core/types"
-import { ntops } from "@/utils"
-import {
-  AppBar,
-  Box,
-  Container,
-  LinearProgress,
-  Toolbar,
-  Typography,
-} from "@mui/material"
+import api, { DEPLOY_URL } from "@/lib/api/firebase"
+import { useAuthContext } from "@/lib/hooks"
+import { SessionState, WaitingUser } from "@/lib/types"
+import { Box, Container, LinearProgress } from "@mui/material"
 import { onSnapshot } from "firebase/firestore"
 import React, { useEffect } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
-import HostButton from "@/components/poll/session/host/HostButton"
-import RoomTitle from "@/components/poll/session/host/RoomTitle"
-import Image from "mui-image"
+import RoomCodeTitle from "@/components/poll/session/host/RoomCodeTitle"
 import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
+import ResultsChart from "@/components/poll/session/ResultsChart"
+import Header from "@/components/poll/session/host/Header"
+import QuestionBox from "@/components/poll/session/host/QuestionBox"
 import { QRCodeSVG } from "qrcode.react"
 
 export default function PollHost() {
@@ -33,13 +25,25 @@ export default function PollHost() {
   const question = session?.question
 
   useEffect(() => {
+    console.debug(session)
+  }, [session])
+
+  useEffect(() => {
     /* if session exists and is done loading */
     if (session && !sessionLoading) {
       if (session.state === SessionState.CLOSED) {
         void navigate("/dashboard")
+      } else if (session.state === SessionState.FINISHED) {
+        /* session finished successfully! */
+        /* view results */
+        void navigate(`/poll/session/${sref.id}/results`, {
+          state: {
+            finished: true,
+          },
+        })
       }
     }
-  }, [session, sessionLoading, navigate])
+  }, [session, sessionLoading, navigate, sref])
 
   useEffect(() => {
     /* ensure user is host */
@@ -98,42 +102,12 @@ export default function PollHost() {
     return <LinearProgress />
   }
 
-  const handleKillSession = () => {
-    async function kill() {
-      try {
-        await api.sessions.close(sref)
-        await navigate("/dashboard", { replace: true })
-      } catch (err) {
-        console.debug(err)
-      }
-    }
-    void kill()
-  }
-
   return (
     <React.Fragment>
-      <AppBar color='inherit' position='relative'>
-        <Toolbar>
-          <LeaveButton
-            callback={handleKillSession}
-            dialogTitle='Are you sure you want to end the session?'
-            dialogContent='All answers submitted will be discarded!'
-          />
-          <Box textAlign={"initial"}>
-            <Typography>{session?.title}</Typography>
-            <Typography
-              variant='caption'
-              component={"div"}
-              color='textSecondary'>
-              {ntops(users?.docs.length ?? 0)}
-            </Typography>
-          </Box>
-          <Box flex={1} marginInline={2} />
-          <HostButton sref={sref} session={session} />
-        </Toolbar>
-      </AppBar>
-      <Container sx={{ mt: 2 }}>
-        <RoomTitle session={session} />
+      <Header sref={sref} session={session} users={users} />
+      {session?.question && <LinearProgress />}
+      <Container sx={{ mt: 2, mb: 2 }}>
+        <RoomCodeTitle session={session} />
         {session?.state === SessionState.OPEN && (
           <QRCodeSVG
             value={`${DEPLOY_URL}/get-started?code=${session.room_code}`}
@@ -143,18 +117,24 @@ export default function PollHost() {
         )}
         {/* render the current question here */}
         {question && (
-          <Box mb={3}>
-            {question.prompt_img && (
-              <Image
-                style={{ width: 700, height: 300, objectFit: "contain" }}
-                src={question.prompt_img}
-              />
-            )}
-            <Typography variant='h6'>{question.prompt}</Typography>
+          <Box mb={2}>
+            <QuestionBox question={question} />
+          </Box>
+        )}
+        {session?.results && (
+          <Box marginBlock={2}>
+            <ResultsChart results={session.results} />
           </Box>
         )}
         {/* render users currently in the poll session */}
-        <UserSessionGrid users={users} />
+        <UserSessionGrid
+          users={users}
+          results={session?.results}
+          anonymous={
+            Boolean(session?.anonymous) ||
+            Boolean(session?.results?.question?.anonymous)
+          }
+        />
       </Container>
     </React.Fragment>
   )

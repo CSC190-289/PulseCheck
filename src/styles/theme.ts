@@ -14,6 +14,13 @@ const opts = (mode: PaletteMode): ThemeOptions => ({
   typography: {
     fontFamily: "monospace",
   },
+  components: {
+    MuiInputBase: {
+      defaultProps: {
+        disableInjectingGlobalStyles: true,
+      },
+    },
+  },
 })
 
 export function createCustomTheme(mode: PaletteMode) {

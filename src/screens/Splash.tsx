@@ -7,6 +7,7 @@ import FooterLink from "../components/splash/FooterLink"
 import { useRef, useEffect } from "react"
 import { RA } from "@/styles"
 import { ExpandCircleDown } from "@mui/icons-material"
+import { useAuthContext } from "@/lib/hooks"
 
 interface LocationState {
   scrollTo?: string
@@ -14,6 +15,13 @@ interface LocationState {
 
 export default function Splash() {
   const navigate = useNavigate()
+  const { user, loading } = useAuthContext()
+
+  useEffect(() => {
+    if (user && !user.isAnonymous && !loading) {
+      void navigate("/dashboard")
+    }
+  }, [user, loading, navigate])
 
   const handleClick = () => {
     void navigate("/get-started")
