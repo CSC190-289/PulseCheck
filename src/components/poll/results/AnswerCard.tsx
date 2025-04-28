@@ -1,16 +1,7 @@
 import api from "@/lib/api/firebase"
 import { useAuthContext } from "@/lib/hooks"
 import { SessionOption, SessionQuestion, SessionResponse } from "@/lib/types"
-import { RssFeed } from "@mui/icons-material"
-import {
-  Typography,
-  Card,
-  CardContent,
-  CardMedia,
-  CardHeader,
-  CardActionArea,
-  Avatar,
-} from "@mui/material"
+import { Typography, Card, CardContent, CardMedia } from "@mui/material"
 import {
   DocumentReference,
   getDoc,
@@ -82,18 +73,21 @@ export default function AnswerCard(props: Props) {
         {question?.prompt_img && (
           <CardMedia
             component='img'
-            sx={{ aspectRatio: "auto", objectFit: "contain" }}
+            sx={{ objectFit: "contain", mb: 1 }}
             image={question?.prompt_img ?? ""}
           />
         )}
-        {/* <Typography mt={1}>You chose:</Typography> */}
-        {options
-          ?.filter((x) => res?.choices.some((y) => refEqual(x.ref, y)))
-          .map((x) => (
-            <Typography color={res?.correct ? "success" : "error"}>
-              {x.data().text}
-            </Typography>
-          ))}
+        {res?.choices.length === 0 ? (
+          <Typography color='textSecondary'>Response left blank</Typography>
+        ) : (
+          options
+            ?.filter((x) => res?.choices.some((y) => refEqual(x.ref, y)))
+            .map((x) => (
+              <Typography key={x.id} color={res?.correct ? "success" : "error"}>
+                {"•"} {x.data().text}
+              </Typography>
+            ))
+        )}
       </CardContent>
     </Card>
   )

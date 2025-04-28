@@ -352,7 +352,6 @@ export default class SessionStore extends BaseStore {
       sref.id,
       question.ref.id
     )
-    console.debug(responses)
     /* init frequency table */
     const table: Record<string, { text: string; count: number }> = {}
     /* iterate all options of question */

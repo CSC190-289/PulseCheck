@@ -31,7 +31,7 @@ export default function MostRecentGaugeCard(props: Props) {
       api.submissions
         .findMostRecentSubmission(user.uid)
         .then((x) => {
-          console.debug(x?.data().score_100)
+          // console.debug(x?.data().score_100)
           if (!x) return
           setSnapshot(x)
         })
@@ -40,7 +40,7 @@ export default function MostRecentGaugeCard(props: Props) {
   }, [user])
 
   const sub = snapshot?.data()
-  console.debug("testing", snapshot?.data())
+  // console.debug("testing", snapshot?.data())
   if (!snapshot?.data()) {
     return <NoRecentPolls />
   }

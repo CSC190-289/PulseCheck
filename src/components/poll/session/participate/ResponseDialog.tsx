@@ -39,6 +39,14 @@ export default function ResponseDialog(props: ResponseDialogProps) {
   >([])
 
   useEffect(() => {
+    return () => {
+      console.debug("goodbye world")
+      setSelectedOptions([])
+    }
+  }, [currentQuestion])
+
+  useEffect(() => {
+    /* save users response */
     if (auth.user && currentQuestion) {
       void api.sessions.questions.responses.answer(
         sref.id,

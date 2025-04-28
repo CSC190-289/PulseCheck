@@ -25,8 +25,6 @@ export default function SubmissionCard(props: SubmissionCardProps) {
     void navigate(`/poll/submission/${sid}/results`)
   }
 
-  console.debug("subId", sid)
-
   return (
     <React.Fragment>
       <Card sx={{ textAlign: "initial" }}>
