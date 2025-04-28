@@ -42,10 +42,7 @@ export default function SubmissionResults() {
         .catch((err) => console.debug(err))
     }
   }, [sub])
-  // const [users] = useCollection(api.sessions.users.collect(id))
 
-  //  const snackbar = useSnackbar()
-  //  const user = sub?.user
   return (
     <React.Fragment>
       {showConfetti && <Confetti tweenDuration={5000} recycle={false} />}
@@ -54,7 +51,7 @@ export default function SubmissionResults() {
           title={session?.title}
           submitted_at={sub?.submitted_at}></Header>
       )}
-      <Container sx={{ mt: 2, textAlign: "initial" }}>
+      <Container sx={{ marginBlock: 2, textAlign: "initial" }}>
         <Stack spacing={1}>
           <Typography variant='h6'>{sub?.display_name}</Typography>
           <ScoreGaugeCard sub={sub} />
@@ -63,9 +60,10 @@ export default function SubmissionResults() {
               <PollMetricsCard sum={session?.summary}></PollMetricsCard>
             )}
           </Stack>
-          <Grid2></Grid2>
-          <Stack>
-            {session?.questions.map((x) => <AnswerCard key={x.id} qref={x} />)}
+          <Stack spacing={1}>
+            {session?.questions.map((x) => (
+              <AnswerCard key={x.id} sid={sub?.session.id ?? ""} qref={x} />
+            ))}
           </Stack>
         </Stack>
       </Container>

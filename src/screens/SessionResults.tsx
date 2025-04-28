@@ -54,7 +54,7 @@ export default function SessionResults() {
       {session && (
         <Header title={session?.title} create_at={session?.created_at}></Header>
       )}
-      <Container sx={{ mt: 2, textAlign: "initial" }}>
+      <Container sx={{ marginBlock: 2, textAlign: "initial" }}>
         <Stack spacing={1}>
           <SessionGaugeCard
             score={session?.summary?.average_100 ?? NaN}

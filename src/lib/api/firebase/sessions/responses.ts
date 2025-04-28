@@ -14,7 +14,6 @@ import {
 import { clx } from ".."
 import { PromptType, SessionOption, SessionResponse } from "@/lib/types"
 import BaseStore from "../store"
-import { X } from "@mui/icons-material"
 
 /**
  * Manages session responses to session questions
@@ -108,6 +107,12 @@ export default class ResponseStore extends BaseStore {
         { merge: false }
       )
     }
+  }
+
+  public async get(sid: string, qid: string, uid: string) {
+    const ref = this.doc(sid, qid, uid)
+    const ss = await getDoc(ref)
+    return ss
   }
 
   public async grade(

@@ -1,16 +1,28 @@
-import { SessionQuestion } from "@/lib/types"
-import { Typography, Card, CardContent, CardMedia } from "@mui/material"
-import { DocumentReference, getDoc } from "firebase/firestore"
+import api from "@/lib/api/firebase"
+import { useAuthContext } from "@/lib/hooks"
+import { SessionOption, SessionQuestion, SessionResponse } from "@/lib/types"
+import { RssFeed } from "@mui/icons-material"
+import {
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+  CardHeader,
+  CardActionArea,
+  Avatar,
+} from "@mui/material"
+import {
+  DocumentReference,
+  getDoc,
+  QueryDocumentSnapshot,
+  refEqual,
+} from "firebase/firestore"
 import { useEffect, useState } from "react"
 
 interface Props {
+  sid: string
   qref: DocumentReference<SessionQuestion>
 }
-
-// const img = "REPLACE WITH IMGGGG"
-const title = "Getting Stated?"
-// const userAnswer = "Yes"
-// const correctAnswer = "Yes"
 
 /**
  * UI for answer card showing users what was the right answer
@@ -18,67 +30,71 @@ const title = "Getting Stated?"
  * @returns {JSX.Element}
  */
 export default function AnswerCard(props: Props) {
-  // null for testing
-  //const { question, option } = props
+  const { sid, qref } = props
+  const { user } = useAuthContext()
+  /* stores question data */
+  const [question, setQuestion] = useState<SessionQuestion | null>(null)
+  const [options, setOptions] = useState<
+    QueryDocumentSnapshot<SessionOption>[]
+  >([])
+  const [res, setRes] = useState<SessionResponse | null>(null)
 
-  // Stores question data
-  const [questionData, setQuestionData] = useState<SessionQuestion | null>(null)
+  /* fetch question on mount */
+  useEffect(() => {
+    getDoc(qref)
+      .then((x) => {
+        if (x.exists()) {
+          setQuestion(x.data())
+        }
+      })
+      .catch((err) => console.debug(err))
+  }, [qref])
 
-  // Gets question data from question ref prop
-  const getQuestionData = async () => {
-    const questionSnapshot = await getDoc(props.qref)
-    if (questionSnapshot.exists()) {
-      setQuestionData(questionSnapshot.data())
+  useEffect(() => {
+    if (question) {
+      void api.sessions.questions.options
+        .getAllByRef(qref)
+        .then((x) => {
+          setOptions(x.docs)
+        })
+        .catch((err) => console.debug(err))
     }
-  }
+  }, [question, qref])
 
   useEffect(() => {
-    console.debug(questionData)
-  }, [questionData])
-
-  // Updates questionData on mount
-  useEffect(() => {
-    void getQuestionData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const userAnswer = "a"
-  const correctAnswer = "b"
-
-  const handleCorrect = () => {
-    // if (userAnswer === correctAnswer) {
-    //   return "Correct Answer!"
-    // }
-    return `Correct Answer: ${correctAnswer}`
-  }
-  const handlebgColor = () => {
-    // if (userAnswer === correctAnswer) {
-    //   return ""
-    // }
-    return "pink"
-  }
+    if (!user) return
+    if (question) {
+      void api.sessions.questions.responses
+        .get(sid, qref.id, user.uid)
+        .then((x) => {
+          if (x.exists()) {
+            setRes(x.data())
+          }
+        })
+        .catch((err) => console.debug(err))
+    }
+  }, [user, question, qref, sid])
 
   return (
-    <Card sx={{ bgcolor: handlebgColor() }}>
-      {/* <CardActionArea> */}
-      {questionData?.prompt_img && (
-        <CardMedia
-          sx={{ height: 200, objectFit: "contain" }}
-          // Sets image url
-          image={questionData?.prompt_img ?? ""}></CardMedia>
-      )}
+    <Card>
       <CardContent>
-        <Typography variant='h6' gutterBottom>
-          {title}
-        </Typography>
-        <Typography variant='body2' color='textSecondary'>
-          You chose {userAnswer}
-        </Typography>
-        <Typography variant='body2' color='textSecondary'>
-          {handleCorrect()}
-        </Typography>
+        <Typography gutterBottom>{question?.prompt}</Typography>
+        {question?.prompt_img && (
+          <CardMedia
+            component='img'
+            sx={{ aspectRatio: "auto", objectFit: "contain" }}
+            image={question?.prompt_img ?? ""}
+          />
+        )}
+        {/* <Typography mt={1}>You chose:</Typography> */}
+        {options
+          ?.filter((x) => res?.choices.some((y) => refEqual(x.ref, y)))
+          .map((x) => (
+            <Typography color={res?.correct ? "success" : "error"}>
+              {x.data().text}
+            </Typography>
+          ))}
       </CardContent>
-      {/* </CardActionArea> */}
     </Card>
   )
 }
