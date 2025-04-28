@@ -14,7 +14,7 @@ import {
 import { clx } from ".."
 import { PromptType, SessionOption, SessionResponse } from "@/lib/types"
 import BaseStore from "../store"
-import { X } from "@mui/icons-material"
+//import { X } from "@mui/icons-material"
 
 /**
  * Manages session responses to session questions
