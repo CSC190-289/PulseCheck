@@ -255,9 +255,9 @@ export default class SessionStore extends BaseStore {
       })
       question_refs.push(sqref)
 
-      if (pq.prompt_type !== "ranking-poll") {
-        maxScore += pq.points
-      }
+      // if (pq.prompt_type !== "ranking-poll") {
+      maxScore += pq.points
+      // }
 
       /* iterate the poll question's options */
       for (const oref of pq.options) {
@@ -468,13 +468,13 @@ export default class SessionStore extends BaseStore {
         await this.questions.responses.answer(sid, qid, uid, [])
       } else {
         /* check if this question is a ranking-poll */
-        if (question.prompt_type !== "ranking-poll") {
-          const res = r_ss.data()
-          /* check if the user's answer is correct */
-          if (res.correct) {
-            score += question.points
-          }
+        // if (question.prompt_type !== "ranking-poll") {
+        const res = r_ss.data()
+        /* check if the user's answer is correct */
+        if (res.correct) {
+          score += question.points
         }
+        // }
       }
     }
     /* create submission doc */

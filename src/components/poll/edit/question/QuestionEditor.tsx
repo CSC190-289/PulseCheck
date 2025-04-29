@@ -84,7 +84,7 @@ export default function QuestionEditor(props: Props) {
         />
       </AccordionDetails>
       <AccordionActions>
-        <AddTagButton pid={pid} qid={qid} />
+        {/* <AddTagButton pid={pid} qid={qid} /> */}
         <RemoveButton pid={pid} qid={qid} />
       </AccordionActions>
     </Accordion>

@@ -10,7 +10,7 @@ interface Props {
   promptType: PromptType
 }
 
-const SAVE_DELAY = 1000
+const SAVE_DELAY = 200
 
 export default function PromptTypeField(props: Props) {
   const { pid, qid } = props

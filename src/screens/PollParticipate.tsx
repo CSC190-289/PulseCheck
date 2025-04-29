@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 import MemoryGame from "react-card-memory-game"
+import Confetti from "react-confetti"
 
 const CHECK_INTERVAL_MS = 2000
 
@@ -24,6 +25,7 @@ export function PollParticipate() {
   const [session, sessionLoading] = useDocumentData(sref)
   const [users] = useCollection(api.sessions.users.collect(sid))
   const [gettingstated, setGettingStated] = useState(false)
+  const [completedGame, setCompletedGame] = useState(false)
 
   useEffect(() => {
     if (session && !sessionLoading) {
@@ -88,6 +90,7 @@ export function PollParticipate() {
 
   return (
     <React.Fragment>
+      {completedGame && <Confetti tweenDuration={5000} recycle={false} />}
       <ResponseDialog session={session} sref={sref} />
       <Header sid={sid} session={session} users={users} />
       {!gettingstated && <LinearProgress />}
@@ -108,6 +111,7 @@ export function PollParticipate() {
               gridNumber={4}
               foundCardsColor='#e91e63'
               holeCardsColor='#00796b'
+              gameFinished={() => setCompletedGame(true)}
             />
           </Box>
         )}

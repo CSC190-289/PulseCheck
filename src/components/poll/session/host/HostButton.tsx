@@ -8,16 +8,17 @@ import { CircularProgress } from "@mui/material"
 interface HostButtonProps {
   sref: DocumentReference<Session>
   session?: Session
+  timeLeft: number
 }
 
 export default function HostButton(props: HostButtonProps) {
-  const { sref, session } = props
+  const { sref, session, timeLeft } = props
   if (!session) return <CircularProgress />
   if (session?.state === SessionState.OPEN) {
     return <StartButton sref={sref} />
   }
   if (session?.state === SessionState.IN_PROGRESS) {
-    return <NextButton sref={sref} session={session} />
+    return <NextButton sref={sref} session={session} timeLeft={timeLeft} />
   }
   if (session?.state === SessionState.DONE) {
     return <FinishButton sref={sref} />

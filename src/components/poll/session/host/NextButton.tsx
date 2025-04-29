@@ -2,16 +2,25 @@ import AsyncButton from "@/components/AsyncButton"
 import api from "@/lib/api/firebase"
 import { Session } from "@/lib/types"
 import { DocumentReference } from "firebase/firestore"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface NextButtonProps {
   sref: DocumentReference<Session>
   session?: Session | null
+  timeLeft: number
 }
 
 export default function NextButton(props: NextButtonProps) {
-  const { sref, session } = props
+  const { sref, session, timeLeft } = props
   const [text, setText] = useState("Next")
+  const buttonRef = useRef<HTMLButtonElement | null>(null)
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      buttonRef.current?.click()
+    }
+  }, [timeLeft])
+
   const callback = async () => {
     if (!session) throw new Error("session is null!")
     const currentQuestion = session.question
@@ -27,5 +36,9 @@ export default function NextButton(props: NextButtonProps) {
     }
   }
 
-  return <AsyncButton callback={callback}>{text}</AsyncButton>
+  return (
+    <AsyncButton ref={buttonRef} callback={callback}>
+      {text}
+    </AsyncButton>
+  )
 }

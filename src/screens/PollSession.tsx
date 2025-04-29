@@ -24,6 +24,7 @@ export default function PollSession() {
       try {
         const uid = user.uid
         const hasJoined = await api.sessions.hasJoined(sid, uid)
+        /* check if user has joined */
         if (hasJoined) {
           void navigate(`/poll/session/${sid}/participate`)
         }

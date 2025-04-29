@@ -45,7 +45,7 @@ export default function ResultsChart(props: Props) {
             sx: {
               blockOverflow: "clip",
             },
-            markType: "square",
+            // markType: "square",
             direction: "horizontal",
             position: {
               horizontal: "center",

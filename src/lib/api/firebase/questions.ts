@@ -85,9 +85,10 @@ export default class QuestionStore extends BaseStore {
     if (!pref) {
       throw new Error("Questions collect needs a parent document (poll)")
     }
-    await deleteDoc(qref)
     /* update poll doc to remove reference to {qref} */
     await setDoc(pref, { questions: arrayRemove(qref) }, { merge: true })
+    /* delete question doc */
+    await deleteDoc(qref)
   }
 
   // public async appendOption(

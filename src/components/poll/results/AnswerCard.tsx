@@ -8,7 +8,7 @@ import {
   QueryDocumentSnapshot,
   refEqual,
 } from "firebase/firestore"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 interface Props {
   sid: string
@@ -42,6 +42,7 @@ export default function AnswerCard(props: Props) {
   }, [qref])
 
   useEffect(() => {
+    /* fetch question's options */
     if (question) {
       void api.sessions.questions.options
         .getAllByRef(qref)
@@ -54,6 +55,7 @@ export default function AnswerCard(props: Props) {
 
   useEffect(() => {
     if (!user) return
+    /* fetch user's response for this question */
     if (question) {
       void api.sessions.questions.responses
         .get(sid, qref.id, user.uid)
@@ -78,15 +80,41 @@ export default function AnswerCard(props: Props) {
           />
         )}
         {res?.choices.length === 0 ? (
-          <Typography color='textSecondary'>Response left blank</Typography>
+          /* if the user chose nothing, display blank response */
+          <React.Fragment>
+            <Typography color={"error"}>Response left blank</Typography>
+            {!res?.correct &&
+              options.map((x) => {
+                if (!x.data().correct) return <></>
+                return (
+                  <Typography key={x.id} color='success'>
+                    {"•"} {x.data().text}
+                  </Typography>
+                )
+              })}
+          </React.Fragment>
         ) : (
-          options
-            ?.filter((x) => res?.choices.some((y) => refEqual(x.ref, y)))
-            .map((x) => (
-              <Typography key={x.id} color={res?.correct ? "success" : "error"}>
-                {"•"} {x.data().text}
-              </Typography>
-            ))
+          <React.Fragment>
+            {options
+              ?.filter((x) => res?.choices.some((y) => refEqual(x.ref, y)))
+              .map((x) => (
+                <Typography
+                  key={x.id}
+                  color={res?.correct ? "success" : "error"}>
+                  {"•"} {x.data().text}
+                </Typography>
+              ))}
+            {/* if the user got this question wrong, render the correct results */}
+            {!res?.correct &&
+              options.map((x) => {
+                if (!x.data().correct) return <></>
+                return (
+                  <Typography key={x.id} color='success'>
+                    {"•"} {x.data().text}
+                  </Typography>
+                )
+              })}
+          </React.Fragment>
         )}
       </CardContent>
     </Card>

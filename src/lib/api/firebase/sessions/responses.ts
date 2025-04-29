@@ -138,7 +138,9 @@ export default class ResponseStore extends BaseStore {
         break
       }
       case "ranking-poll": {
-        correct = true
+        if (choices.length > 0) {
+          correct = true
+        }
         break
       }
       default: {

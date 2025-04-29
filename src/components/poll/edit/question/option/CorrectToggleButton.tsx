@@ -50,13 +50,12 @@ export default function CorrectToggleButton(props: Props) {
 
   return (
     <React.Fragment>
-      {/* <IconButton> */}
-      {promptType === "multi-select" ? (
+      {promptType === "multi-select" && (
         <Checkbox checked={correct} onClick={handleCheckToggle} />
-      ) : (
+      )}
+      {promptType === "multiple-choice" && (
         <Radio checked={correct} onClick={handleCheckToggle} />
       )}
-      {/* </IconButton> */}
     </React.Fragment>
   )
 }
