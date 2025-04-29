@@ -1,4 +1,4 @@
-import { Container, Stack, Typography } from "@mui/material"
+import { Container, Stack } from "@mui/material"
 //import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"

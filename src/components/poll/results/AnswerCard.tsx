@@ -1,5 +1,4 @@
 import api from "@/lib/api/firebase"
-import { useAuthContext } from "@/lib/hooks"
 import { SessionOption, SessionQuestion, SessionResponse } from "@/lib/types"
 import { Typography, Card, CardContent, CardMedia, Box } from "@mui/material"
 import {
