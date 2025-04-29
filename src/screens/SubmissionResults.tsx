@@ -1,4 +1,4 @@
-import { Container, Stack } from "@mui/material"
+import { Container, Stack, Typography } from "@mui/material"
 //import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
@@ -64,7 +64,12 @@ export default function SubmissionResults() {
           </Stack>
           <Stack spacing={1}>
             {session?.questions.map((x) => (
-              <AnswerCard key={x.id} sid={sub?.session.id ?? ""} qref={x} />
+              <AnswerCard
+                key={x.id}
+                sid={sub?.session.id ?? ""}
+                uid={sub?.user.id ?? ""}
+                qref={x}
+              />
             ))}
           </Stack>
         </Stack>
