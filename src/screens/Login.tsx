@@ -1,19 +1,21 @@
 import { Container } from "@mui/material"
-import React, { useEffect } from "react"
+import React from "react"
 import UserLogin from "@/components/auth/UserLogin"
-import { useAuthContext } from "@/lib/hooks"
-import { useNavigate } from "react-router-dom"
+import useRedirectIfAuthenticated from "@/lib/hooks/useRedirectIfAuthenticated"
+// import { useAuthContext } from "@/lib/hooks"
+// import { useNavigate } from "react-router-dom"
 //import SignInWGoogleButton from "@/components/auth/ContinueWGoogleButton"
 
 export default function Login() {
-  const auth = useAuthContext()
-  const navigate = useNavigate()
+  useRedirectIfAuthenticated()
+  // const auth = useAuthContext()
+  // const navigate = useNavigate()
 
-  useEffect(() => {
-    if (auth.user && !auth.user.isAnonymous && !auth.loading) {
-      void navigate("/dashboard")
-    }
-  }, [auth, navigate])
+  // useEffect(() => {
+  //   if (auth.user && !auth.user.isAnonymous && !auth.loading) {
+  //     void navigate("/dashboard")
+  //   }
+  // }, [auth, navigate])
 
   return (
     <React.Fragment>

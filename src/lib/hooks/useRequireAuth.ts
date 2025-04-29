@@ -26,7 +26,7 @@ interface PompeiiOptions {
 /**
  * Redirects unauthenticated users.
  */
-export default function usePompeii(opts?: PompeiiOptions) {
+export default function useRequireAuth(opts?: PompeiiOptions) {
   const { blockGuests = false, redirectTo = "/" } = opts ?? {}
   const navigate = useNavigate()
   const { user, loading } = useAuthContext()

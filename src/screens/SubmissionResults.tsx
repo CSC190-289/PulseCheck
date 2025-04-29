@@ -11,6 +11,7 @@ import { getDoc } from "firebase/firestore"
 import { Session } from "@/lib/types"
 import Confetti from "react-confetti"
 import ScoreGaugeCard from "@/components/graphs/ScoreGaugeCard"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 /**
  * Allows users to set the settings for a question of a poll.
@@ -18,6 +19,7 @@ import ScoreGaugeCard from "@/components/graphs/ScoreGaugeCard"
  * @returns {JSX.Element}
  */
 export default function SubmissionResults() {
+  useRequireAuth()
   const params = useParams()
   const id = params.id ?? ""
   const ref = api.submissions.doc(id)

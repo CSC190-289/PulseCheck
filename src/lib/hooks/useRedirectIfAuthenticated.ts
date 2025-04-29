@@ -24,9 +24,9 @@ interface PompeiiOptions {
 }
 
 /**
- * Redirects unauthenticated users.
+ * Redirects authenticated users.
  */
-export default function useGyro(opts?: PompeiiOptions) {
+export default function useRedirectIfAuthenticated(opts?: PompeiiOptions) {
   const { redirectTo = "/dashboard" } = opts ?? {}
   const navigate = useNavigate()
   const { user, loading } = useAuthContext()

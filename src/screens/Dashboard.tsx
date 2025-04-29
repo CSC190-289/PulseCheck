@@ -6,8 +6,10 @@ import { useCollectionOnce } from "react-firebase-hooks/firestore"
 import UserPollCard from "@/components/dashboard/UserPollCard"
 import { Add, HowToVote } from "@mui/icons-material"
 import MostRecentGaugeCard from "@/components/graphs/MostRecentGaugeCard"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 export default function Dashboard() {
+  useRequireAuth({ blockGuests: true })
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const [polls] = useCollectionOnce(api.polls.queryUserPolls(user?.uid ?? "1"))

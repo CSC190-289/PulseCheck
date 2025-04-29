@@ -14,7 +14,7 @@ import useSnackbar from "@/lib/hooks/useSnackbar"
 import { FormEvent } from "react"
 import { useAuthContext } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
-import usePompeii from "@/lib/hooks/usePompeii"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 function DisplayNameField(props: {
   uid: string
@@ -45,7 +45,7 @@ function DisplayNameField(props: {
 
 export default function PollJoin() {
   const navigate = useNavigate()
-  usePompeii({ blockGuests: true })
+  useRequireAuth({ blockGuests: true })
   const ref = useRef<HTMLButtonElement>(null)
   const [query] = useSearchParams()
   const [roomCode, setRoomCode] = useState<string>(query.get("code") ?? "")

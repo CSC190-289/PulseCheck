@@ -12,8 +12,10 @@ import ResultsChart from "@/components/poll/session/ResultsChart"
 import Header from "@/components/poll/session/host/Header"
 import QuestionBox from "@/components/poll/session/host/QuestionBox"
 import { QRCodeSVG } from "qrcode.react"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 export default function PollHost() {
+  useRequireAuth({ blockGuests: true })
   const params = useParams()
   const { user, loading } = useAuthContext()
   const sid = params.id ?? ""

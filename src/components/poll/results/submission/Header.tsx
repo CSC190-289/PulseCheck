@@ -3,6 +3,8 @@ import { Toolbar, Typography, Stack, AppBar, IconButton } from "@mui/material"
 import { tstos } from "@/utils"
 import { ArrowBack } from "@mui/icons-material"
 import { useLocation, useNavigate } from "react-router-dom"
+import { useAuthContext } from "@/lib/hooks"
+import api from "@/lib/api/firebase"
 
 interface HeaderProps {
   title: string
@@ -12,14 +14,23 @@ interface HeaderProps {
 export default function Header(props: HeaderProps) {
   const { title, submitted_at } = props
   const navigate = useNavigate()
+  const auth = useAuthContext()
   const location = useLocation()
 
   const onClick = () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (location.state?.finished) {
-      void navigate("/poll/history")
+      if (auth.user?.isAnonymous) {
+        void api.auth.logout()
+      } else {
+        void navigate("/poll/history")
+      }
     } else {
-      void navigate(-1)
+      if (auth.user?.isAnonymous) {
+        void api.auth.logout()
+      } else {
+        void navigate(-1)
+      }
     }
   }
 
