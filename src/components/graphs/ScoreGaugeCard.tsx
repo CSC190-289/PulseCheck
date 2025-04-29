@@ -8,11 +8,12 @@ interface Props {
 
 export default function ScoreGaugeCard(props: Props) {
   const { sub } = props
+  const name = sub?.display_name
   return (
     <Card variant='outlined'>
       <CardContent>
         <Typography variant='h6' align='center'>
-          Your Score
+          {name}'s Score
         </Typography>
         <Box display={"flex"} justifyContent={"center"}>
           <PulseGauge score={sub?.score_100 ?? 0} />
