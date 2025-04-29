@@ -23,14 +23,16 @@ export default function MenuButton() {
       <IconButton color='inherit' size='large' onClick={handleOpen}>
         {user ? <ProfileIcon /> : <MenuIcon />}
       </IconButton>
-      <Menu
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}>
-        <GuestMenuList handleClose={handleClose} />
-        <AuthMenuList handleClose={handleClose} />
-      </Menu>
+      {!user?.isAnonymous && (
+        <Menu
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}>
+          <GuestMenuList handleClose={handleClose} />
+          <AuthMenuList handleClose={handleClose} />
+        </Menu>
+      )}
     </React.Fragment>
   )
 }
