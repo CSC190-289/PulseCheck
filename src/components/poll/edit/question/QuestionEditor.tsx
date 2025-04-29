@@ -20,7 +20,6 @@ import PromptOptionList from "./option/PromptOptionList"
 import { useDocumentData } from "react-firebase-hooks/firestore"
 import { DocumentReference } from "firebase/firestore"
 import RemoveButton from "./RemoveButton"
-import AddTagButton from "./AddTagButton"
 
 interface Props {
   pid: string

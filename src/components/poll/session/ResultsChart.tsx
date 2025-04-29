@@ -1,5 +1,4 @@
 import { SessionQuestionResults } from "@/lib/types"
-import { X } from "@mui/icons-material"
 import { Typography } from "@mui/material"
 import { PieChart } from "@mui/x-charts"
 import React from "react"

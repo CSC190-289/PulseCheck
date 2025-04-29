@@ -5,20 +5,13 @@ import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 import api from "@/lib/api/firebase"
 import { useAuthContext, useSnackbar } from "@/lib/hooks"
 import { SessionState } from "@/lib/types"
-import {
-  Alert,
-  Box,
-  Container,
-  LinearProgress,
-  Typography,
-} from "@mui/material"
+import { Box, Container, LinearProgress, Typography } from "@mui/material"
 import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 import MemoryGame from "react-card-memory-game"
 import Confetti from "react-confetti"
-import { Check } from "@mui/icons-material"
 
 const CHECK_INTERVAL_MS = 2000
 

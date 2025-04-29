@@ -1,10 +1,5 @@
 import { PieItemId } from "@mui/x-charts"
-import {
-  DocumentReference,
-  DocumentSnapshot,
-  QueryDocumentSnapshot,
-  Timestamp,
-} from "firebase/firestore"
+import { DocumentReference, Timestamp } from "firebase/firestore"
 
 /**
  * Represents a user in the system.
