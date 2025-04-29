@@ -27,6 +27,7 @@ import { doc, Timestamp, getDoc, updateDoc } from "firebase/firestore"
 import { updateEmail, updateProfile } from "firebase/auth"
 import { FirebaseError } from "firebase/app"
 import ThemeSelect from "@/components/ThemeSelect"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 type ErrorField = "displayName" | "email"
 
@@ -41,6 +42,7 @@ interface UserData {
  * @author tdhillon113
  */
 export default function Profile() {
+  useRequireAuth({ blockGuests: true })
   // const { uid  } = useAuthState(auth)
   const snackbar = useSnackbar()
   const navigate = useNavigate()
@@ -222,9 +224,9 @@ export default function Profile() {
   const handleSaveDisplayName = (): void => {
     void saveChanges("displayName")
   }
-  const handleSaveEmail = (): void => {
-    void saveChanges("email")
-  }
+  // const handleSaveEmail = (): void => {
+  //   void saveChanges("email")
+  // }
   return (
     <Container maxWidth='xs'>
       <RA.Bounce triggerOnce>
@@ -384,7 +386,7 @@ export default function Profile() {
                       </Typography>
                     )}
                   </Box>
-                  {editUser === "email" ? (
+                  {/* {editUser === "email" ? (
                     <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
                       <IconButton
                         color='primary'
@@ -407,7 +409,7 @@ export default function Profile() {
                       size='small'>
                       <Edit fontSize='small' />
                     </IconButton>
-                  )}
+                  )} */}
                 </Box>
               </Box>
 

@@ -15,8 +15,10 @@ import { useSnackbar } from "@/lib/hooks"
 import api from "@/lib/api/firebase"
 import { Add } from "@mui/icons-material"
 import { RA } from "@/styles"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 export default function PollEditor() {
+  useRequireAuth()
   const params = useParams()
   const id = params.id ?? ""
   const navigate = useNavigate()

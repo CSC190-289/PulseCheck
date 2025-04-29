@@ -12,10 +12,12 @@ import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 import MemoryGame from "react-card-memory-game"
 import Confetti from "react-confetti"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 const CHECK_INTERVAL_MS = 2000
 
 export function PollParticipate() {
+  useRequireAuth()
   const params = useParams()
   const sid = params.id ?? ""
   const { user, loading } = useAuthContext()

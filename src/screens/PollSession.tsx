@@ -5,10 +5,12 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import useSnackbar from "@/lib/hooks/useSnackbar"
 import { useAuthContext } from "@/lib/hooks"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 const CHECK_INTERVAL_MS = 2000
 
 export default function PollSession() {
+  useRequireAuth()
   const params = useParams()
   const sid = params.id ?? ""
   const { user, loading } = useAuthContext()

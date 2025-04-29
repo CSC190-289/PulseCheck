@@ -1,5 +1,6 @@
 import PollSessionHistory from "@/components/poll/history/session/PollSessionHistory"
 import PollSubmissionHistory from "@/components/poll/history/submission/PollSubmissionHistory"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 import { Box, Tab, Tabs } from "@mui/material"
 import React, { useState } from "react"
 
@@ -15,6 +16,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function PollHistory() {
+  useRequireAuth({ blockGuests: true })
   const [value, setValue] = useState(0)
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {

@@ -11,6 +11,7 @@ import { Submission } from "@/lib/types"
 import ScoreCard from "@/components/poll/results/submission/ScoreCard"
 import { ntops } from "@/utils"
 import SessionScatterCard from "@/components/graphs/SessionScatterCharrt"
+import useRequireAuth from "@/lib/hooks/useRequireAuth"
 
 /**
  * Allows Host to see the poll results.
@@ -28,6 +29,7 @@ import SessionScatterCard from "@/components/graphs/SessionScatterCharrt"
  */
 
 export default function SessionResults() {
+  useRequireAuth({ blockGuests: true })
   const params = useParams()
   const id = params.id ?? ""
   const ref = api.sessions.doc(id)
