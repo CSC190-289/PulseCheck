@@ -64,7 +64,12 @@ export default function SubmissionResults() {
           </Stack>
           <Stack spacing={1}>
             {session?.questions.map((x) => (
-              <AnswerCard key={x.id} sid={sub?.session.id ?? ""} qref={x} />
+              <AnswerCard
+                key={x.id}
+                sid={sub?.session.id ?? ""}
+                uid={sub?.user.id ?? ""}
+                qref={x}
+              />
             ))}
           </Stack>
         </Stack>

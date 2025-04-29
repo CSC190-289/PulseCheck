@@ -1,7 +1,6 @@
 import api from "@/lib/api/firebase"
-import { useAuthContext } from "@/lib/hooks"
 import { SessionOption, SessionQuestion, SessionResponse } from "@/lib/types"
-import { Typography, Card, CardContent, CardMedia } from "@mui/material"
+import { Typography, Card, CardContent, CardMedia, Box } from "@mui/material"
 import {
   DocumentReference,
   getDoc,
@@ -12,6 +11,7 @@ import React, { useEffect, useState } from "react"
 
 interface Props {
   sid: string
+  uid: string
   qref: DocumentReference<SessionQuestion>
 }
 
@@ -21,8 +21,7 @@ interface Props {
  * @returns {JSX.Element}
  */
 export default function AnswerCard(props: Props) {
-  const { sid, qref } = props
-  const { user } = useAuthContext()
+  const { sid, uid, qref } = props
   /* stores question data */
   const [question, setQuestion] = useState<SessionQuestion | null>(null)
   const [options, setOptions] = useState<
@@ -54,11 +53,10 @@ export default function AnswerCard(props: Props) {
   }, [question, qref])
 
   useEffect(() => {
-    if (!user) return
     /* fetch user's response for this question */
     if (question) {
       void api.sessions.questions.responses
-        .get(sid, qref.id, user.uid)
+        .get(sid, qref.id, uid)
         .then((x) => {
           if (x.exists()) {
             setRes(x.data())
@@ -66,7 +64,7 @@ export default function AnswerCard(props: Props) {
         })
         .catch((err) => console.debug(err))
     }
-  }, [user, question, qref, sid])
+  }, [uid, question, qref, sid])
 
   return (
     <Card>
@@ -116,6 +114,9 @@ export default function AnswerCard(props: Props) {
               })}
           </React.Fragment>
         )}
+        <Box display={"flex"} justifyContent={"end"}>
+          <Typography variant='caption'>{question?.points} point(s)</Typography>
+        </Box>
       </CardContent>
     </Card>
   )
