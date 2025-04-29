@@ -395,11 +395,16 @@ export default class SessionStore extends BaseStore {
       value: val.count,
       label: val.text,
     }))
+    const options = await this.questions.options.getAllByRef(question.ref)
+    const opts_correct = options.docs
+      .filter((x) => x.data().correct)
+      .map((x) => ({ id: x.id, text: x.data().text }))
     await setDoc(
       sref,
       {
         results: {
           question: question,
+          opts_correct,
           barchart: series,
           piechart: data,
           responses: responses,
@@ -485,8 +490,8 @@ export default class SessionStore extends BaseStore {
       photo_url: user.data().photo_url,
       session: s_ss.ref,
       score: score,
-      max_score: s_ss.data().summary!.max_score,
-      score_100: (score / s_ss.data().summary!.max_score) * 100,
+      max_score: s_ss.data().summary.max_score,
+      score_100: (score / s_ss.data().summary.max_score) * 100,
     })
     /* create pointer to submission doc in sessions's subcollection */
     await this.submissions.insert(s_ss.id, uid, {
@@ -496,6 +501,22 @@ export default class SessionStore extends BaseStore {
   }
 
   protected calcMetrics(scores: number[], maxScore: number) {
+    if (scores.length <= 0) {
+      return {
+        average: 0,
+        average_100: 0,
+        low: 0,
+        low_100: 0,
+        high: 0,
+        high_100: 0,
+        median: 0,
+        median_100: 0,
+        lower_quartile: 0,
+        lower_quartile_100: 0,
+        upper_quartile: 0,
+        upper_quartile_100: 0,
+      }
+    }
     const sorted = [...scores].sort((a, b) => a - b)
     const sum = scores.reduce((acc, val) => acc + val, 0)
     const average = sum / scores.length
@@ -567,7 +588,7 @@ export default class SessionStore extends BaseStore {
     }
     /* wait to finish scoring all users */
     const scores = await Promise.all(score_promises)
-    const maxScore = session.summary!.max_score
+    const maxScore = session.summary.max_score
     /* update session summary with metrics */
     await setDoc(
       sref,

@@ -1,5 +1,10 @@
 import { PieItemId } from "@mui/x-charts"
-import { DocumentReference, Timestamp } from "firebase/firestore"
+import {
+  DocumentReference,
+  DocumentSnapshot,
+  QueryDocumentSnapshot,
+  Timestamp,
+} from "firebase/firestore"
 
 /**
  * Represents a user in the system.
@@ -138,6 +143,7 @@ export interface CurrentQuestion {
 /** data model to display question results of user responses  */
 export interface SessionQuestionResults {
   question: CurrentQuestion
+  opts_correct: { id: string; text: string }[]
   barchart: {
     labels: string[]
     data: number[]

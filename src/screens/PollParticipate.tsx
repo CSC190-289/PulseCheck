@@ -5,13 +5,20 @@ import UserSessionGrid from "@/components/poll/session/UserSessionGrid"
 import api from "@/lib/api/firebase"
 import { useAuthContext, useSnackbar } from "@/lib/hooks"
 import { SessionState } from "@/lib/types"
-import { Box, Container, LinearProgress, Typography } from "@mui/material"
+import {
+  Alert,
+  Box,
+  Container,
+  LinearProgress,
+  Typography,
+} from "@mui/material"
 import { deleteDoc, doc } from "firebase/firestore"
 import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 import MemoryGame from "react-card-memory-game"
 import Confetti from "react-confetti"
+import { Check } from "@mui/icons-material"
 
 const CHECK_INTERVAL_MS = 2000
 
@@ -87,6 +94,19 @@ export function PollParticipate() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    /* tell the user if they were correct */
+    if (session?.results && user) {
+      const correct = session.results.responses[user.uid].correct
+      snackbar.show({
+        message: correct ? "Correct!" : "Incorrect!",
+        duration: 2000,
+        type: correct ? "success" : "error",
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, user])
 
   return (
     <React.Fragment>

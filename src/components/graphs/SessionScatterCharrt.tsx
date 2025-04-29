@@ -14,6 +14,7 @@ export default function SessionScatterCard(props: Props) {
       <Card variant='outlined'>
         <CardContent>
           <ScatterChart
+            grid={{ vertical: true, horizontal: true }}
             series={[
               {
                 label: "Participant Scores",
@@ -24,6 +25,9 @@ export default function SessionScatterCard(props: Props) {
                 })),
               },
             ]}
+            xAxis={[{ label: "Score", max: 100 }]}
+            yAxis={[{ label: "Raw Score" }]}
+            height={256}
           />
         </CardContent>
       </Card>
