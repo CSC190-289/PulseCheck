@@ -21,6 +21,7 @@ interface Props {
 export default function MostRecentGaugeCard(props: Props) {
   const { mrpsd } = props
   const { user } = useAuthContext()
+  const  name: string  = user?.displayName?.toString()!
   const [snapshot, setSnapshot] = useState<
     QueryDocumentSnapshot<Submission> | null | undefined
   >()
@@ -60,7 +61,7 @@ export default function MostRecentGaugeCard(props: Props) {
         {/* <CardActionArea onClick={onClick}> */}
         <CardContent>
           <Typography variant='h6' align='center'>
-            Your Score
+          {user?.displayName}'s Score
           </Typography>
           <Box display={"flex"} justifyContent={"center"}>
             <PulseGauge score={sub?.score_100 ?? 0} />
