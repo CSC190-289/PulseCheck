@@ -20,7 +20,6 @@ import PromptOptionList from "./option/PromptOptionList"
 import { useDocumentData } from "react-firebase-hooks/firestore"
 import { DocumentReference } from "firebase/firestore"
 import RemoveButton from "./RemoveButton"
-import AddTagButton from "./AddTagButton"
 
 interface Props {
   pid: string
@@ -84,7 +83,7 @@ export default function QuestionEditor(props: Props) {
         />
       </AccordionDetails>
       <AccordionActions>
-        <AddTagButton pid={pid} qid={qid} />
+        {/* <AddTagButton pid={pid} qid={qid} /> */}
         <RemoveButton pid={pid} qid={qid} />
       </AccordionActions>
     </Accordion>

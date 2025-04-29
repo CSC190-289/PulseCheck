@@ -103,7 +103,7 @@ export interface SessionSummary {
 
 /** data model of a poll session document */
 export interface Session {
-  summary: SessionSummary | null
+  summary: SessionSummary
   host: DocumentReference<User>
   poll: DocumentReference<Poll>
   room_code: string
@@ -138,6 +138,7 @@ export interface CurrentQuestion {
 /** data model to display question results of user responses  */
 export interface SessionQuestionResults {
   question: CurrentQuestion
+  opts_correct: { id: string; text: string }[]
   barchart: {
     labels: string[]
     data: number[]

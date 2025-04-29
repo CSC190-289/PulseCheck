@@ -1,4 +1,4 @@
-import { Container, Typography, Stack } from "@mui/material"
+import { Container, Stack } from "@mui/material"
 //import { useSnackbar } from "@/lib/hooks"
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore"
 import api from "@/lib/api/firebase"
@@ -53,7 +53,7 @@ export default function SubmissionResults() {
       )}
       <Container sx={{ marginBlock: 2, textAlign: "initial" }}>
         <Stack spacing={1}>
-          <Typography variant='h6'>{sub?.display_name}</Typography>
+          {/* <Typography variant='h6'>{sub?.display_name}</Typography> */}
           <ScoreGaugeCard sub={sub} />
           <Stack>
             {sub?.session && (

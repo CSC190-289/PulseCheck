@@ -3,7 +3,7 @@ import { useAuthContext } from "@/lib/hooks"
 import { SessionState, WaitingUser } from "@/lib/types"
 import { Box, Container, LinearProgress } from "@mui/material"
 import { onSnapshot } from "firebase/firestore"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useCollection, useDocumentData } from "react-firebase-hooks/firestore"
 import { useNavigate, useParams } from "react-router-dom"
 import RoomCodeTitle from "@/components/poll/session/host/RoomCodeTitle"
@@ -23,14 +23,39 @@ export default function PollHost() {
   const navigate = useNavigate()
   /** the current questiont to be shown */
   const question = session?.question
+  const [timeLeft, setTimeLeft] = useState(0)
 
   useEffect(() => {
-    console.debug(session)
-  }, [session])
+    let interval: NodeJS.Timeout | null = null
+    if (timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1000) {
+            /* move to next question */
+            clearInterval(interval!)
+            return 0
+          }
+          return prev - 1000
+        })
+      }, 1000)
+    }
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [timeLeft])
+
+  useEffect(() => {
+    /* set timer if it exists */
+    if (session?.question?.time) {
+      setTimeLeft(session.question.time)
+    } else {
+      setTimeLeft(NaN)
+    }
+  }, [session?.question])
 
   useEffect(() => {
     /* if session exists and is done loading */
-    if (session && !sessionLoading) {
+    if (session) {
       if (session.state === SessionState.CLOSED) {
         void navigate("/dashboard")
       } else if (session.state === SessionState.FINISHED) {
@@ -43,7 +68,7 @@ export default function PollHost() {
         })
       }
     }
-  }, [session, sessionLoading, navigate, sref])
+  }, [session, navigate, sref])
 
   useEffect(() => {
     /* ensure user is host */
@@ -104,8 +129,16 @@ export default function PollHost() {
 
   return (
     <React.Fragment>
-      <Header sref={sref} session={session} users={users} />
-      {session?.question && <LinearProgress />}
+      <Header sref={sref} session={session} users={users} timeLeft={timeLeft} />
+      {session?.question &&
+        (session.question.time ? (
+          <LinearProgress
+            variant={"determinate"}
+            value={(timeLeft / session.question.time) * 100}
+          />
+        ) : (
+          <LinearProgress />
+        ))}
       <Container sx={{ mt: 2, mb: 2 }}>
         <RoomCodeTitle session={session} />
         {session?.state === SessionState.OPEN && (

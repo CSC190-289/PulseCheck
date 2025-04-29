@@ -11,10 +11,11 @@ interface HeaderProps {
   sref: DocumentReference<Session>
   session?: Session
   users?: QuerySnapshot<SessionUser>
+  timeLeft: number
 }
 
 export default function Header(props: HeaderProps) {
-  const { sref, session, users } = props
+  const { sref, session, users, timeLeft } = props
   const navigate = useNavigate()
 
   const handleKillSession = () => {
@@ -44,7 +45,7 @@ export default function Header(props: HeaderProps) {
           </Typography>
         </Box>
         <Box flex={1} marginInline={2} />
-        <HostButton sref={sref} session={session} />
+        <HostButton sref={sref} session={session} timeLeft={timeLeft} />
       </MUIToolbar>
     </AppBar>
   )

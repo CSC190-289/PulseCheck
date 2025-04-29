@@ -60,7 +60,7 @@ export default function MostRecentGaugeCard(props: Props) {
         {/* <CardActionArea onClick={onClick}> */}
         <CardContent>
           <Typography variant='h6' align='center'>
-            Your Score
+            {user?.displayName}'s Score
           </Typography>
           <Box display={"flex"} justifyContent={"center"}>
             <PulseGauge score={sub?.score_100 ?? 0} />

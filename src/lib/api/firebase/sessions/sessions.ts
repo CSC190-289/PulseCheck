@@ -176,7 +176,22 @@ export default class SessionStore extends BaseStore {
       throw new Error(`Unauthorized access to poll!`)
     }
     const session = await addDoc(this.collect(), {
-      summary: null,
+      summary: {
+        total_participants: NaN,
+        average: NaN,
+        average_100: NaN,
+        high: NaN,
+        high_100: NaN,
+        low: NaN,
+        low_100: NaN,
+        lower_quartile: NaN,
+        lower_quartile_100: NaN,
+        median: NaN,
+        median_100: NaN,
+        upper_quartile: NaN,
+        upper_quartile_100: NaN,
+        max_score: NaN,
+      },
       host: uref,
       poll: pref,
       room_code: generateRoomCode(),
@@ -221,6 +236,7 @@ export default class SessionStore extends BaseStore {
     const question_refs: DocumentReference<SessionQuestion>[] = []
     /* iterate all of the poll's questions */
     let maxScore = 0
+
     for (const q of poll.questions) {
       /* fetch the question's data */
       const pq_ss = await getDoc(q)
@@ -239,9 +255,9 @@ export default class SessionStore extends BaseStore {
       })
       question_refs.push(sqref)
 
-      if (pq.prompt_type !== "ranking-poll") {
-        maxScore += pq.points
-      }
+      // if (pq.prompt_type !== "ranking-poll") {
+      maxScore += pq.points
+      // }
 
       /* iterate the poll question's options */
       for (const oref of pq.options) {
@@ -256,9 +272,6 @@ export default class SessionStore extends BaseStore {
       }
     }
     await this.updateByRef(ref, {
-      state: SessionState.IN_PROGRESS,
-      questions_left: question_refs,
-      questions: question_refs,
       summary: {
         total_participants: NaN,
         average: NaN,
@@ -275,6 +288,9 @@ export default class SessionStore extends BaseStore {
         upper_quartile_100: NaN,
         max_score: maxScore,
       },
+      state: SessionState.IN_PROGRESS,
+      questions_left: question_refs,
+      questions: question_refs,
     })
   }
 
@@ -379,11 +395,16 @@ export default class SessionStore extends BaseStore {
       value: val.count,
       label: val.text,
     }))
+    const options = await this.questions.options.getAllByRef(question.ref)
+    const opts_correct = options.docs
+      .filter((x) => x.data().correct)
+      .map((x) => ({ id: x.id, text: x.data().text }))
     await setDoc(
       sref,
       {
         results: {
           question: question,
+          opts_correct,
           barchart: series,
           piechart: data,
           responses: responses,
@@ -452,13 +473,13 @@ export default class SessionStore extends BaseStore {
         await this.questions.responses.answer(sid, qid, uid, [])
       } else {
         /* check if this question is a ranking-poll */
-        if (question.prompt_type !== "ranking-poll") {
-          const res = r_ss.data()
-          /* check if the user's answer is correct */
-          if (res.correct) {
-            score += question.points
-          }
+        // if (question.prompt_type !== "ranking-poll") {
+        const res = r_ss.data()
+        /* check if the user's answer is correct */
+        if (res.correct) {
+          score += question.points
         }
+        // }
       }
     }
     /* create submission doc */
@@ -469,8 +490,8 @@ export default class SessionStore extends BaseStore {
       photo_url: user.data().photo_url,
       session: s_ss.ref,
       score: score,
-      max_score: s_ss.data().summary!.max_score,
-      score_100: (score / s_ss.data().summary!.max_score) * 100,
+      max_score: s_ss.data().summary.max_score,
+      score_100: (score / s_ss.data().summary.max_score) * 100,
     })
     /* create pointer to submission doc in sessions's subcollection */
     await this.submissions.insert(s_ss.id, uid, {
@@ -480,6 +501,22 @@ export default class SessionStore extends BaseStore {
   }
 
   protected calcMetrics(scores: number[], maxScore: number) {
+    if (scores.length <= 0) {
+      return {
+        average: 0,
+        average_100: 0,
+        low: 0,
+        low_100: 0,
+        high: 0,
+        high_100: 0,
+        median: 0,
+        median_100: 0,
+        lower_quartile: 0,
+        lower_quartile_100: 0,
+        upper_quartile: 0,
+        upper_quartile_100: 0,
+      }
+    }
     const sorted = [...scores].sort((a, b) => a - b)
     const sum = scores.reduce((acc, val) => acc + val, 0)
     const average = sum / scores.length
@@ -551,7 +588,7 @@ export default class SessionStore extends BaseStore {
     }
     /* wait to finish scoring all users */
     const scores = await Promise.all(score_promises)
-    const maxScore = session.summary!.max_score
+    const maxScore = session.summary.max_score
     /* update session summary with metrics */
     await setDoc(
       sref,
